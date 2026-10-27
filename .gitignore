@@ -27,3 +27,6 @@ Homestead.yaml
 Thumbs.db
 # Ignore project brief
 docs/PROYECT_BRIEF.md
+# Ignore images from INFEST
+public/images/INFEST/
+public/images/INFEST_Night_Party/
