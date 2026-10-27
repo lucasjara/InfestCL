@@ -1,0 +1,54 @@
+# INFEST Chile — Project Brief
+
+## Descripción
+
+INFEST Chile es una organización dedicada a la producción, organización y promoción de eventos y fiestas. A través de propuestas como INFEST Night Party, busca crear experiencias de entretenimiento y conectar con su público mediante eventos y plataformas digitales.
+
+Este proyecto consiste en desarrollar una single page que represente la identidad de la marca, presente sus experiencias y facilite el acceso a sus canales digitales.
+
+## Objetivos
+
+- Presentar la identidad de INFEST Chile.
+- Comunicar su propuesta de entretenimiento.
+- Destacar fotografías y material visual de sus eventos.
+- Facilitar el acceso a sus redes sociales.
+- Ofrecer una experiencia de navegación moderna y adaptable a distintos dispositivos.
+
+## Estructura propuesta
+
+La página contempla las siguientes secciones:
+
+1. **Inicio:** presentación visual de la marca.
+2. **Sobre INFEST:** descripción de la organización.
+3. **Eventos:** presentación de eventos y propuestas destacadas.
+4. **Galería:** selección de material visual.
+5. **Redes sociales:** acceso al Instagram oficial.
+6. **Contacto:** canal para consultas y colaboraciones.
+
+La estructura podrá ajustarse según las necesidades del proyecto y los recursos disponibles.
+
+## Tecnologías
+
+- Laravel
+- Blade
+- Vite
+- HTML, CSS y JavaScript, según la configuración del proyecto
+
+## Criterios de diseño
+
+- Diseño responsive.
+- Identidad visual coherente con la marca.
+- Uso de fotografías y recursos gráficos de calidad.
+- Navegación clara y accesible.
+- Optimización de rendimiento y recursos.
+- Código mantenible y organizado.
+
+## Enlacesdocs/PROYECT_BRIEF.md.example
+
+- **Instagram:** https://www.instagram.com/infestchile/
+
+## Estado del proyecto
+
+En desarrollo.
+
+El proyecto busca establecer una presencia web para INFEST Chile y proporcionar una base para futuras mejoras y funcionalidades.
