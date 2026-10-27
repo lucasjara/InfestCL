@@ -8,6 +8,24 @@
 
         <title>INFEST Chile — Una historia de encuentros</title>
 
+        <script>
+            (() => {
+                let theme;
+
+                try {
+                    theme = localStorage.getItem('infest-theme');
+                } catch (error) {
+                    console.error('No fue posible leer la preferencia de tema.', error);
+                }
+
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+
+                document.documentElement.dataset.theme = theme;
+            })();
+        </script>
+
         <style>
             :root {
                 color-scheme: light;
@@ -15,10 +33,27 @@
                 --muted: #65616a;
                 --paper: #f5f2ed;
                 --white: #fff;
+                --surface: #fff;
+                --facets: #e9e4dc;
                 --line: #ded9d1;
+                --contrast-bg: #17151b;
+                --contrast-fg: #fff;
                 --accent: #c4f05b;
                 --violet: #5c36a5;
                 --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            }
+
+            :root[data-theme="dark"] {
+                color-scheme: dark;
+                --ink: #f3eff7;
+                --muted: #b8b2c2;
+                --paper: #15121a;
+                --surface: #211d27;
+                --facets: #1f1b25;
+                --line: #393440;
+                --contrast-bg: #f3eff7;
+                --contrast-fg: #17151b;
+                --violet: #c3a5ff;
             }
 
             * {
@@ -42,7 +77,8 @@
                 color: inherit;
             }
 
-            a:focus-visible {
+            a:focus-visible,
+            button:focus-visible {
                 outline: 3px solid var(--violet);
                 outline-offset: 4px;
             }
@@ -55,8 +91,8 @@
                 padding: .75rem 1rem;
                 transform: translateY(-160%);
                 border-radius: 999px;
-                background: var(--ink);
-                color: var(--white);
+                background: var(--contrast-bg);
+                color: var(--contrast-fg);
             }
 
             .skip-link:focus {
@@ -138,8 +174,43 @@
             .main-nav .nav-cta {
                 padding: .8rem 1.1rem;
                 border-radius: 999px;
-                background: var(--ink);
-                color: var(--white);
+                background: var(--contrast-bg);
+                color: var(--contrast-fg);
+            }
+
+            .theme-toggle {
+                display: grid;
+                width: 42px;
+                height: 42px;
+                flex: 0 0 auto;
+                place-items: center;
+                padding: 0;
+                border: 1px solid var(--line);
+                border-radius: 50%;
+                background: transparent;
+                color: var(--ink);
+                cursor: pointer;
+            }
+
+            .theme-toggle:hover {
+                background: var(--surface);
+            }
+
+            .theme-toggle svg {
+                width: 19px;
+                height: 19px;
+            }
+
+            .theme-toggle .sun-icon {
+                display: none;
+            }
+
+            :root[data-theme="dark"] .theme-toggle .moon-icon {
+                display: none;
+            }
+
+            :root[data-theme="dark"] .theme-toggle .sun-icon {
+                display: block;
             }
 
             .hero {
@@ -213,10 +284,10 @@
                 justify-content: center;
                 gap: .65rem;
                 padding: .85rem 1.2rem;
-                border: 1px solid var(--ink);
+                border: 1px solid var(--contrast-bg);
                 border-radius: 999px;
-                background: var(--ink);
-                color: var(--white);
+                background: var(--contrast-bg);
+                color: var(--contrast-fg);
                 font-size: .9rem;
                 font-weight: 750;
                 text-decoration: none;
@@ -234,7 +305,7 @@
             }
 
             .button-secondary:hover {
-                background: var(--white);
+                background: var(--surface);
                 color: var(--ink);
             }
 
@@ -297,7 +368,7 @@
                 padding-block: 6rem;
                 border-top: 1px solid var(--line);
                 border-bottom: 1px solid var(--line);
-                background: var(--white);
+                background: var(--surface);
             }
 
             .intro-grid {
@@ -406,7 +477,7 @@
 
             .facets {
                 padding-block: 6.5rem;
-                background: #e9e4dc;
+                background: var(--facets);
             }
 
             .facet-card {
@@ -415,7 +486,7 @@
                 grid-template-columns: 1fr .9fr;
                 overflow: hidden;
                 border-radius: 1.25rem;
-                background: var(--ink);
+                background: #17151b;
                 color: var(--white);
             }
 
@@ -446,7 +517,7 @@
             .facet-content .button {
                 border-color: var(--accent);
                 background: var(--accent);
-                color: var(--ink);
+                color: #17151b;
             }
 
             .facet-content .button:hover {
@@ -468,7 +539,7 @@
 
             .gallery {
                 padding-block: 7rem;
-                background: var(--white);
+                background: var(--surface);
             }
 
             .gallery-grid {
@@ -624,6 +695,11 @@
                     padding: .7rem .85rem;
                 }
 
+                .theme-toggle {
+                    width: 38px;
+                    height: 38px;
+                }
+
                 .hero {
                     grid-template-columns: 1fr;
                     gap: 2.25rem;
@@ -708,6 +784,12 @@
                 }
             }
 
+            @media (max-width: 400px) {
+                .brand-note {
+                    display: none;
+                }
+            }
+
             @media (prefers-reduced-motion: reduce) {
                 *,
                 *::before,
@@ -715,6 +797,10 @@
                     scroll-behavior: auto !important;
                     transition-duration: .01ms !important;
                 }
+            }
+            .titles{
+                user-select: none;
+                -webkit-user-select: none;
             }
         </style>
     </head>
@@ -740,6 +826,15 @@
                     <a href="#historia">Historia</a>
                     <a href="#facetas">Facetas</a>
                     <a class="nav-cta" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
+                    <button class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
+                        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </button>
                 </nav>
             </div>
         </header>
@@ -748,7 +843,7 @@
             <section class="shell hero" id="inicio" aria-labelledby="hero-title">
                 <div>
                     <p class="eyebrow">INFEST Chile · Presentación de marca</p>
-                    <h1 id="hero-title">Una historia de <span>encuentros.</span></h1>
+                    <h1 id="hero-title" class="titles">Una historia de <span>encuentros.</span></h1>
                     <p class="hero-copy">INFEST es una marca vinculada a la creación de eventos y experiencias de entretenimiento. Nació desde una comunidad y con el tiempo fue abriendo nuevas formas de reunirse.</p>
                     <div class="button-row">
                         <a class="button" href="#historia">Conoce su historia <span aria-hidden="true">↓</span></a>
@@ -769,7 +864,7 @@
                 <div class="shell intro-grid">
                     <div>
                         <p class="section-kicker">Más que un solo formato</p>
-                        <h2 id="about-title">¿Qué es INFEST?</h2>
+                        <h2 id="about-title" class="titles">¿Qué es INFEST?</h2>
                     </div>
                     <div class="intro-copy">
                         <p><strong>INFEST es el concepto principal:</strong> una marca con trayectoria en la organización de encuentros y experiencias de entretenimiento.</p>
@@ -782,7 +877,7 @@
                 <div class="section-heading">
                     <div>
                         <p class="section-kicker">Un recorrido en el tiempo</p>
-                        <h2 id="history-title">De los tarreos a nuevas experiencias.</h2>
+                        <h2 id="history-title" class="titles">De los tarreos a nuevas experiencias.</h2>
                     </div>
                     <p>Una mirada breve a algunos hitos documentados. Las actividades mencionadas pertenecen a ediciones históricas.</p>
                 </div>
@@ -815,7 +910,7 @@
                 <div class="shell facet-card">
                     <div class="facet-content">
                         <p class="section-kicker">Una faceta de INFEST</p>
-                        <h2 id="facet-title">INFEST Night Party</h2>
+                        <h2 id="facet-title" class="titles">INFEST Night Party</h2>
                         <p>INFEST Night Party es una faceta nocturna del universo INFEST. Sus publicaciones y registros muestran una expresión propia dentro de la historia de la marca.</p>
                         <a class="button" href="https://www.instagram.com/infest_nightparty/" target="_blank" rel="noopener noreferrer">Ver archivo en Instagram <span aria-hidden="true">↗</span></a>
                     </div>
@@ -830,7 +925,7 @@
                     <div class="section-heading">
                         <div>
                             <p class="section-kicker">Momentos de archivo</p>
-                            <h2 id="gallery-title">Una marca, distintas experiencias.</h2>
+                            <h2 id="gallery-title" class="titles">Una marca, distintas experiencias.</h2>
                         </div>
                         <p>Selección visual de materiales locales disponibles. Los registros corresponden a eventos anteriores.</p>
                     </div>
@@ -854,7 +949,7 @@
 
             <section class="social shell" aria-labelledby="social-title">
                 <p class="section-kicker">Sigue el recorrido</p>
-                <h2 id="social-title">Conoce más sobre INFEST en sus canales.</h2>
+                <h2 id="social-title" class="titles">Conoce más sobre INFEST en sus canales.</h2>
                 <p>Visita el Instagram de INFEST Chile para encontrar publicaciones y novedades compartidas por la marca.</p>
                 <div class="button-row">
                     <a class="button" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Instagram INFEST Chile <span aria-hidden="true">↗</span></a>
@@ -869,5 +964,30 @@
                 <a href="#inicio">Volver arriba ↑</a>
             </div>
         </footer>
+        <script>
+            const themeToggle = document.querySelector('.theme-toggle');
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+
+            function applyTheme(theme) {
+                document.documentElement.dataset.theme = theme;
+                themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro');
+                themeColor.content = theme === 'dark' ? '#15121a' : '#f5f2ed';
+            }
+
+            applyTheme(document.documentElement.dataset.theme);
+
+            themeToggle.addEventListener('click', () => {
+                const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+
+                applyTheme(theme);
+
+                try {
+                    localStorage.setItem('infest-theme', theme);
+                } catch (error) {
+                    console.error('No fue posible guardar la preferencia de tema.', error);
+                }
+            });
+        </script>
     </body>
 </html>
