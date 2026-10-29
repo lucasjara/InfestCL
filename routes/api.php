@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/events', function () {
+Route::middleware('throttle:public-api')->get('/events', function () {
+    $maxAge = max(0, (int) config('api.cache_max_age', 60));
+
     return response()->json([
         [
             'id' => '01',
@@ -46,5 +48,10 @@ Route::get('/events', function () {
             'featured' => false,
             'visibility' => 'public',
         ],
+    ])->withHeaders([
+        'Cache-Control' => "public, max-age={$maxAge}, s-maxage={$maxAge}",
+        'X-Content-Type-Options' => 'nosniff',
+        'X-Frame-Options' => 'DENY',
+        'Referrer-Policy' => 'no-referrer',
     ]);
 });
