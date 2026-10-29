@@ -892,7 +892,7 @@
         <main id="contenido">
             <section class="shell hero" id="inicio" data-scroll-target="hero" aria-labelledby="hero-title">
                 <div>
-                    <p class="eyebrow">INFEST Chile · Presentación de marca</p>
+                    <p class="eyebrow">INFEST Chile</p>
                     <h1 id="hero-title" class="titles">Una historia de <span>encuentros.</span></h1>
                     <p class="hero-copy">INFEST es una marca vinculada a la creación de eventos y experiencias de entretenimiento. Nació desde una comunidad y con el tiempo fue abriendo nuevas formas de reunirse.</p>
                     <div class="button-row">
@@ -902,10 +902,10 @@
                 </div>
 
                 <div class="hero-visual">
-                    <img src="{{ asset('images/INFEST/2023-10-14_13-19-03_UTC_2.webp') }}" alt="Participantes junto a una zona de juegos y el espacio de INFEST" fetchpriority="high">
+                    <img src="{{ asset('images/INFEST/2023-10-12_19-39-21_UTC_1.webp') }}" alt="Participantes junto a una zona de juegos y el espacio de INFEST" fetchpriority="high">
                     <div class="photo-label">
                         <p>Experiencias que se viven en comunidad.</p>
-                        <span>Archivo visual · 2023</span>
+                        <span>Archivo visual</span>
                     </div>
                 </div>
             </section>
@@ -1010,7 +1010,7 @@
 
         <footer class="site-footer">
             <div class="shell footer-inner">
-                <p>© {{ date('Y') }} INFEST Chile · Propuesta visual preliminar</p>
+                <p>© {{ date('Y') }} INFEST Chile</p>
                 <button type="button" data-scroll="#inicio">Volver arriba ↑</button>
             </div>
         </footer>
