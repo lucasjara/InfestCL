@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
+
+Route::middleware('throttle:public-api')->post('/tournaments', [TournamentController::class, 'generate']);
 
 Route::middleware('throttle:public-api')->get('/events', function () {
     $maxAge = max(0, (int) config('api.cache_max_age', 60));
@@ -23,7 +26,7 @@ Route::middleware('throttle:public-api')->get('/events', function () {
             'tags' => [
                 'gaming',
                 'cosplay',
-                'anime'
+                'anime',
             ],
             'featured' => false,
             'visibility' => 'public',
