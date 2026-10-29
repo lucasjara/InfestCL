@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Conoce INFEST Chile: una marca con historia, nacida de los encuentros y abierta a distintas experiencias de entretenimiento.">
         <meta name="theme-color" content="#f5f2ed">
+        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Borde s-fondo.png') }}">
+        <meta property="og:title" content="INFEST Chile — Una historia de encuentros">
+        <meta property="og:description" content="Conoce INFEST Chile, su historia y sus distintas experiencias de entretenimiento.">
+        <meta property="og:image" content="{{ asset('images/brand/Infest_Logo completo.png') }}">
 
         <title>INFEST Chile — Una historia de encuentros</title>
 
@@ -61,8 +65,11 @@
             }
 
             html {
-                scroll-behavior: smooth;
-                scroll-padding-top: 6rem;
+                scroll-behavior: auto;
+            }
+
+            [data-scroll-target] {
+                scroll-margin-top: 1.5rem;
             }
 
             body {
@@ -90,9 +97,13 @@
                 left: 1rem;
                 padding: .75rem 1rem;
                 transform: translateY(-160%);
+                border: 0;
                 border-radius: 999px;
                 background: var(--contrast-bg);
                 color: var(--contrast-fg);
+                font: inherit;
+                font-weight: 750;
+                cursor: pointer;
             }
 
             .skip-link:focus {
@@ -123,17 +134,41 @@
                 display: inline-flex;
                 align-items: center;
                 gap: .75rem;
+                padding: 0;
+                border: 0;
+                background: transparent;
+                color: inherit;
                 text-decoration: none;
+                cursor: pointer;
             }
 
             .brand-mark {
                 display: grid;
-                width: 42px;
+                width: clamp(112px, 11vw, 126px);
                 height: 42px;
                 place-items: center;
-                border-radius: 50%;
-                background: var(--accent);
-                color: var(--ink);
+                overflow: hidden;
+            }
+
+            .brand-mark img {
+                display: block;
+                width: 100%;
+                max-width: 126px;
+                height: 100%;
+                max-height: 42px;
+                object-fit: contain;
+            }
+
+            .brand-mark .logo-dark {
+                display: none;
+            }
+
+            :root[data-theme="dark"] .brand-mark .logo-light {
+                display: none;
+            }
+
+            :root[data-theme="dark"] .brand-mark .logo-dark {
+                display: block;
             }
 
             .brand-name {
@@ -160,15 +195,26 @@
                 gap: clamp(1rem, 3vw, 2.5rem);
             }
 
-            .main-nav a {
+            .main-nav a,
+            .main-nav button:not(.theme-toggle) {
                 font-size: .84rem;
                 font-weight: 650;
                 text-decoration: none;
                 transition: opacity .2s ease;
             }
 
-            .main-nav a:hover {
+            .main-nav a:hover,
+            .main-nav button:not(.theme-toggle):hover {
                 opacity: .65;
+            }
+
+            .main-nav button:not(.theme-toggle) {
+                padding: 0;
+                border: 0;
+                background: transparent;
+                color: inherit;
+                font-family: inherit;
+                cursor: pointer;
             }
 
             .main-nav .nav-cta {
@@ -288,9 +334,11 @@
                 border-radius: 999px;
                 background: var(--contrast-bg);
                 color: var(--contrast-fg);
+                font-family: inherit;
                 font-size: .9rem;
                 font-weight: 750;
                 text-decoration: none;
+                cursor: pointer;
                 transition: transform .2s ease, background .2s ease;
             }
 
@@ -626,9 +674,15 @@
                 margin: 0;
             }
 
-            .footer-inner a {
+            .footer-inner button {
+                padding: 0;
+                border: 0;
+                background: transparent;
+                color: inherit;
+                font-family: inherit;
+                font-size: inherit;
                 font-weight: 700;
-                text-decoration: none;
+                cursor: pointer;
             }
 
             @media (max-width: 850px) {
@@ -683,11 +737,12 @@
                     gap: .9rem;
                 }
 
-                .main-nav a {
+                .main-nav a,
+                .main-nav button:not(.theme-toggle) {
                     font-size: .76rem;
                 }
 
-                .main-nav a:nth-child(2) {
+                .main-nav button[data-scroll="#facetas"] {
                     display: none;
                 }
 
@@ -805,26 +860,21 @@
         </style>
     </head>
     <body>
-        <a class="skip-link" href="#contenido">Saltar al contenido</a>
+        <button class="skip-link" type="button" data-scroll="#contenido">Saltar al contenido</button>
 
         <header class="site-header">
             <div class="shell header-inner">
-                <a class="brand" href="#inicio" aria-label="INFEST Chile, inicio">
+                <button class="brand" type="button" data-scroll="#inicio" aria-label="INFEST Chile, inicio">
                     <span class="brand-mark" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="25" height="25" fill="none">
-                            <path d="M16 3.5 19.1 12l8.4-3.1-3.1 8.4 8.1 3.2-8.1 3.1 3.1 8.4-8.4-3.1L16 37l-3.1-8.1-8.4 3.1 3.1-8.4-8.1-3.1 8.1-3.2-3.1-8.4 8.4 3.1L16 3.5Z" transform="translate(0 -4)" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
-                            <circle cx="16" cy="16" r="3.5" fill="currentColor"/>
-                        </svg>
+                        <img class="logo-light" src="{{ asset('images/brand/Logotipo-Infest-trazado-removebg-preview.png') }}" alt="" width="126" height="42">
+                        <img class="logo-dark" src="{{ asset('images/brand/Infest_Logo_completo.png') }}" alt="" width="126" height="42">
                     </span>
-                    <span>
-                        <span class="brand-name">INFEST</span>
-                        <span class="brand-note">Ícono temporal · identidad por definir</span>
-                    </span>
-                </a>
+                </button>
 
                 <nav class="main-nav" aria-label="Navegación principal">
-                    <a href="#historia">Historia</a>
-                    <a href="#facetas">Facetas</a>
+                    <button type="button" data-scroll="#historia">Historia</button>
+                    <button type="button" data-scroll="#facetas">Facetas</button>
+                    <button type="button" data-scroll="#gallery">Experiencias</button>
                     <a class="nav-cta" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
                     <button class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
                         <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -840,13 +890,13 @@
         </header>
 
         <main id="contenido">
-            <section class="shell hero" id="inicio" aria-labelledby="hero-title">
+            <section class="shell hero" id="inicio" data-scroll-target="hero" aria-labelledby="hero-title">
                 <div>
                     <p class="eyebrow">INFEST Chile · Presentación de marca</p>
                     <h1 id="hero-title" class="titles">Una historia de <span>encuentros.</span></h1>
                     <p class="hero-copy">INFEST es una marca vinculada a la creación de eventos y experiencias de entretenimiento. Nació desde una comunidad y con el tiempo fue abriendo nuevas formas de reunirse.</p>
                     <div class="button-row">
-                        <a class="button" href="#historia">Conoce su historia <span aria-hidden="true">↓</span></a>
+                        <button class="button" type="button" data-scroll="#historia">Conoce su historia <span aria-hidden="true">↓</span></button>
                         <a class="button button-secondary" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Visitar Instagram <span aria-hidden="true">↗</span></a>
                     </div>
                 </div>
@@ -874,7 +924,7 @@
             </section>
 
             <section class="history shell" id="historia" aria-labelledby="history-title">
-                <div class="section-heading">
+                <div class="section-heading" data-scroll-target="history-heading">
                     <div>
                         <p class="section-kicker">Un recorrido en el tiempo</p>
                         <h2 id="history-title" class="titles">De los tarreos a nuevas experiencias.</h2>
@@ -907,7 +957,7 @@
             </section>
 
             <section class="facets" id="facetas" aria-labelledby="facet-title">
-                <div class="shell facet-card">
+                <div class="shell facet-card" data-scroll-target="facets-card">
                     <div class="facet-content">
                         <p class="section-kicker">Una faceta de INFEST</p>
                         <h2 id="facet-title" class="titles">INFEST Night Party</h2>
@@ -920,9 +970,9 @@
                 </div>
             </section>
 
-            <section class="gallery" aria-labelledby="gallery-title">
+            <section class="gallery" id="gallery" aria-labelledby="gallery-title">
                 <div class="shell">
-                    <div class="section-heading">
+                    <div class="section-heading" data-scroll-target="gallery-heading">
                         <div>
                             <p class="section-kicker">Momentos de archivo</p>
                             <h2 id="gallery-title" class="titles">Una marca, distintas experiencias.</h2>
@@ -961,10 +1011,55 @@
         <footer class="site-footer">
             <div class="shell footer-inner">
                 <p>© {{ date('Y') }} INFEST Chile · Propuesta visual preliminar</p>
-                <a href="#inicio">Volver arriba ↑</a>
+                <button type="button" data-scroll="#inicio">Volver arriba ↑</button>
             </div>
         </footer>
         <script>
+            const scrollTargets = {
+                '#inicio': document.querySelector('[data-scroll-target="hero"]'),
+                '#historia': document.querySelector('[data-scroll-target="history-heading"]'),
+                '#facetas': document.querySelector('[data-scroll-target="facets-card"]'),
+                '#gallery': document.querySelector('[data-scroll-target="gallery-heading"]'),
+                '#contenido': document.querySelector('#contenido'),
+            };
+
+            async function navigateToSection(hash, updateUrl = true) {
+                await new Promise(resolve => requestAnimationFrame(resolve));
+
+                const target = scrollTargets[hash] || document.querySelector(hash);
+                if (!target) return;
+
+                const offset = hash === '#historia'
+                    ? (window.innerWidth <= 600 ? 12 : 16)
+                    : (window.innerWidth <= 600 ? 16 : 24);
+                const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - offset);
+
+                window.scrollTo({
+                    top,
+                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                });
+
+                if (updateUrl) {
+                    history.pushState(null, '', hash);
+                }
+            }
+
+            document.querySelectorAll('[data-scroll]').forEach(control => {
+                control.addEventListener('click', () => {
+                    navigateToSection(control.dataset.scroll);
+                });
+            });
+
+            window.addEventListener('popstate', () => {
+                navigateToSection(window.location.hash || '#inicio', false);
+            });
+
+            if (window.location.hash && scrollTargets[window.location.hash]) {
+                window.addEventListener('load', () => {
+                    requestAnimationFrame(() => navigateToSection(window.location.hash, false));
+                }, { once: true });
+            }
+
             const themeToggle = document.querySelector('.theme-toggle');
             const themeColor = document.querySelector('meta[name="theme-color"]');
 
