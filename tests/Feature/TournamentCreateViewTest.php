@@ -23,5 +23,25 @@ class TournamentCreateViewTest extends TestCase
         $response->assertSee('<option value="money">Dinero</option>', false);
         $response->assertSee('<option value="item">Objeto</option>', false);
         $response->assertSee('data-thousands', false);
+        $response->assertSee("window.open('', '_blank')", false);
+    }
+
+    public function test_tournament_bracket_view_is_rendered(): void
+    {
+        $response = $this->get(route('tournaments.bracket'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Cuadro generado');
+        $response->assertSee('infest-tournament', false);
+        $response->assertSee('Nuevo torneo');
+        $response->assertSee('data-winner-action', false);
+        $response->assertSee('Agregar como ganador', false);
+        $response->assertSee('Eliminar selección de ganador', false);
+        $response->assertSee('Ganador:', false);
+        $response->assertSee('function getChampion()', false);
+        $response->assertSee('Segundo lugar:', false);
+        $response->assertSee('Tercer lugar:', false);
+        $response->assertSee('Resolver tercer lugar', false);
+        $response->assertSee('data-third-place-action', false);
     }
 }

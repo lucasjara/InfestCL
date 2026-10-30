@@ -237,33 +237,6 @@
         color: #b42318;
     }
 
-    .result-card {
-        display: none;
-        margin-top: 1.25rem;
-        padding: 1.25rem;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: var(--surface);
-    }
-
-    .result-card.is-visible {
-        display: block;
-    }
-
-    .result-card h2 {
-        margin-top: 0;
-    }
-
-    .result-card pre {
-        max-height: 420px;
-        overflow: auto;
-        padding: 1rem;
-        border-radius: 12px;
-        background: var(--paper);
-        font-size: .78rem;
-        white-space: pre-wrap;
-    }
-
     @media (max-width: 700px) {
         .form-grid,
         .repeat-row {
@@ -402,15 +375,11 @@
 
                 <div class="form-actions">
                     <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-                    <button class="submit-button" type="submit">Generar torneo</button>
+                    <button class="submit-button" type="submit" >Generar torneo</button>
                 </div>
             </div>
         </form>
 
-        <section class="result-card" id="result-card" aria-labelledby="result-title">
-            <h2 id="result-title">Resultado generado</h2>
-            <pre id="tournament-result"></pre>
-        </section>
     </div>
 @endsection
 
@@ -419,8 +388,6 @@
         const form = document.querySelector('#tournament-form');
         const status = document.querySelector('#form-status');
         const submitButton = form.querySelector('.submit-button');
-        const resultCard = document.querySelector('#result-card');
-        const resultOutput = document.querySelector('#tournament-result');
 
         document.querySelector('[data-add="participant"]').addEventListener('click', () => {
             const index = document.querySelectorAll('.participant-row').length + 1;
@@ -582,6 +549,7 @@
 
             submitButton.disabled = true;
             setStatus('Generando cuadro del torneo...');
+            const bracketWindow = window.open('', '_blank');
 
             try {
                 const response = await fetch('/api/tournaments', {
@@ -600,11 +568,17 @@
                     throw new Error(data.message || 'No fue posible generar el torneo.');
                 }
 
-                resultOutput.textContent = JSON.stringify(data, null, 2);
-                resultCard.classList.add('is-visible');
                 setStatus('Torneo generado correctamente.');
-                resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                localStorage.setItem('infest-tournament', JSON.stringify(data));
+
+                if (bracketWindow) {
+                    bracketWindow.location.href = '/tournaments/bracket';
+                    bracketWindow.opener = null;
+                } else {
+                    window.location.href = '/tournaments/bracket';
+                }
             } catch (error) {
+                if (bracketWindow) bracketWindow.close();
                 setStatus(error.message, true);
             } finally {
                 submitButton.disabled = false;

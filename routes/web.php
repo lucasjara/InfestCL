@@ -7,3 +7,4 @@ Route::get('/', function () {
 });
 
 Route::view('/tournaments/create', 'tournaments.create')->name('tournaments.create');
+Route::view('/tournaments/bracket', 'tournaments.bracket')->name('tournaments.bracket');
