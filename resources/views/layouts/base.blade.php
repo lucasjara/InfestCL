@@ -108,6 +108,8 @@
             }
 
             .site-header {
+                position: relative;
+                z-index: 2;
                 border-bottom: 1px solid var(--line);
                 background: var(--paper);
             }
@@ -123,6 +125,11 @@
             .brand {
                 display: inline-flex;
                 align-items: center;
+                gap: .75rem;
+                padding: 0;
+                border: 0;
+                background: transparent;
+                color: inherit;
                 text-decoration: none;
             }
 
@@ -131,11 +138,15 @@
                 width: clamp(112px, 11vw, 126px);
                 height: 42px;
                 place-items: center;
+                overflow: hidden;
             }
 
             .brand-mark img {
+                display: block;
                 width: 100%;
+                max-width: 126px;
                 height: 100%;
+                max-height: 42px;
                 object-fit: contain;
             }
 

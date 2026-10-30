@@ -327,6 +327,21 @@
         text-align: center;
     }
 
+    .easter-egg-card {
+        margin-top: .75rem;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+    }
+
+    .easter-egg-card img {
+        display: block;
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
     .empty-state {
         max-width: 520px;
         margin-inline: auto;
@@ -441,6 +456,15 @@
             const rounds = JSON.parse(JSON.stringify(tournament.bracket?.rounds || []));
             const prizes = tournament.prizes || [];
             let thirdPlaceWinner = null;
+
+            const hasJohnCena = (tournament.participants || []).some((participant) =>
+                String(participant.name || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .trim()
+                    .toLowerCase()
+                    === 'jhon cena'
+            );
 
             function sameParticipant(first, second) {
                 return first?.id !== undefined
@@ -698,7 +722,13 @@
                     </section>
                 `).join('');
 
-            const prizesHtml = prizes.length ? `
+            const johnCenaHtml = hasJohnCena ? `
+                <div class="easter-egg-card">
+                    <img src="{{ asset('img/easter_eggs/jhon_cena.jpg') }}" alt="John Cena">
+                </div>
+            ` : '';
+
+            const prizesHtml = prizes.length || hasJohnCena ? `
                 <aside class="prizes-panel">
                     <h2>Premios</h2>
                     ${prizes.map((prize) => `
@@ -722,6 +752,7 @@
                             <span class="prize-place">Incluye partido por el tercer lugar</span>
                         </div>
                     ` : ''}
+                    ${johnCenaHtml}
                 </aside>
             ` : '';
 
@@ -754,7 +785,7 @@
                 page.innerHTML = `
                     <div class="bracket-heading">
                         <div>
-                            <p class="bracket-kicker">Cuadro generado</p>
+                            <p class="bracket-kicker"></p>
                             <h1>${escapeHtml(tournament.name)}</h1>
                         </div>
                         <a class="new-tournament-button" href="{{ route('tournaments.create') }}">Nuevo torneo</a>

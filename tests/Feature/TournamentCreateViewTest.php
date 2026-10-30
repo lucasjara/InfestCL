@@ -43,5 +43,7 @@ class TournamentCreateViewTest extends TestCase
         $response->assertSee('Tercer lugar:', false);
         $response->assertSee('Resolver tercer lugar', false);
         $response->assertSee('data-third-place-action', false);
+        $response->assertSee('easter-egg-card', false);
+        $response->assertSee('img/easter_eggs/jhon_cena.jpg', false);
     }
 }

@@ -265,7 +265,7 @@
     <div class="shell tournament-page">
         <form class="tournament-form" id="tournament-form" novalidate>
             <div class="page-heading">
-                <p>INFEST Tournament</p>
+                <p></p>
                 <h1>Crear torneo</h1>
             </div>
 

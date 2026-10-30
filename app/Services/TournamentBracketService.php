@@ -156,12 +156,12 @@ class TournamentBracketService
         $remainingRounds = $roundCount - $roundNumber + 1;
 
         return match ($remainingRounds) {
-            1 => 'Final',
-            2 => 'Semifinals',
-            3 => 'Quarterfinals',
-            4 => 'Round of 16',
-            5 => 'Round of 32',
-            default => "Round {$roundNumber}",
+            1 => 'Finales',
+            2 => 'Semifinales',
+            3 => 'Cuartos de final',
+            4 => 'Ronda de 16',
+            5 => 'Ronda de 32',
+            default => "Ronda {$roundNumber}",
         };
     }
 }
