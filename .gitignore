@@ -33,3 +33,6 @@ public/images/INFEST_Night_Party/
 public/images/brand/
 # Ignore images from Easter Eggs
 public/img/easter_eggs/
+# AI local configurations
+.claude/
+.mcp.json
