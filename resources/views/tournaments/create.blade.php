@@ -349,11 +349,14 @@
                             </div>
                             <div class="field">
                                 <label>Tipo</label>
-                                <input name="prize_type[]" type="text" maxlength="50" placeholder="">
+                                <select name="prize_type[]">
+                                    <option value="money">Dinero</option>
+                                    <option value="item">Objeto</option>
+                                </select>
                             </div>
                             <div class="field">
-                                <label>Monto</label>
-                                <input name="prize_amount[]" type="number" min="0" step="any" placeholder="100000">
+                                <label>Valor Monetario</label>
+                                <input name="prize_amount[]" type="text" inputmode="numeric" data-thousands placeholder="100.000">
                             </div>
                             <div class="field">
                                 <label>Moneda</label>
@@ -448,8 +451,14 @@
             row.dataset.repeatRow = '';
             row.innerHTML = `
                 <div class="field"><label>Lugar</label><input name="prize_place[]" type="number" value="${place}" readonly required></div>
-                <div class="field"><label>Tipo</label><input name="prize_type[]" type="text" maxlength="50" placeholder=""></div>
-                <div class="field"><label>Monto</label><input name="prize_amount[]" type="number" min="0" step="any"></div>
+                <div class="field">
+                    <label>Tipo</label>
+                    <select name="prize_type[]">
+                        <option value="money">Dinero</option>
+                        <option value="item">Objeto</option>
+                    </select>
+                </div>
+                <div class="field"><label>Monto</label><input name="prize_amount[]" type="text" inputmode="numeric" data-thousands placeholder="100.000"></div>
                 <div class="field"><label>Moneda</label><input name="prize_currency[]" type="text" value="CLP" readonly required></div>
                 <div class="field"><label>Nombre</label><input name="prize_name[]" type="text" maxlength="255"></div>
                 <div class="field"><label>Cantidad</label><input name="prize_quantity[]" type="number" min="1" value="1"></div>
@@ -458,6 +467,17 @@
             `;
             list.appendChild(row);
             updatePrizeControls();
+        });
+
+        function formatThousands(input) {
+            const digits = input.value.replace(/\D/g, '');
+            input.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        document.addEventListener('input', (event) => {
+            if (event.target.matches('[name="prize_amount[]"][data-thousands]')) {
+                formatThousands(event.target);
+            }
         });
 
         function updatePrizeControls() {
@@ -515,7 +535,7 @@
                     if (prize.place) cleaned.place = Number(prize.place);
                     if (prize.type) cleaned.type = prize.type;
                     if (prize.description) cleaned.description = prize.description;
-                    if (prize.amount !== '') cleaned.amount = Number(prize.amount);
+                    if (prize.amount !== '') cleaned.amount = Number(prize.amount.replace(/\./g, ''));
                     if (prize.currency) cleaned.currency = prize.currency;
                     if (prize.name) cleaned.name = prize.name;
                     if (prize.quantity !== '') cleaned.quantity = Number(prize.quantity);

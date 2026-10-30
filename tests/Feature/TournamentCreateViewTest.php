@@ -20,5 +20,8 @@ class TournamentCreateViewTest extends TestCase
         $response->assertSee('name="prize_description[]"', false);
         $response->assertSee('data-add="prize"', false);
         $response->assertSee('name="prize_quantity[]" type="number" min="1" value="1"', false);
+        $response->assertSee('<option value="money">Dinero</option>', false);
+        $response->assertSee('<option value="item">Objeto</option>', false);
+        $response->assertSee('data-thousands', false);
     }
 }
