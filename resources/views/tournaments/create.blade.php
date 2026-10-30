@@ -10,7 +10,7 @@
 
 @section('styles')
     .tournament-page {
-        padding-block: clamp(2.5rem, 6vw, 5rem);
+        padding-block: clamp(1.5rem, 5vw, 3rem);
     }
 
     .tournament-form {
@@ -120,6 +120,10 @@
         gap: .75rem;
     }
 
+    .participant-row {
+        grid-template-columns: 80px minmax(0, 1fr) 46px;
+    }
+
     .prize-row {
         grid-template-columns: minmax(70px, .55fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(90px, .75fr) minmax(120px, 1fr) minmax(90px, .75fr) 46px;
     }
@@ -147,7 +151,7 @@
         min-height: 46px;
         border-radius: 999px;
         font: inherit;
-        font-weight: 800;
+        font-weight: 500;
         cursor: pointer;
     }
 
@@ -456,6 +460,11 @@
             });
 
             document.querySelector('[data-add="prize"]').disabled = rows.length >= 3;
+
+            const thirdPlaceMatch = document.querySelector('#third_place_match');
+            if (thirdPlaceMatch) {
+                thirdPlaceMatch.checked = rows.length === 3;
+            }
         }
 
         updatePrizeControls();

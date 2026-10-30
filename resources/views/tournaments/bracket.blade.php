@@ -10,7 +10,7 @@
 
 @section('styles')
     .bracket-page {
-        padding-block: clamp(2rem, 5vw, 4rem);
+        padding-block: clamp(1.5rem, 5vw, 3rem);
     }
 
     .bracket-heading {
@@ -45,7 +45,7 @@
         background: var(--contrast-bg);
         color: var(--contrast-fg);
         font-size: .82rem;
-        font-weight: 800;
+        font-weight: 500;
         text-decoration: none;
     }
 
@@ -316,7 +316,7 @@
         border-top: 1px solid var(--line);
         color: var(--violet);
         font-size: .78rem;
-        font-weight: 850;
+        font-weight: 750;
     }
 
     .third-place {
@@ -404,7 +404,6 @@
         }
     }
 @endsection
-
 @section('content')
     <div class="shell bracket-page" id="bracket-page">
         <div class="empty-state" id="empty-state">
@@ -416,6 +415,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <script>
         const page = document.querySelector('#bracket-page');
 
@@ -456,6 +456,47 @@
             const rounds = JSON.parse(JSON.stringify(tournament.bracket?.rounds || []));
             const prizes = tournament.prizes || [];
             let thirdPlaceWinner = null;
+            let celebratedChampionKey = null;
+
+            function celebrateChampion() {
+                if (typeof confetti !== 'function') return;
+
+                const count = 200;
+                const defaults = {
+                    origin: { y: 0.7 },
+                };
+
+                function fire(particleRatio, opts) {
+                    confetti({
+                        ...defaults,
+                        ...opts,
+                        particleCount: Math.floor(count * particleRatio),
+                    });
+                }
+
+                fire(0.25, {
+                    spread: 26,
+                    startVelocity: 55,
+                });
+                fire(0.2, {
+                    spread: 60,
+                });
+                fire(0.35, {
+                    spread: 100,
+                    decay: 0.91,
+                    scalar: 0.8,
+                });
+                fire(0.1, {
+                    spread: 120,
+                    startVelocity: 25,
+                    decay: 0.92,
+                    scalar: 1.2,
+                });
+                fire(0.1, {
+                    spread: 120,
+                    startVelocity: 45,
+                });
+            }
 
             const hasJohnCena = (tournament.participants || []).some((participant) =>
                 String(participant.name || '')
@@ -733,7 +774,7 @@
                     <h2>Premios</h2>
                     ${prizes.map((prize) => `
                         <article class="prize-card">
-                            <span class="prize-place">${escapeHtml(prize.place)}° lugar</span>
+                            <span class="prize-place">${escapeHtml(prize.place)}° lugar - ${escapeHtml(prize.name)}</span>
                             <strong>${prizeLabel(prize)}</strong>
                             ${prize.description ? `<p>${escapeHtml(prize.description)}</p>` : ''}
                             ${String(prize.place) === '1' && champion ? `
@@ -803,6 +844,16 @@
                 `;
 
                 requestAnimationFrame(alignLaterRounds);
+
+                if (champion?.name) {
+                    const championKey = String(champion.id ?? champion.name);
+                    if (celebratedChampionKey !== championKey) {
+                        celebratedChampionKey = championKey;
+                        requestAnimationFrame(celebrateChampion);
+                    }
+                } else {
+                    celebratedChampionKey = null;
+                }
             }
 
             page.addEventListener('click', (event) => {
