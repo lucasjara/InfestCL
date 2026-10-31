@@ -2,12 +2,28 @@
 
 INFEST Chile organizes and promotes events and parties. Through INFEST Night Party, it delivers nightlife experiences, helping visitors discover upcoming events and stay connected with the brand.
 
+## Features
+
+- Public event and brand landing page with responsive layouts, dark mode, and locally hosted event imagery.
+- Tournament creator for single-elimination competitions with support for:
+  - 2 to 32 participants.
+  - Random or seeded participant order.
+  - Byes for bracket sizes that are powers of two.
+  - Money or item prizes, including place, currency, description, amount, and quantity.
+  - An optional match for third place.
+- Interactive tournament bracket with winner selection, round progression, champion and runner-up information, and third-place resolution.
+- Public JSON API for the INFEST events catalog and tournament bracket generation.
+- OpenAPI documentation generated automatically with Scramble.
+- API rate limiting, public cache headers, and security response headers.
+
 ## Technologies
 
-- [Laravel](https://laravel.com/) `13.38.0`
+- [Laravel](https://laravel.com/) `13.39.0`
 - PHP `^8.3`
 - [Vite](https://vite.dev/) `^8.0.0`
 - [Tailwind CSS](https://tailwindcss.com/) `^4.0.0`
+- [Scramble](https://scramble.dedoc.co/) `0.13.52` for OpenAPI documentation
+- [Laravel Sanctum](https://laravel.com/docs/sanctum) `4.3.3`
 - PHPUnit `12.5.40` for testing
 
 ## Requirements
@@ -52,6 +68,19 @@ To work on frontend assets using the Vite development server, run:
 npm run dev
 ```
 
+## API
+
+The application exposes a small public API under `/api`:
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/events` | Returns the public INFEST and INFEST Night Party events catalog. |
+| `POST` | `/api/tournaments` | Generates a single-elimination tournament bracket from participant and prize data. |
+
+API requests can be reviewed through the generated OpenAPI interface:
+
+- Documentation UI: [http://localhost:8000/docs/api](http://localhost:8000/docs/api)
+- OpenAPI JSON: [http://localhost:8000/docs/api.json](http://localhost:8000/docs/api.json)
 ## Testing
 
 Run the test suite from the project root directory:
