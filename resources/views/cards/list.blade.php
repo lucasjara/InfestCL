@@ -778,6 +778,7 @@
                                 min="1"
                                 max="10"
                                 value="5"
+                                oninput="this.value = this.value > 10 ? 10 : this.value < 1 && this.value !== '' ? 1 : this.value;"
                             >
                         </div>
                     </div>
@@ -876,6 +877,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateButton = document.querySelector('.generate-button');
     const cardImageBaseUrl = @js(asset('images/cards'));
     const cardImageFallbackUrl = @js(asset('images/cards/dragon-astral.webp'));
+    const POKEAPI_URL = 'https://pokeapi.co/api/v2';
 
     const categories = {
         magic: {
@@ -898,6 +900,25 @@ document.addEventListener('DOMContentLoaded', () => {
             label: 'OSCURIDAD',
             color: '#64748b'
         }
+    };
+    const pokemonCategories = {
+        normal: 'NORMAL',
+        fire: 'FUEGO',
+        water: 'AGUA',
+        electric: 'ELÉCTRICO',
+        grass: 'PLANTA',
+        ice: 'HIELO',
+        fighting: 'LUCHA',
+        poison: 'VENENO',
+        ground: 'TIERRA',
+        flying: 'VOLADOR',
+        psychic: 'PSÍQUICO',
+        bug: 'BICHO',
+        rock: 'ROCA',
+        ghost: 'FANTASMA',
+        dragon: 'DRAGÓN',
+        steel: 'ACERO',
+        fairy: 'HADA'
     };
 
     const randomCards = [
@@ -950,7 +971,8 @@ document.addEventListener('DOMContentLoaded', () => {
         imageZoomValue: document.getElementById('image-zoom-value'),
         imageHorizontal: document.getElementById('image-horizontal'),
         imageVertical: document.getElementById('image-vertical'),
-        resetImage: document.getElementById('reset-image')
+        resetImage: document.getElementById('reset-image'),
+        pokemon: false
     };
 
     let previousIndex = -1;
@@ -1017,13 +1039,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePreview() {
-        const category = categories[elements.category.value];
+        let category = categories[elements.category.value];
+        if(elements.pokemon === true)
+            category = pokemonCategories[elements.category.value];
+        else
+            category = categories[elements.category.value];
 
         elements.previewName.textContent = elements.name.value || 'Carta sin nombre';
-        elements.previewDescription.textContent =
-            elements.description.value || 'Sin descripción disponible.';
+        elements.previewDescription.textContent = elements.description.value || 'Sin descripción disponible.';
 
-        elements.previewCategory.textContent = category.label;
+        if(elements.pokemon === true)
+            elements.previewCategory.textContent = category;
+        else
+            elements.previewCategory.textContent = category.label;
 
         elements.previewLevel.textContent = Array.from(
             { length: Math.min(50, Math.max(1, Number(elements.level.value) || 1)) },
@@ -1035,24 +1063,109 @@ document.addEventListener('DOMContentLoaded', () => {
             category.color
         );
     }
+    async function getRandomPokemon() {
+        // Pokédex nacional: primera generación hasta la novena
+        const pokemonId = Math.floor(Math.random() * 1025) + 1;
 
-    generateButton.addEventListener('click', () => {
-     
-        const card = randomCards[getRandomIndex()];
+        // Consultar Pokémon y su especie en paralelo
+        const [pokemonResponse, speciesResponse] = await Promise.all([
+            fetch(`${POKEAPI_URL}/pokemon/${pokemonId}`),
+            fetch(`${POKEAPI_URL}/pokemon-species/${pokemonId}`)
+        ]);
 
-        elements.name.value = card.name;
-        elements.description.value = card.description;
-        elements.category.value = card.category;
-        elements.level.value = Math.floor(Math.random() * 10) + 1;
+        if (!pokemonResponse.ok || !speciesResponse.ok) {
+            throw new Error('No se pudo obtener el Pokémon');
+        }
 
-        elements.imageAdjustments.disabled = true;
-        elements.previewImage.classList.remove('is-adjustable');
-        resetImageAdjustment();
-        setCardImage(`${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
+        const pokemon = await pokemonResponse.json();
+        const species = await speciesResponse.json();
 
-        updatePreview();
+        // Descripción en español
+        const descriptionEntry = species.flavor_text_entries.find(
+            entry => entry.language.name === 'es'
+        );
+
+        // Calcular rareza
+        let level;
+
+        if (species.is_mythical) {
+            level = 10;
+        } else if (species.is_legendary) {
+            level = 9;
+        } else if (species.is_baby) {
+            level = 1;
+        } else {
+            const rate = species.capture_rate;
+
+            if (rate <= 30) level = 8;
+            else if (rate <= 60) level = 7;
+            else if (rate <= 100) level = 6;
+            else if (rate <= 150) level = 5;
+            else if (rate <= 200) level = 4;
+            else if (rate <= 254) level = 3;
+            else level = 2;
+        }
+
+        return {
+            name: pokemon.name,
+            description: descriptionEntry?.flavor_text
+                .replace(/[\n\f]/g, ' ') || 'Sin descripción disponible.',
+            category: pokemon.types[0].type.name,
+            level,
+            image: pokemon.sprites.other?.['official-artwork']?.front_default
+                || pokemon.sprites.front_default
+        };
+    }
+
+    generateButton.addEventListener('click', async() => {
+        let name = document.getElementById('card-name').value.toLowerCase();
+        if(name === 'pokemon')
+        {
+            const options = Object.entries(pokemonCategories);
+            elements.category.innerHTML = options.map(([key, value]) => `
+                <option value="${key}">
+                    ${value}
+                </option>
+            `).join('');
+            const card = await getRandomPokemon().then(card => {
+                elements.name.value = card.name;
+                elements.description.value = card.description;
+                elements.category.value = card.category;
+                elements.level.value = card.level;
+                elements.imageAdjustments.disabled = true;
+                elements.previewImage.classList.remove('is-adjustable');
+                elements.pokemon = true;
+                resetImageAdjustment();
+                setCardImage(card.image);
+                updatePreview();
+            }).catch(error => {
+                console.error(error);
+                //alert('No se pudo obtener un Pokémon aleatorio. Intenta nuevamente.');
+            });
+        }else{
+            const card = randomCards[getRandomIndex()];
+            const options = Object.keys(categories);
+            elements.category.innerHTML = options
+            .map(category => `
+                <option value="${category}">
+                    ${categories[category].label}
+                </option>
+            `)
+            .join('');
+            elements.pokemon = false;
+            elements.name.value = card.name;
+            elements.description.value = card.description;
+            elements.category.value = card.category;
+            elements.level.value = Math.floor(Math.random() * 10) + 1;
+
+            elements.imageAdjustments.disabled = true;
+            elements.previewImage.classList.remove('is-adjustable');
+            resetImageAdjustment();
+            setCardImage(`${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
+
+            updatePreview();
+        }
     });
-
     // Actualizar la carta al modificar los campos manualmente.
     elements.name.addEventListener('input', updatePreview);
     elements.description.addEventListener('input', updatePreview);
