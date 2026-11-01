@@ -1079,12 +1079,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const pokemon = await pokemonResponse.json();
         const species = await speciesResponse.json();
-
-        // Descripción en español
+        
+        // Descripción en español o inglés si no hay disponible
         const descriptionEntry = species.flavor_text_entries.find(
             entry => entry.language.name === 'es'
+        ) || species.flavor_text_entries.find(
+            entry => entry.language.name === 'en'
         );
 
+        let description = descriptionEntry?.flavor_text ?? 'Descripción no disponible';
+        
+        // Traducir al español si viene en inglés
+        if (descriptionEntry?.language.name === 'en') {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(description)}&langpair=en|es`
+            );
+
+            const data = await response.json();
+            description = data.responseData.translatedText;
+        }
         // Calcular rareza
         let level;
 
@@ -1116,56 +1129,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 || pokemon.sprites.front_default
         };
     }
-
-    generateButton.addEventListener('click', async() => {
-        let name = document.getElementById('card-name').value.toLowerCase();
-        if(name === 'pokemon')
-        {
-            const options = Object.entries(pokemonCategories);
-            elements.category.innerHTML = options.map(([key, value]) => `
+    function setCategories(categories) {
+        elements.category.innerHTML = Object.entries(categories)
+            .map(([key, value]) => `
                 <option value="${key}">
-                    ${value}
-                </option>
-            `).join('');
-            const card = await getRandomPokemon().then(card => {
-                elements.name.value = card.name;
-                elements.description.value = card.description;
-                elements.category.value = card.category;
-                elements.level.value = card.level;
-                elements.imageAdjustments.disabled = true;
-                elements.previewImage.classList.remove('is-adjustable');
-                elements.pokemon = true;
-                resetImageAdjustment();
-                setCardImage(card.image);
-                updatePreview();
-            }).catch(error => {
-                console.error(error);
-                //alert('No se pudo obtener un Pokémon aleatorio. Intenta nuevamente.');
-            });
-        }else{
-            const card = randomCards[getRandomIndex()];
-            const options = Object.keys(categories);
-            elements.category.innerHTML = options
-            .map(category => `
-                <option value="${category}">
-                    ${categories[category].label}
+                    ${typeof value === 'string' ? value : value.label}
                 </option>
             `)
             .join('');
-            elements.pokemon = false;
+    }
+    
+    generateButton.addEventListener('click', async () => {
+        const isPokemon = elements.name.value.toLowerCase() === 'pokemon';
+        try {
+            const card = isPokemon ? await getRandomPokemon() : randomCards[getRandomIndex()];
+            setCategories(isPokemon ? pokemonCategories : categories);
+            elements.level.value = isPokemon ? card.level : Math.floor(Math.random() * 10) + 1;
+            setCardImage(isPokemon ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
+            console.log(card);
+            // Propiedades comunes
+            elements.pokemon = isPokemon;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
-            elements.level.value = Math.floor(Math.random() * 10) + 1;
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
-            resetImageAdjustment();
-            setCardImage(`${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
 
+            resetImageAdjustment();
             updatePreview();
+
+        } catch (error) {
+            console.error(error);
         }
     });
+
     // Actualizar la carta al modificar los campos manualmente.
     elements.name.addEventListener('input', updatePreview);
     elements.description.addEventListener('input', updatePreview);
