@@ -1,5 +1,5 @@
 import { initializeCollectionDetail, initializeCollectionList } from './albumUI.js';
-import { collectionStorageAdapter } from './database/index.js';
+import { collectionService } from './services/index.js';
 
 export function initializeAlbumPage() {
     const page = document.querySelector('[data-album-page]');
@@ -8,7 +8,7 @@ export function initializeAlbumPage() {
         return;
     }
 
-    collectionStorageAdapter.open().catch((error) => {
+    collectionService.getCollections().catch((error) => {
         console.error('No fue posible abrir INFEST Collection.', error);
     });
 

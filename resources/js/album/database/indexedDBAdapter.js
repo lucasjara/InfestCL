@@ -63,6 +63,37 @@ async function deleteRecord(storeName, id) {
     return operation;
 }
 
+async function deleteCollectionCascade(collectionId) {
+    const database = await openCollectionDatabase();
+    const transaction = database.transaction(
+        [STORES.collections, STORES.inventory],
+        'readwrite',
+    );
+    const collections = transaction.objectStore(STORES.collections);
+    const inventoryStore = transaction.objectStore(STORES.inventory);
+    const inventoryIndex = inventoryStore.index('collectionId');
+    const completion = transactionToPromise(transaction);
+
+    try {
+        const records = await requestToPromise(
+            inventoryIndex.getAll(collectionId),
+        );
+
+        for (const record of records) {
+            await requestToPromise(inventoryStore.delete(record.id));
+        }
+
+        await requestToPromise(collections.delete(collectionId));
+        await completion;
+    } catch (error) {
+        transaction.abort();
+        await completion.catch(() => undefined);
+        throw error;
+    }
+
+    return true;
+}
+
 async function addInventory(inventory) {
     if (!inventory.collectionId || !inventory.cardId) {
         throw new Error('Inventory requires collectionId and cardId.');
@@ -140,6 +171,7 @@ export const indexedDBAdapter = Object.freeze({
     putCard: (card) => putRecord(STORES.cards, card),
     deleteCard: (id) => deleteRecord(STORES.cards, id),
     getInventory: () => getAll(STORES.inventory),
+    deleteCollectionCascade,
     addInventory,
     getCollectionInventory,
     getInventoryByCollectionAndCard,
