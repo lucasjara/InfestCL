@@ -31,7 +31,7 @@
         text-transform: uppercase;
     }
 
-    .album-heading h1 {
+    .album-heading h2 {
         margin: 0;
         font-size: clamp(2.25rem, 7vw, 4.75rem);
         letter-spacing: -.07em;
@@ -148,7 +148,7 @@
         <header class="album-heading">
             <div>
                 <p>INFEST Collection</p>
-                <h1>Mis colecciones</h1>
+                <h2>Mis colecciones</h2>
             </div>
             <div class="album-actions">
                 <button class="collection-create-button" type="button" disabled>
