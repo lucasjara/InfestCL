@@ -715,7 +715,7 @@
 
 @endsection
 @section('content')
-<main class="card-generator-page">
+<main class="card-generator-page" style="margin-left:2%;margin-right:2%;">
         <div class="generator-heading">
             <div>
                 <p class="generator-kicker">INFEST · CARD GENERATOR</p>
