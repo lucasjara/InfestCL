@@ -850,7 +850,7 @@
                         </div>
 
                         <div class="generated-card-footer">
-                            <span>#0042</span>
+                            <span id="preview-number">#0042</span>
 
                             <div id="preview-level" class="card-level-dots">
                                 ● ● ● ● ●
@@ -972,7 +972,8 @@ document.addEventListener('DOMContentLoaded', () => {
         imageHorizontal: document.getElementById('image-horizontal'),
         imageVertical: document.getElementById('image-vertical'),
         resetImage: document.getElementById('reset-image'),
-        pokemon: false
+        pokemon: false,
+        previewNumber: document.getElementById('preview-number')
     };
 
     let previousIndex = -1;
@@ -1040,18 +1041,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePreview() {
         let category = categories[elements.category.value];
-        if(elements.pokemon === true)
+        if(elements.pokemon === true){
             category = pokemonCategories[elements.category.value];
-        else
+            elements.previewCategory.textContent = category;
+            category = categories['magic'];
+        }
+        else{
             category = categories[elements.category.value];
-
+            elements.previewCategory.textContent = category.label;
+            elements.previewNumber.textContent = `#0052`;
+        }
         elements.previewName.textContent = elements.name.value || 'Carta sin nombre';
         elements.previewDescription.textContent = elements.description.value || 'Sin descripción disponible.';
-
-        if(elements.pokemon === true)
-            elements.previewCategory.textContent = category;
-        else
-            elements.previewCategory.textContent = category.label;
 
         elements.previewLevel.textContent = Array.from(
             { length: Math.min(50, Math.max(1, Number(elements.level.value) || 1)) },
@@ -1079,7 +1080,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const pokemon = await pokemonResponse.json();
         const species = await speciesResponse.json();
-        
         // Descripción en español o inglés si no hay disponible
         const descriptionEntry = species.flavor_text_entries.find(
             entry => entry.language.name === 'es'
@@ -1088,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         let description = descriptionEntry?.flavor_text ?? 'Descripción no disponible';
-        
+
         // Traducir al español si viene en inglés
         if (descriptionEntry?.language.name === 'en') {
             const response = await fetch(
@@ -1120,6 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return {
+            id: pokemon.id,
             name: pokemon.name,
             description: descriptionEntry?.flavor_text
                 .replace(/[\n\f]/g, ' ') || 'Sin descripción disponible.',
@@ -1146,12 +1147,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setCategories(isPokemon ? pokemonCategories : categories);
             elements.level.value = isPokemon ? card.level : Math.floor(Math.random() * 10) + 1;
             setCardImage(isPokemon ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
-            console.log(card);
-            // Propiedades comunes
+            
             elements.pokemon = isPokemon;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
+            elements.previewNumber.textContent = isPokemon ? `#${String(card.id).padStart(4, '0')}` : `#0052`;
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
