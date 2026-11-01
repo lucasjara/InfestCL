@@ -21,5 +21,8 @@ class CardGeneratorViewTest extends TestCase
         $response->assertSee('images/cards/dragon-astral.webp', false);
         $response->assertSee('async function setCardImage', false);
         $response->assertSee('cardImageFallbackUrl', false);
+        $response->assertSee('id="add-to-collection"', false);
+        $response->assertSee('Añadir a mi colección');
+        $response->assertSee('id="collection-select"', false);
     }
 }

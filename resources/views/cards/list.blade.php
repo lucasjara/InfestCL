@@ -463,6 +463,54 @@
         white-space: nowrap;
     }
 
+    .result-actions {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .collection-select,
+    .add-to-collection-button {
+        min-height: 42px;
+        border-radius: 999px;
+        font: inherit;
+        font-size: .78rem;
+        font-weight: 750;
+    }
+
+    .collection-select {
+        max-width: 180px;
+        padding: .65rem 2rem .65rem .85rem;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--ink);
+    }
+
+    .add-to-collection-button {
+        padding: .65rem 1rem;
+        border: 1px solid var(--violet);
+        background: transparent;
+        color: var(--violet);
+        cursor: pointer;
+    }
+
+    .add-to-collection-button:disabled,
+    .collection-select:disabled {
+        cursor: not-allowed;
+        opacity: .55;
+    }
+
+    .collection-action-status {
+        width: 100%;
+        min-height: 1rem;
+        margin: 0;
+        color: var(--muted);
+        font-size: .72rem;
+        text-align: right;
+    }
+
     .form-field {
         display: flex;
         flex-direction: column;
@@ -735,6 +783,9 @@
                         <span class="panel-kicker">CONFIGURACIÓN</span>
                         <h2>Datos de la carta</h2>
                     </div>
+                    <button type="button" class="generate-button">
+                        Obtener carta
+                    </button>
                 </div>
 
                 <form id="card-form">
@@ -819,11 +870,25 @@
                         <span class="panel-kicker">RESULTADO</span>
                         <h2>Tu carta obtenida</h2>
                     </div>
-                    <div>
-                        <button type="button" class="generate-button">
-                            Obtener carta
+                    <div class="result-actions">
+                        <select
+                            id="collection-select"
+                            class="collection-select"
+                            aria-label="Colección destino"
+                            disabled
+                        >
+                            <option value="">Sin colecciones</option>
+                        </select>
+                        <button
+                            type="button"
+                            id="add-to-collection"
+                            class="add-to-collection-button"
+                            disabled
+                        >
+                            Añadir a mi colección
                         </button>
-                    </div> 
+                        <p id="collection-action-status" class="collection-action-status" aria-live="polite"></p>
+                    </div>
                 </div>
 
                 <div class="card-result">
@@ -923,30 +988,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const randomCards = [
         {
+            id: 'default-dragon-astral',
             name: 'Dragón Astral',
             description: 'Una criatura ancestral que domina la energía de las estrellas.',
             category: 'magic',
             image: 'dragon-astral.webp'
         },
         {
+            id: 'default-phenix-carmesi',
             name: 'Fénix Carmesí',
             description: 'Renace de sus cenizas y transforma todo a su alrededor en llamas.',
             category: 'fire',
             image: 'fenix.webp'
         },
         {
+            id: 'default-leviatan-azul',
             name: 'Leviatán Azul',
             description: 'Una bestia marina capaz de controlar las corrientes oceánicas.',
             category: 'water',
             image: 'leviathan.webp'
         },
         {
+            id: 'default-guardian-bosque',
             name: 'Guardián del Bosque',
             description: 'Protector de la naturaleza que obtiene su fuerza de los árboles.',
             category: 'nature',
             image: 'guardian.webp'
         },
         {
+            id: 'default-sombraeterna',
             name: 'Sombra Eterna',
             description: 'Una entidad misteriosa que habita entre las sombras.',
             category: 'dark',
@@ -980,6 +1050,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedImageUrl = null;
     let dragStart = null;
     let imageLoadRequest = 0;
+    let currentCard = {
+        id: 'default-dragon-astral',
+        type: 'default',
+        name: 'Dragón Astral',
+        description: 'Una criatura ancestral que domina la energía de las estrellas.',
+        category: 'magic',
+        level: 5,
+        image: 'images/cards/dragon-astral.webp'
+    };
+
+    function dispatchCardReady() {
+        document.dispatchEvent(new CustomEvent('infest:card-ready', {
+            detail: { ...currentCard }
+        }));
+    }
 
     function getRandomIndex() {
         let index;
@@ -1063,6 +1148,15 @@ document.addEventListener('DOMContentLoaded', () => {
             '--category-color',
             category.color
         );
+
+        currentCard = {
+            ...currentCard,
+            name: elements.name.value || 'Carta sin nombre',
+            description: elements.description.value || 'Sin descripción disponible.',
+            category: elements.category.value,
+            level: Math.min(50, Math.max(1, Number(elements.level.value) || 1))
+        };
+        dispatchCardReady();
     }
     async function getRandomPokemon() {
         // Pokédex nacional: primera generación hasta la novena
@@ -1147,6 +1241,25 @@ document.addEventListener('DOMContentLoaded', () => {
             setCategories(isPokemon ? pokemonCategories : categories);
             elements.level.value = isPokemon ? card.level : Math.floor(Math.random() * 10) + 1;
             setCardImage(isPokemon ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
+
+            currentCard = isPokemon ? {
+                id: `pokemon-${card.id}`,
+                externalId: card.id,
+                type: 'pokemon',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
+            } : {
+                id: card.id,
+                type: 'default',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: Number(elements.level.value),
+                image: `images/cards/${card.image}`
+            };
             
             elements.pokemon = isPokemon;
             elements.name.value = card.name;
@@ -1197,6 +1310,16 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.imageAdjustments.disabled = false;
         elements.previewImage.classList.add('is-adjustable');
         resetImageAdjustment();
+        currentCard = {
+            id: crypto.randomUUID(),
+            type: 'personal',
+            name: elements.name.value || 'Carta personal',
+            description: elements.description.value || '',
+            category: elements.category.value,
+            level: Number(elements.level.value) || 1,
+            image: file
+        };
+        dispatchCardReady();
     });
 
     elements.previewImage.addEventListener('pointerdown', (event) => {
@@ -1256,4 +1379,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+@endpush
+
+@push('head')
+    @vite('resources/js/album/cardToCollection.js')
 @endpush

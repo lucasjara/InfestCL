@@ -1,5 +1,6 @@
 export const DATABASE_NAME = 'CardCollectionDB';
 export const DATABASE_VERSION = 1;
+export const DEFAULT_COLLECTION_ID = 'default';
 
 export const STORES = Object.freeze({
     collections: 'collections',
@@ -9,6 +10,33 @@ export const STORES = Object.freeze({
 
 let databasePromise = null;
 let databaseConnection = null;
+
+async function ensureDefaultCollection(database) {
+    const transaction = database.transaction(STORES.collections, 'readwrite');
+    const store = transaction.objectStore(STORES.collections);
+    const timestamp = new Date().toISOString();
+    const existing = await requestToPromise(store.get(DEFAULT_COLLECTION_ID));
+
+    if (!existing) {
+        await requestToPromise(store.add({
+            id: DEFAULT_COLLECTION_ID,
+            name: 'predeterminada',
+            description: 'Colección principal para guardar cartas.',
+            createdAt: timestamp,
+            updatedAt: timestamp,
+        }));
+    }
+
+    await new Promise((resolve, reject) => {
+        transaction.addEventListener('complete', resolve);
+        transaction.addEventListener('abort', () => reject(
+            transaction.error ?? new Error('Unable to create the default collection.')
+        ));
+        transaction.addEventListener('error', () => reject(
+            transaction.error ?? new Error('Unable to create the default collection.')
+        ));
+    });
+}
 
 function requestToPromise(request) {
     return new Promise((resolve, reject) => {
@@ -66,7 +94,12 @@ export function openCollectionDatabase() {
             databaseConnection.addEventListener('versionchange', () => {
                 closeCollectionDatabase();
             });
-            resolve(databaseConnection);
+            ensureDefaultCollection(databaseConnection).then(() => {
+                resolve(databaseConnection);
+            }).catch((error) => {
+                closeCollectionDatabase();
+                reject(error);
+            });
         });
 
         request.addEventListener('error', () => {

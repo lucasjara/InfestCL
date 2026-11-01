@@ -6,6 +6,8 @@ function defaultUuid() {
     return crypto.randomUUID();
 }
 
+export const DEFAULT_COLLECTION_ID = 'default';
+
 export class CollectionService {
     constructor(adapter, options = {}) {
         this.adapter = adapter;
@@ -66,6 +68,10 @@ export class CollectionService {
     }
 
     async deleteCollection(id) {
+        if (id === DEFAULT_COLLECTION_ID) {
+            throw new Error('The default collection cannot be deleted.');
+        }
+
         const current = await this.getCollectionById(id);
 
         if (!current) {

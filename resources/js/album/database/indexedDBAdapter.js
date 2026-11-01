@@ -1,5 +1,6 @@
 import {
     closeCollectionDatabase,
+    deleteCollectionDatabase,
     openCollectionDatabase,
     STORES,
 } from './database.js';
@@ -159,9 +160,15 @@ async function getInventoryByCollectionAndCard(collectionId, cardId) {
     );
 }
 
+async function resetCollectionData() {
+    await deleteCollectionDatabase();
+    return openCollectionDatabase();
+}
+
 export const indexedDBAdapter = Object.freeze({
     open: openCollectionDatabase,
     close: closeCollectionDatabase,
+    resetCollectionData,
     getCollections: () => getAll(STORES.collections),
     getCollectionById: (id) => getById(STORES.collections, id),
     putCollection: (collection) => putRecord(STORES.collections, collection),

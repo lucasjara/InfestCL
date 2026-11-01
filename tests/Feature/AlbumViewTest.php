@@ -13,6 +13,8 @@ class AlbumViewTest extends TestCase
         $response->assertOk();
         $response->assertSee('Mis colecciones');
         $response->assertSee('Nueva colección');
+        $response->assertSee('Eliminar todas las cartas y colecciones');
+        $response->assertSee('data-reset-collection-data', false);
         $response->assertSee('data-album-page="index"', false);
     }
 

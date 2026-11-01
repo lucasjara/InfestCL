@@ -86,6 +86,24 @@ test('collection service rejects an empty name and cascades inventory on deletio
     assert.equal(adapter.inventory.size, 0);
 });
 
+test('default collection is protected from deletion', async () => {
+    const adapter = createMemoryAdapter();
+    const service = new CollectionService(adapter, {
+        createUuid: () => 'collection-created',
+        now: () => new Date('2026-11-01T12:00:00.000Z'),
+    });
+
+    adapter.collections.set('default', {
+        id: 'default',
+        name: 'Colección predeterminada',
+    });
+
+    await assert.rejects(
+        () => service.deleteCollection('default'),
+        /cannot be deleted/i,
+    );
+});
+
 test('card service uses stable identifiers and prevents deleting a card in inventory', async () => {
     const adapter = createMemoryAdapter();
     const service = new CardService(adapter, {

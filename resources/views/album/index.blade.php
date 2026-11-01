@@ -52,6 +52,44 @@
         opacity: .55;
     }
 
+    .album-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: .75rem;
+        flex-wrap: wrap;
+    }
+
+    .reset-collection-button {
+        flex: 0 0 auto;
+        padding: .85rem 1.15rem;
+        border: 1px solid #ef4444;
+        border-radius: 999px;
+        background: transparent;
+        color: #ef4444;
+        font: inherit;
+        font-size: .82rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .reset-collection-button:hover {
+        background: rgba(239, 68, 68, .08);
+    }
+
+    .reset-collection-button:disabled {
+        cursor: wait;
+        opacity: .55;
+    }
+
+    .reset-status {
+        flex-basis: 100%;
+        margin: 0;
+        color: var(--muted);
+        font-size: .78rem;
+        text-align: right;
+    }
+
     .collection-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -91,6 +129,14 @@
             align-self: flex-start;
         }
 
+        .album-actions {
+            justify-content: flex-start;
+        }
+
+        .reset-status {
+            text-align: left;
+        }
+
         .collection-grid {
             grid-template-columns: 1fr;
         }
@@ -104,9 +150,19 @@
                 <p>INFEST Collection</p>
                 <h1>Mis colecciones</h1>
             </div>
-            <button class="collection-create-button" type="button" disabled>
-                Nueva colección
-            </button>
+            <div class="album-actions">
+                <button class="collection-create-button" type="button" disabled>
+                    Nueva colección
+                </button>
+                <button
+                    class="reset-collection-button"
+                    type="button"
+                    data-reset-collection-data
+                >
+                    Eliminar todas las cartas y colecciones
+                </button>
+                <p class="reset-status" data-reset-status aria-live="polite"></p>
+            </div>
         </header>
 
         <div class="collection-grid" data-collection-list>

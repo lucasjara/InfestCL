@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/album/index.js',
                 'resources/js/album/show.js',
+                'resources/js/album/cardToCollection.js',
             ],
             refresh: true,
             fonts: [
