@@ -985,6 +985,25 @@ document.addEventListener('DOMContentLoaded', () => {
         steel: 'ACERO',
         fairy: 'HADA'
     };
+    const pokemonCategoryColors = {
+        normal: '#a8a29e',
+        fire: '#ef4444',
+        water: '#0ea5e9',
+        electric: '#eab308',
+        grass: '#22c55e',
+        ice: '#67e8f9',
+        fighting: '#dc2626',
+        poison: '#a855f7',
+        ground: '#d97706',
+        flying: '#818cf8',
+        psychic: '#ec4899',
+        bug: '#84cc16',
+        rock: '#a16207',
+        ghost: '#7c3aed',
+        dragon: '#4f46e5',
+        steel: '#94a3b8',
+        fairy: '#f472b6'
+    };
 
     const randomCards = [
         {
@@ -1127,9 +1146,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updatePreview() {
         let category = categories[elements.category.value];
         if(elements.pokemon === true){
-            category = pokemonCategories[elements.category.value];
-            elements.previewCategory.textContent = category;
-            category = categories['magic'];
+            const categoryKey = elements.category.value;
+            category = {
+                label: pokemonCategories[categoryKey] ?? categoryKey.toUpperCase(),
+                color: pokemonCategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
         }
         else{
             category = categories[elements.category.value];
