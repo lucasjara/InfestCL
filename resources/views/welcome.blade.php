@@ -5,10 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Conoce INFEST Chile: una marca con historia, nacida de los encuentros y abierta a distintas experiencias de entretenimiento.">
         <meta name="theme-color" content="#f5f2ed">
-        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Borde s-fondo.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Logo_completo.png') }}">
         <meta property="og:title" content="INFEST Chile — Una historia de encuentros">
         <meta property="og:description" content="Conoce INFEST Chile, su historia y sus distintas experiencias de entretenimiento.">
-        <meta property="og:image" content="{{ asset('images/brand/Infest_Logo completo.png') }}">
+        <meta property="og:image" content="{{ asset('images/brand/Infest_Logo_completo.png') }}">
 
         <title>INFEST Chile — Una historia de encuentros</title>
 
