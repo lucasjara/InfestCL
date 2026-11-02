@@ -131,6 +131,71 @@
         font-size: .6rem;
     }
 
+    .collection-card-grid .collection-card {
+        cursor: pointer;
+    }
+
+    .collection-card-grid .collection-card:hover,
+    .collection-card-grid .collection-card:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px color-mix(in srgb, var(--category-color) 35%, transparent);
+        outline: none;
+    }
+
+    .card-qr-dialog {
+        width: min(420px, calc(100% - 2rem));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 0 24px 80px rgb(0 0 0 / 35%);
+    }
+
+    .card-qr-dialog::backdrop {
+        background: rgb(0 0 0 / 65%);
+        backdrop-filter: blur(4px);
+    }
+
+    .card-qr-dialog-body {
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        text-align: center;
+    }
+
+    .card-qr-dialog-body h2 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .card-qr-dialog-body img {
+        width: min(320px, 100%);
+        height: auto;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .card-qr-status {
+        min-height: 1.25rem;
+        margin: 0;
+        color: var(--muted);
+        font-size: .85rem;
+    }
+
+    .card-qr-close {
+        width: 100%;
+        padding: .75rem 1rem;
+        border: 0;
+        border-radius: 999px;
+        background: var(--contrast-bg);
+        color: var(--contrast-fg);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
     @media (max-width: 1100px) {
         .collection-card-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -163,6 +228,15 @@
                 Contenedor para las cartas de la colección.
             </div>
         </section>
+
+        <dialog class="card-qr-dialog" data-card-qr-dialog aria-labelledby="card-qr-title">
+            <div class="card-qr-dialog-body">
+                <h2 id="card-qr-title" data-card-qr-title>Información de la carta</h2>
+                <img data-card-qr-image alt="Código QR con toda la información de la carta" hidden>
+                <p class="card-qr-status" data-card-qr-status></p>
+                <button class="card-qr-close" type="button" data-card-qr-close>Cerrar</button>
+            </div>
+        </dialog>
     </div>
 @endsection
 

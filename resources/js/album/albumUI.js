@@ -1,3 +1,4 @@
+import QRCode from 'qrcode';
 import {
     cardService,
     collectionService,
@@ -51,6 +52,98 @@ function getCategoryPresentation(card) {
         label: String(card.category ?? card.type ?? 'INFEST').toUpperCase(),
         color: '#8b5cf6',
     };
+}
+
+function makeQrSerializable(value) {
+    if (value instanceof Blob) {
+        return {
+            type: value.type,
+            size: value.size,
+        };
+    }
+
+    if (Array.isArray(value)) {
+        return value.map((item) => makeQrSerializable(item));
+    }
+
+    if (value && typeof value === 'object') {
+        return Object.fromEntries(
+            Object.entries(value).map(([key, item]) => [
+                key,
+                makeQrSerializable(item),
+            ]),
+        );
+    }
+
+    return value;
+}
+
+async function openCardQr(card, quantity, collection) {
+    const dialog = document.querySelector('[data-card-qr-dialog]');
+    const qrImage = dialog?.querySelector('[data-card-qr-image]');
+    const qrStatus = dialog?.querySelector('[data-card-qr-status]');
+    const qrTitle = dialog?.querySelector('[data-card-qr-title]');
+
+    if (!dialog || !qrImage || !qrStatus) {
+        return;
+    }
+
+    const payload = {
+        card: {
+            ...makeQrSerializable(card),
+            imageUrl: createCardImage(card),
+        },
+        collection: {
+            id: collection.id,
+            name: collection.name,
+        },
+        quantity,
+    };
+
+    qrStatus.textContent = 'Generando QR...';
+    if (qrTitle) {
+        qrTitle.textContent = card.name;
+    }
+
+    try {
+        qrImage.src = await QRCode.toDataURL(JSON.stringify(payload), {
+            width: 320,
+            margin: 2,
+            errorCorrectionLevel: 'M',
+        });
+        qrImage.hidden = false;
+        qrStatus.textContent = '';
+
+        if (typeof dialog.showModal === 'function') {
+            dialog.showModal();
+        } else {
+            dialog.setAttribute('open', '');
+        }
+    } catch (error) {
+        qrImage.hidden = true;
+        qrStatus.textContent = 'No fue posible generar el QR. La carta contiene demasiada información.';
+        console.error('No fue posible generar el QR de la carta.', error);
+
+        if (typeof dialog.showModal === 'function') {
+            dialog.showModal();
+        } else {
+            dialog.setAttribute('open', '');
+        }
+    }
+}
+
+function initializeCardQrDialog() {
+    const dialog = document.querySelector('[data-card-qr-dialog]');
+    if (!dialog || dialog.dataset.initialized === 'true') {
+        return;
+    }
+
+    dialog.dataset.initialized = 'true';
+    const closeButton = dialog.querySelector('[data-card-qr-close]');
+    closeButton?.addEventListener('click', () => {
+        dialog.close?.();
+        dialog.removeAttribute('open');
+    });
 }
 
 export async function initializeCollectionList(container) {
@@ -224,6 +317,8 @@ export async function initializeCollectionDetail(container, collectionId) {
             return;
         }
 
+        initializeCardQrDialog();
+
         for (const item of inventory) {
             const card = await cardService.getCardById(item.cardId);
             if (!card) {
@@ -232,6 +327,9 @@ export async function initializeCollectionDetail(container, collectionId) {
 
             const figure = document.createElement('figure');
             figure.className = 'collection-card';
+            figure.tabIndex = 0;
+            figure.setAttribute('role', 'button');
+            figure.setAttribute('aria-label', `Generar QR con la información de ${card.name}`);
             const categoryPresentation = getCategoryPresentation(card);
             figure.style.setProperty('--category-color', categoryPresentation.color);
 
@@ -265,6 +363,14 @@ export async function initializeCollectionDetail(container, collectionId) {
             footer.append(number, quantity);
 
             figure.append(header, imageContainer, descriptionContainer, footer);
+            const openQr = () => openCardQr(card, item.quantity, collection);
+            figure.addEventListener('click', openQr);
+            figure.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openQr();
+                }
+            });
             container.append(figure);
         }
     } catch (error) {
