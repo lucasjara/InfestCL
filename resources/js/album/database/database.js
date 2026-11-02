@@ -20,7 +20,7 @@ async function ensureDefaultCollection(database) {
     if (!existing) {
         await requestToPromise(store.add({
             id: DEFAULT_COLLECTION_ID,
-            name: 'predeterminada',
+            name: 'Predeterminada',
             description: 'Colección principal para guardar cartas.',
             createdAt: timestamp,
             updatedAt: timestamp,

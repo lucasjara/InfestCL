@@ -19,6 +19,40 @@ function createCardImage(card) {
     return '/images/cards/dragon-astral.webp';
 }
 
+const categoryPresentation = {
+    magic: { label: 'MAGIA', color: '#8b5cf6' },
+    fire: { label: 'FUEGO', color: '#ef4444' },
+    water: { label: 'AGUA', color: '#0ea5e9' },
+    nature: { label: 'NATURALEZA', color: '#22c55e' },
+    grass: { label: 'PLANTA', color: '#22c55e' },
+    dark: { label: 'OSCURIDAD', color: '#64748b' },
+    normal: { label: 'NORMAL', color: '#a8a29e' },
+    electric: { label: 'ELÉCTRICO', color: '#eab308' },
+    ice: { label: 'HIELO', color: '#67e8f9' },
+    fighting: { label: 'LUCHA', color: '#dc2626' },
+    poison: { label: 'VENENO', color: '#a855f7' },
+    ground: { label: 'TIERRA', color: '#d97706' },
+    flying: { label: 'VOLADOR', color: '#818cf8' },
+    psychic: { label: 'PSÍQUICO', color: '#ec4899' },
+    bug: { label: 'BICHO', color: '#84cc16' },
+    rock: { label: 'ROCA', color: '#a16207' },
+    ghost: { label: 'FANTASMA', color: '#7c3aed' },
+    dragon: { label: 'DRAGÓN', color: '#4f46e5' },
+    steel: { label: 'ACERO', color: '#94a3b8' },
+    fairy: { label: 'HADA', color: '#f472b6' },
+};
+
+function getCategoryPresentation(card) {
+    const categoryKey = String(card.category ?? card.type ?? 'magic')
+        .trim()
+        .toLowerCase();
+
+    return categoryPresentation[categoryKey] ?? {
+        label: String(card.category ?? card.type ?? 'INFEST').toUpperCase(),
+        color: '#8b5cf6',
+    };
+}
+
 export async function initializeCollectionList(container) {
     if (!container) {
         return;
@@ -27,6 +61,60 @@ export async function initializeCollectionList(container) {
     container.setAttribute('data-album-ready', 'true');
     const resetButton = document.querySelector('[data-reset-collection-data]');
     const resetStatus = document.querySelector('[data-reset-status]');
+    const createButton = document.querySelector('[data-create-collection-button]');
+    const createDialog = document.querySelector('[data-create-collection-dialog]');
+    const createForm = document.querySelector('[data-create-collection-form]');
+    const cancelCreateButton = document.querySelector('[data-cancel-create-collection]');
+    const createStatus = document.querySelector('[data-create-collection-status]');
+
+    if (createButton && createDialog && !createButton.dataset.initialized) {
+        createButton.dataset.initialized = 'true';
+        createButton.addEventListener('click', () => {
+            if (createStatus) {
+                createStatus.textContent = '';
+            }
+            if (typeof createDialog.showModal === 'function') {
+                createDialog.showModal();
+                createDialog.querySelector('#collection-name')?.focus();
+                return;
+            }
+
+            createDialog.setAttribute('open', '');
+        });
+
+        cancelCreateButton?.addEventListener('click', () => {
+            createDialog.close?.();
+            createDialog.removeAttribute('open');
+        });
+
+        createForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(createForm);
+            const submitButton = createForm.querySelector('.collection-submit-button');
+
+            submitButton.disabled = true;
+            if (createStatus) {
+                createStatus.textContent = 'Creando colección...';
+            }
+
+            try {
+                await collectionService.createCollection({
+                    name: formData.get('name'),
+                    description: formData.get('description'),
+                });
+                createForm.reset();
+                createDialog.close?.();
+                createDialog.removeAttribute('open');
+                await initializeCollectionList(container);
+            } catch (error) {
+                if (createStatus) {
+                    createStatus.textContent = error.message;
+                }
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    }
 
     if (resetButton && !resetButton.dataset.initialized) {
         resetButton.dataset.initialized = 'true';
@@ -75,17 +163,29 @@ export async function initializeCollectionList(container) {
                 inventory.map((item) => cardService.getCardById(item.cardId)),
             );
             const article = document.createElement('article');
-            article.className = 'collection-empty';
+            article.className = 'collection-card';
 
             const link = document.createElement('a');
             link.href = `/album/${encodeURIComponent(collection.id)}`;
-            link.textContent = collection.name;
-            link.style.textDecoration = 'none';
+            link.className = 'collection-card-link';
+
+            const icon = document.createElement('span');
+            icon.className = 'collection-card-icon';
+            icon.setAttribute('aria-hidden', 'true');
+            icon.textContent = '◫';
+
+            const content = document.createElement('div');
+            content.className = 'collection-card-content';
+
+            const name = document.createElement('strong');
+            name.textContent = collection.name;
 
             const count = document.createElement('p');
             count.textContent = `${cards.filter(Boolean).length} carta(s)`;
 
-            article.append(link, count);
+            content.append(name, count);
+            link.append(icon, content);
+            article.append(link);
             container.append(article);
         }
     } catch (error) {
@@ -124,10 +224,6 @@ export async function initializeCollectionDetail(container, collectionId) {
             return;
         }
 
-        container.style.display = 'grid';
-        container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(160px, 1fr))';
-        container.style.gap = '1rem';
-
         for (const item of inventory) {
             const card = await cardService.getCardById(item.cardId);
             if (!card) {
@@ -135,15 +231,40 @@ export async function initializeCollectionDetail(container, collectionId) {
             }
 
             const figure = document.createElement('figure');
-            figure.style.margin = '0';
+            figure.className = 'collection-card';
+            const categoryPresentation = getCategoryPresentation(card);
+            figure.style.setProperty('--category-color', categoryPresentation.color);
+
+            const header = document.createElement('div');
+            header.className = 'collection-card-header';
+            const name = document.createElement('h3');
+            name.textContent = card.name;
+            const category = document.createElement('span');
+            category.textContent = categoryPresentation.label;
+            header.append(name, category);
+
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'collection-card-image';
             const image = document.createElement('img');
             image.src = createCardImage(card);
             image.alt = card.name;
-            image.style.width = '100%';
-            image.style.borderRadius = '12px';
-            const caption = document.createElement('figcaption');
-            caption.textContent = `${card.name} × ${item.quantity}`;
-            figure.append(image, caption);
+            imageContainer.append(image);
+
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.className = 'collection-card-description';
+            const description = document.createElement('p');
+            description.textContent = card.description ?? '';
+            descriptionContainer.append(description);
+
+            const footer = document.createElement('div');
+            footer.className = 'collection-card-footer';
+            const number = document.createElement('span');
+            number.textContent = card.number ? `#${card.number}` : `× ${item.quantity}`;
+            const quantity = document.createElement('span');
+            quantity.textContent = card.number ? `× ${item.quantity}` : '';
+            footer.append(number, quantity);
+
+            figure.append(header, imageContainer, descriptionContainer, footer);
             container.append(figure);
         }
     } catch (error) {

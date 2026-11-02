@@ -49,6 +49,104 @@
         border: 1px dashed var(--line);
         border-radius: 18px;
         background: var(--surface);
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .collection-card-grid .collection-card {
+        --category-color: #8b5cf6;
+        display: flex;
+        min-width: 0;
+        aspect-ratio: 15 / 23;
+        flex-direction: column;
+        gap: 3%;
+        overflow: hidden;
+        margin: 0;
+        padding: 4%;
+        border: 3px solid var(--category-color);
+        border-radius: 12px;
+        background: #17121f;
+        color: #fff;
+        box-shadow: 0 0 25px color-mix(in srgb, var(--category-color) 25%, transparent);
+    }
+
+    .collection-card-header,
+    .collection-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .4rem;
+    }
+
+    .collection-card-header h3 {
+        overflow: hidden;
+        margin: 0;
+        font-size: clamp(.7rem, 1vw, 1rem);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .collection-card-header span {
+        color: var(--category-color);
+        font-size: .55rem;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    .collection-card-image {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        border: 1px solid var(--category-color);
+        border-radius: 6px;
+    }
+
+    .collection-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .collection-card-description {
+        display: flex;
+        min-height: 20%;
+        align-items: center;
+        padding: 5%;
+        border-radius: 5px;
+        background: #28212f;
+    }
+
+    .collection-card-description p {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: 0;
+        font-size: clamp(.48rem, .75vw, .68rem);
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+    }
+
+    .collection-card-footer {
+        font-size: .6rem;
+    }
+
+    @media (max-width: 1100px) {
+        .collection-card-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .collection-card-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 380px) {
+        .collection-card-grid {
+            grid-template-columns: 1fr;
+        }
     }
 @endsection
 
