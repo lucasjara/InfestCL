@@ -52,9 +52,25 @@
     }
 
     .roulette-stage {
+        position: relative;
         display: grid;
         justify-items: center;
         gap: 1rem;
+    }
+
+    .roulette-stage::before {
+        position: absolute;
+        z-index: 3;
+        top: -12px;
+        left: 50%;
+        width: 24px;
+        height: 38px;
+        transform: translateX(-50%);
+        border-radius: 4px 4px 12px 12px;
+        background: var(--accent, #c4f05b);
+        box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+        content: '';
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
     }
 
     .roulette-wheel {
@@ -75,10 +91,6 @@
         transition: transform 1.8s cubic-bezier(.12, .65, .16, 1);
     }
 
-    .roulette-wheel.is-spinning {
-        transform: rotate(var(--roulette-rotation));
-    }
-
     .roulette-wheel::before {
         position: absolute;
         inset: 28%;
@@ -89,19 +101,6 @@
         content: '';
     }
 
-    .roulette-wheel::after {
-        position: absolute;
-        top: -24px;
-        left: 50%;
-        width: 24px;
-        height: 38px;
-        transform: translateX(-50%);
-        border-radius: 4px 4px 12px 12px;
-        background: var(--accent, #c4f05b);
-        box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
-        content: '';
-        clip-path: polygon(50% 100%, 0 0, 100% 0);
-    }
 
     .roulette-label {
         position: absolute;
@@ -121,6 +120,18 @@
     .roulette-label:nth-child(2) { top: 38%; right: 7%; }
     .roulette-label:nth-child(3) { bottom: 7%; left: 38%; }
     .roulette-label:nth-child(4) { top: 38%; left: 7%; }
+
+    .roulette-label img {
+        width: clamp(28px, 5vw, 48px);
+        aspect-ratio: 1;
+        object-fit: contain;
+        filter: drop-shadow(0 5px 10px rgb(0 0 0 / 25%));
+    }
+
+    .roulette-label span {
+        max-width: 90px;
+        line-height: 1.05;
+    }
 
     .roulette-control,
     .roulette-primary-button,
@@ -182,6 +193,22 @@
         margin: .35rem 0 1rem;
         font-size: clamp(1.35rem, 4vw, 2rem);
         letter-spacing: -.04em;
+    }
+
+    .roulette-selected-image {
+        width: 100%;
+        aspect-ratio: 16 / 7;
+        object-fit: cover;
+        margin-bottom: .85rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .roulette-selected-card p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        line-height: 1.55;
     }
 
     .roulette-status-card {
@@ -362,7 +389,7 @@
     <div class="roulette-page">
         <section class="shell" data-roulette-screen="roulette" aria-labelledby="roulette-title">
             <header class="roulette-heading">
-                <div data-countdown-panel hidden>
+                <div>
                     <p>INFEST Ultimate Challenge</p>
                     <h1 id="roulette-title">Elige tu próximo desafío</h1>
                 </div>
@@ -374,10 +401,10 @@
             <div class="roulette-layout">
                 <div class="roulette-stage">
                     <div class="roulette-wheel" data-roulette aria-label="Ruleta de cuatro experiencias">
-                        <span class="roulette-label">Piedra<br>papel tijera</span>
-                        <span class="roulette-label">Space<br>Defender</span>
-                        <span class="roulette-label">Trivia<br>Express</span>
-                        <span class="roulette-label">Laberinto</span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/rock-paper-scissors.svg') }}" alt=""><span>Piedra, papel o tijera</span></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/space-defender.svg') }}" alt=""><span>Space Defender</span></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/trivia.svg') }}" alt=""><span>Trivia Express</span></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/maze.svg') }}" alt=""><span>Laberinto</span></span>
                     </div>
                     <button class="roulette-control" type="button" data-spin-roulette>
                         Girar ruleta
@@ -388,7 +415,8 @@
                     <div class="roulette-selected-card" data-selected-challenge hidden>
                         <span>Desafío seleccionado</span>
                         <h2 data-selected-name>---</h2>
-                        <p>Prepárate para iniciar la experiencia.</p>
+                        <img class="roulette-selected-image" data-selected-image src="" alt="" hidden>
+                        <p data-selected-description>Prepárate para iniciar la experiencia.</p>
                         <button class="roulette-primary-button" type="button" data-start-challenge>
                             Iniciar experiencia
                         </button>
@@ -434,7 +462,7 @@
                         </button>
                     </div>
                 </div>
-                <div>
+                <div data-countdown-panel hidden>
                     <div class="roulette-countdown" data-countdown aria-live="assertive" hidden></div>
                     <button class="roulette-secondary-button" type="button" data-back-to-roulette>
                         Volver a la ruleta
