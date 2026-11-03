@@ -5,9 +5,7 @@
 @section('meta_description', 'Explora las experiencias de colecciones, torneos y creación de cartas de INFEST Chile.')
 
 @section('navigation')
-    <a href="{{ route('album.index') }}">Colecciones</a>
-    <a href="{{ route('tournaments.create') }}">Torneos</a>
-    <a href="{{ route('cards.list') }}">Cartas</a>
+    <x-experience-navigation />
 @endsection
 
 @section('styles')

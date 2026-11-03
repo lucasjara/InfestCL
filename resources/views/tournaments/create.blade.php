@@ -5,7 +5,7 @@
 @section('meta_description', 'Genera el cuadro de eliminación directa de un torneo.')
 
 @section('navigation')
-    <a href="{{ url('/') }}">Inicio</a>
+    <x-experience-navigation />
 @endsection
 
 @section('styles')

@@ -174,6 +174,13 @@
                 text-decoration: none;
             }
 
+            .main-nav a[aria-current="page"] {
+                color: var(--violet);
+                text-decoration: underline;
+                text-decoration-thickness: 2px;
+                text-underline-offset: .35rem;
+            }
+
             .nav-cta {
                 padding: .8rem 1.1rem;
                 border-radius: 999px;
@@ -258,6 +265,8 @@
 
                 .main-nav {
                     gap: .8rem;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
                 }
 
                 .nav-cta {

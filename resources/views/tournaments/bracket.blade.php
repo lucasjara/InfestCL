@@ -5,6 +5,7 @@
 @section('meta_description', 'Visualización del cuadro generado para el torneo.')
 
 @section('navigation')
+    <x-experience-navigation />
     <a href="{{ route('tournaments.create') }}">Nuevo torneo</a>
 @endsection
 

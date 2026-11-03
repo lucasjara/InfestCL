@@ -4,6 +4,10 @@
 
 @section('meta_description', 'Visualización de la carta random.')
 
+@section('navigation')
+    <x-experience-navigation />
+    <a href="{{ route('album.index') }}">Colecciones</a>
+@endsection
 
 @section('styles')
     .bracket-page {

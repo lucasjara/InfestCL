@@ -5,8 +5,7 @@
 @section('meta_description', 'Supera cuatro desafíos en INFEST Ultimate Challenge.')
 
 @section('navigation')
-    <a href="{{ route('experiences.index') }}">Experiencias</a>
-    <a href="{{ route('roulette.index') }}" aria-current="page">Ultimate Challenge</a>
+    <x-experience-navigation current="roulette" />
 @endsection
 
 @section('styles')
@@ -393,7 +392,6 @@
                     <p>INFEST Ultimate Challenge</p>
                     <h1 id="roulette-title">Elige tu próximo desafío</h1>
                 </div>
-                <a class="roulette-secondary-button" href="{{ route('experiences.index') }}">← Experiencias</a>
             </header>
 
             <x-game-hud show-sound />

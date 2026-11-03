@@ -5,8 +5,9 @@
 @section('meta_description', 'Detalle de una colección de cartas INFEST.')
 
 @section('navigation')
+    <x-experience-navigation />
     <a href="{{ route('album.index') }}">Colecciones</a>
-    <a href="{{ route('cards.list') }}">Cartas</a>
+    <a href="{{ route('cards.list') }}">Crear Carta</a>
 @endsection
 
 @section('styles')
