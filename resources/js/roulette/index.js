@@ -26,6 +26,11 @@ import {
     getSpaceDifficulty,
     updateSpaceStage,
 } from './space-defender.js';
+import {
+    createTriviaGame,
+    fetchTriviaQuestions,
+    resolveTriviaAnswer,
+} from './trivia.js';
 
 const state = createRouletteState();
 
@@ -70,6 +75,12 @@ const spaceCanvas = document.querySelector('[data-space-canvas]');
 const spaceScore = document.querySelector('[data-space-score]');
 const spaceStage = document.querySelector('[data-space-stage]');
 const spaceControlButtons = document.querySelectorAll('[data-space-control]');
+const triviaScreen = document.querySelector('[data-trivia-screen]');
+const triviaProgress = document.querySelector('[data-trivia-progress]');
+const triviaDifficulty = document.querySelector('[data-trivia-difficulty]');
+const triviaQuestion = document.querySelector('[data-trivia-question]');
+const triviaAnswers = document.querySelector('[data-trivia-answers]');
+const triviaFeedback = document.querySelector('[data-trivia-feedback]');
 let countdownInterval = null;
 let currentRouletteRotation = 0;
 let individualTimerRemaining = null;
@@ -77,6 +88,7 @@ let activeGame = false;
 let rpsGame = createRockPaperScissorsGame();
 let spaceGame = createSpaceDefenderGame();
 let spaceAnimationFrame = null;
+let triviaGame = createTriviaGame();
 
 const challengeColors = {
     'rock-paper-scissors': '#ef4444',
@@ -273,6 +285,60 @@ function resetSpaceDefender() {
     if (spaceStage) {
         spaceStage.textContent = '1';
     }
+}
+
+function resetTrivia() {
+    triviaGame = createTriviaGame();
+    triviaProgress.textContent = '1/5';
+    triviaDifficulty.textContent = 'Fácil';
+    triviaQuestion.textContent = 'Preparando preguntas...';
+    triviaFeedback.textContent = '';
+    triviaAnswers.innerHTML = '';
+}
+
+function renderTriviaQuestion() {
+    if (!triviaGame.questions.length) {
+        return;
+    }
+    const question = triviaGame.questions[triviaGame.currentIndex];
+    const difficultyLabels = { easy: 'Fácil', medium: 'Media', hard: 'Difícil' };
+    triviaProgress.textContent = `${triviaGame.currentIndex + 1}/5`;
+    triviaDifficulty.textContent = difficultyLabels[question.difficulty] ?? question.difficulty;
+    triviaQuestion.textContent = question.question;
+    triviaFeedback.textContent = '';
+    triviaAnswers.innerHTML = '';
+    triviaGame.answered = false;
+
+    question.answers.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'trivia-answer';
+        button.dataset.triviaAnswer = answer;
+        button.innerHTML = `<span>${String.fromCharCode(65 + index)}</span>${answer}`;
+        triviaAnswers.appendChild(button);
+    });
+}
+
+async function startTrivia() {
+    resetTrivia();
+    triviaGame.questions = await fetchTriviaQuestions();
+    if (!activeGame) {
+        return;
+    }
+    renderTriviaQuestion();
+}
+
+function finishTrivia() {
+    if (!activeGame || triviaGame.finished) {
+        return;
+    }
+    triviaGame.finished = true;
+    activeGame = false;
+    const result = triviaGame.correctAnswers >= 3 ? 'victory' : 'defeat';
+    showResult(result, {
+        timeUsedSeconds: getGlobalElapsedSeconds(state),
+        score: triviaGame.correctAnswers,
+    });
 }
 
 function resizeSpaceCanvas() {
@@ -530,6 +596,7 @@ function returnToRoulette() {
     resetChallengeView();
     resetRockPaperScissors();
     resetSpaceDefender();
+    resetTrivia();
     state.selectedId = null;
     selectedPanel.hidden = true;
     spinButton.disabled = false;
@@ -593,6 +660,49 @@ backButtons.forEach((button) => {
             returnToRoulette();
         }
     });
+});
+
+triviaAnswers?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-trivia-answer]');
+    if (!button || !activeGame || triviaGame.finished || triviaGame.answered) {
+        return;
+    }
+
+    const result = resolveTriviaAnswer(triviaGame, button.dataset.triviaAnswer);
+    if (!result) {
+        return;
+    }
+
+    triviaAnswers.querySelectorAll('[data-trivia-answer]').forEach((answerButton) => {
+        answerButton.disabled = true;
+        if (answerButton.dataset.triviaAnswer === result.correctAnswer) {
+            answerButton.classList.add('is-correct');
+        }
+    });
+    if (!result.correct) {
+        button.classList.add('is-wrong');
+        triviaFeedback.textContent = `Incorrecto. Respuesta correcta: ${result.correctAnswer}`;
+        playInterfaceSound(state.soundEnabled, 'defeat');
+    } else {
+        triviaFeedback.textContent = '¡Respuesta correcta!';
+        playInterfaceSound(state.soundEnabled, 'selection');
+    }
+
+    window.setTimeout(() => {
+        if (!activeGame) {
+            return;
+        }
+        if (triviaGame.correctAnswers >= 3) {
+            finishTrivia();
+            return;
+        }
+        triviaGame.currentIndex += 1;
+        if (triviaGame.currentIndex >= triviaGame.questions.length) {
+            finishTrivia();
+            return;
+        }
+        renderTriviaQuestion();
+    }, 850);
 });
 
 window.addEventListener('keydown', (event) => {
@@ -687,9 +797,19 @@ beginButton?.addEventListener('click', () => {
                 setActiveScreen(state.activeScreen);
                 startSpaceDefender();
             }
+            if (selectedChallenge?.id === 'trivia') {
+                resetTrivia();
+                state.activeScreen = 'trivia';
+                setActiveScreen(state.activeScreen);
+                startTrivia();
+            }
 
             startIndividualTimer(individualSeconds, () => {
                 if (!activeGame) {
+                    return;
+                }
+                if (state.selectedId === 'trivia') {
+                    finishTrivia();
                     return;
                 }
                 showResult('defeat', {
@@ -762,6 +882,7 @@ retryButton?.addEventListener('click', () => {
     resetChallengeView();
     resetRockPaperScissors();
     resetSpaceDefender();
+    resetTrivia();
     state.activeScreen = 'instructions';
     setActiveScreen(state.activeScreen);
     beginButton?.click();

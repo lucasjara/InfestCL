@@ -544,6 +544,97 @@
     .space-defender-control[data-space-control="down"] { grid-column: 2; grid-row: 2; }
     .space-defender-control[data-space-control="right"] { grid-column: 3; grid-row: 2; }
 
+    .trivia-card {
+        max-width: 760px;
+        margin-inline: auto;
+        padding: clamp(1rem, 4vw, 2rem);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgb(23 21 27 / 10%);
+        text-align: center;
+    }
+
+    .trivia-card h1 {
+        margin: .35rem 0 1rem;
+        font-size: clamp(1.45rem, 5vw, 2.5rem);
+        letter-spacing: -.04em;
+    }
+
+    .trivia-hud {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .75rem;
+        margin-bottom: 1rem;
+    }
+
+    .trivia-hud div {
+        padding: .65rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .trivia-hud span {
+        display: block;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .trivia-hud strong {
+        font-size: 1.2rem;
+    }
+
+    .trivia-answers {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+    }
+
+    .trivia-answer {
+        min-height: 72px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+        color: var(--ink);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .trivia-answer span {
+        display: inline-grid;
+        width: 28px;
+        height: 28px;
+        margin-right: .55rem;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--violet);
+        color: white;
+    }
+
+    .trivia-answer.is-correct {
+        border-color: rgb(34 197 94 / 70%);
+        background: rgb(34 197 94 / 12%);
+    }
+
+    .trivia-answer.is-wrong {
+        border-color: rgb(239 68 68 / 70%);
+        background: rgb(239 68 68 / 12%);
+    }
+
+    .trivia-answer:disabled {
+        cursor: default;
+    }
+
+    .trivia-feedback {
+        min-height: 24px;
+        margin: 1rem 0 0;
+        font-weight: 850;
+    }
+
     .rps-card {
         max-width: 760px;
         margin-inline: auto;
@@ -754,6 +845,14 @@
             padding-inline: .25rem;
             font-size: .78rem;
         }
+
+        .trivia-answers {
+            grid-template-columns: 1fr;
+        }
+
+        .trivia-hud {
+            gap: .35rem;
+        }
     }
 @endsection
 
@@ -939,6 +1038,37 @@
                 </div>
 
                 <div class="roulette-instructions-actions" style="margin-top: 1rem;">
+                    <button class="roulette-secondary-button" type="button" data-back-to-roulette>
+                        Volver a la ruleta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell" data-roulette-screen="trivia" data-trivia-screen hidden>
+            <div class="trivia-card">
+                <p class="roulette-instructions-kicker">Trivia Express</p>
+                <h1 data-trivia-question>Preparando preguntas...</h1>
+
+                <div class="trivia-hud" aria-label="Estado de la trivia">
+                    <div>
+                        <span>Pregunta</span>
+                        <strong data-trivia-progress>1/5</strong>
+                    </div>
+                    <div>
+                        <span>Dificultad</span>
+                        <strong data-trivia-difficulty>Fácil</strong>
+                    </div>
+                    <div>
+                        <span>Tiempo</span>
+                        <strong><span data-individual-time>45</span></strong>
+                    </div>
+                </div>
+
+                <div class="trivia-answers" data-trivia-answers aria-label="Alternativas"></div>
+                <p class="trivia-feedback" data-trivia-feedback aria-live="polite"></p>
+
+                <div class="roulette-instructions-actions">
                     <button class="roulette-secondary-button" type="button" data-back-to-roulette>
                         Volver a la ruleta
                     </button>
