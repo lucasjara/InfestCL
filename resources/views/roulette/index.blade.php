@@ -465,6 +465,85 @@
         margin-top: 1.25rem;
     }
 
+    .space-defender-card {
+        max-width: 920px;
+        margin-inline: auto;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgb(23 21 27 / 10%);
+        text-align: center;
+    }
+
+    .space-defender-card h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        letter-spacing: -.05em;
+    }
+
+    .space-defender-hud {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .75rem;
+        margin: 1rem 0;
+    }
+
+    .space-defender-hud div {
+        padding: .65rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .space-defender-hud span {
+        display: block;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .space-defender-hud strong {
+        font-size: 1.4rem;
+    }
+
+    .space-defender-canvas {
+        width: 100%;
+        height: min(440px, 52vh);
+        display: block;
+        border: 1px solid rgb(196 240 91 / 35%);
+        border-radius: 18px;
+        background: #111827;
+        touch-action: none;
+    }
+
+    .space-defender-controls {
+        width: 180px;
+        margin: .75rem auto 0;
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        grid-template-rows: repeat(2, 52px);
+        justify-content: center;
+        gap: .35rem;
+    }
+
+    .space-defender-control {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 900;
+        touch-action: none;
+        user-select: none;
+    }
+
+    .space-defender-control[data-space-control="up"] { grid-column: 2; grid-row: 1; }
+    .space-defender-control[data-space-control="left"] { grid-column: 1; grid-row: 2; }
+    .space-defender-control[data-space-control="down"] { grid-column: 2; grid-row: 2; }
+    .space-defender-control[data-space-control="right"] { grid-column: 3; grid-row: 2; }
+
     .rps-card {
         max-width: 760px;
         margin-inline: auto;
@@ -817,6 +896,49 @@
                 </div>
 
                 <div class="roulette-instructions-actions">
+                    <button class="roulette-secondary-button" type="button" data-back-to-roulette>
+                        Volver a la ruleta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell" data-roulette-screen="space-defender" data-space-screen hidden>
+            <div class="space-defender-card">
+                <p class="roulette-instructions-kicker">INFEST Space Defender</p>
+                <h1>Esquiva y recoge esferas</h1>
+
+                <div class="space-defender-hud" aria-label="Marcador de Space Defender">
+                    <div>
+                        <span>Puntuación</span>
+                        <strong><span data-space-score>0</span>/20</strong>
+                    </div>
+                    <div>
+                        <span>Etapa</span>
+                        <strong data-space-stage>1</strong>
+                    </div>
+                    <div>
+                        <span>Tiempo</span>
+                        <strong><span data-individual-time>30</span></strong>
+                    </div>
+                </div>
+
+                <canvas
+                    class="space-defender-canvas"
+                    data-space-canvas
+                    width="760"
+                    height="440"
+                    aria-label="Área de juego de INFEST Space Defender"
+                ></canvas>
+
+                <div class="space-defender-controls" aria-label="Controles táctiles">
+                    <button class="space-defender-control" type="button" data-space-control="up" aria-label="Mover arriba">▲</button>
+                    <button class="space-defender-control" type="button" data-space-control="left" aria-label="Mover izquierda">◀</button>
+                    <button class="space-defender-control" type="button" data-space-control="down" aria-label="Mover abajo">▼</button>
+                    <button class="space-defender-control" type="button" data-space-control="right" aria-label="Mover derecha">▶</button>
+                </div>
+
+                <div class="roulette-instructions-actions" style="margin-top: 1rem;">
                     <button class="roulette-secondary-button" type="button" data-back-to-roulette>
                         Volver a la ruleta
                     </button>

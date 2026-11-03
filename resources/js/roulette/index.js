@@ -19,6 +19,13 @@ import {
     getComputerChoice,
     playRockPaperScissorsRound,
 } from './rock-paper-scissors.js';
+import {
+    addSurvivalScore,
+    circleCollision,
+    createSpaceDefenderGame,
+    getSpaceDifficulty,
+    updateSpaceStage,
+} from './space-defender.js';
 
 const state = createRouletteState();
 
@@ -58,11 +65,18 @@ const rpsRoundResult = document.querySelector('[data-rps-round-result]');
 const rpsPlayerWins = document.querySelector('[data-rps-player-wins]');
 const rpsComputerWins = document.querySelector('[data-rps-computer-wins]');
 const rpsRounds = document.querySelector('[data-rps-rounds]');
+const spaceScreen = document.querySelector('[data-space-screen]');
+const spaceCanvas = document.querySelector('[data-space-canvas]');
+const spaceScore = document.querySelector('[data-space-score]');
+const spaceStage = document.querySelector('[data-space-stage]');
+const spaceControlButtons = document.querySelectorAll('[data-space-control]');
 let countdownInterval = null;
 let currentRouletteRotation = 0;
 let individualTimerRemaining = null;
 let activeGame = false;
 let rpsGame = createRockPaperScissorsGame();
+let spaceGame = createSpaceDefenderGame();
+let spaceAnimationFrame = null;
 
 const challengeColors = {
     'rock-paper-scissors': '#ef4444',
@@ -244,9 +258,278 @@ function resetRockPaperScissors() {
     renderRockPaperScissors();
 }
 
+function resetSpaceDefender() {
+    if (spaceAnimationFrame) {
+        window.cancelAnimationFrame(spaceAnimationFrame);
+        spaceAnimationFrame = null;
+    }
+    spaceGame = createSpaceDefenderGame(
+        spaceCanvas?.width ?? 760,
+        spaceCanvas?.height ?? 440,
+    );
+    if (spaceScore) {
+        spaceScore.textContent = '0';
+    }
+    if (spaceStage) {
+        spaceStage.textContent = '1';
+    }
+}
+
+function resizeSpaceCanvas() {
+    if (!spaceCanvas) {
+        return;
+    }
+
+    const rect = spaceCanvas.getBoundingClientRect();
+    if (!rect) {
+        return;
+    }
+    spaceCanvas.width = Math.max(320, Math.round(rect.width));
+    spaceCanvas.height = Math.max(280, Math.round(rect.height));
+    spaceGame.width = spaceCanvas.width;
+    spaceGame.height = spaceCanvas.height;
+    spaceGame.ship.x = Math.min(Math.max(spaceGame.ship.radius, spaceGame.ship.x), spaceCanvas.width - spaceGame.ship.radius);
+    spaceGame.ship.y = Math.min(Math.max(spaceGame.ship.radius, spaceGame.ship.y), spaceCanvas.height - spaceGame.ship.radius);
+}
+
+function spawnSpaceMeteor() {
+    const edge = Math.floor(Math.random() * 4);
+    const radius = 10 + Math.random() * 9;
+    let x;
+    let y;
+
+    if (edge === 0) {
+        x = Math.random() * spaceGame.width;
+        y = -radius;
+    } else if (edge === 1) {
+        x = spaceGame.width + radius;
+        y = Math.random() * spaceGame.height;
+    } else if (edge === 2) {
+        x = Math.random() * spaceGame.width;
+        y = spaceGame.height + radius;
+    } else {
+        x = -radius;
+        y = Math.random() * spaceGame.height;
+    }
+
+    const targetX = spaceGame.ship.x + (Math.random() - 0.5) * 100;
+    const targetY = spaceGame.ship.y + (Math.random() - 0.5) * 100;
+    const angle = Math.atan2(targetY - y, targetX - x);
+    const difficulty = getSpaceDifficulty(spaceGame.stage);
+
+    spaceGame.meteors.push({
+        x,
+        y,
+        radius,
+        velocityX: Math.cos(angle) * difficulty.meteorSpeed,
+        velocityY: Math.sin(angle) * difficulty.meteorSpeed,
+        rotation: Math.random() * Math.PI,
+    });
+}
+
+function spawnSpaceSphere() {
+    const radius = 9;
+    spaceGame.spheres.push({
+        x: radius + Math.random() * (spaceGame.width - radius * 2),
+        y: radius + Math.random() * (spaceGame.height - radius * 2),
+        radius,
+        pulse: Math.random() * Math.PI * 2,
+    });
+}
+
+function drawSpaceDefender(context) {
+    context.clearRect(0, 0, spaceGame.width, spaceGame.height);
+    context.fillStyle = '#111827';
+    context.fillRect(0, 0, spaceGame.width, spaceGame.height);
+
+    context.fillStyle = 'rgba(196, 240, 91, 0.12)';
+    for (let y = 20; y < spaceGame.height; y += 50) {
+        context.fillRect(0, y, spaceGame.width, 1);
+    }
+
+    context.save();
+    context.translate(spaceGame.ship.x, spaceGame.ship.y);
+    context.fillStyle = '#c4f05b';
+    context.beginPath();
+    context.moveTo(18, 0);
+    context.lineTo(-12, -12);
+    context.lineTo(-7, 0);
+    context.lineTo(-12, 12);
+    context.closePath();
+    context.fill();
+    context.restore();
+
+    spaceGame.meteors.forEach((meteor) => {
+        context.save();
+        context.translate(meteor.x, meteor.y);
+        context.rotate(meteor.rotation);
+        context.fillStyle = '#ef4444';
+        context.beginPath();
+        for (let point = 0; point < 8; point += 1) {
+            const angle = point * Math.PI / 4;
+            const radius = meteor.radius * (point % 2 ? 0.82 : 1.12);
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            if (point === 0) context.moveTo(x, y);
+            else context.lineTo(x, y);
+        }
+        context.closePath();
+        context.fill();
+        context.restore();
+    });
+
+    spaceGame.spheres.forEach((sphere) => {
+        context.save();
+        context.translate(sphere.x, sphere.y);
+        context.scale(1 + Math.sin(sphere.pulse) * 0.08, 1 + Math.sin(sphere.pulse) * 0.08);
+        context.fillStyle = '#5eead4';
+        context.shadowColor = '#5eead4';
+        context.shadowBlur = 14;
+        context.beginPath();
+        context.arc(0, 0, sphere.radius, 0, Math.PI * 2);
+        context.fill();
+        context.restore();
+    });
+}
+
+function finishSpaceVictory() {
+    if (!activeGame || spaceGame.finished) {
+        return;
+    }
+    spaceGame.finished = true;
+    activeGame = false;
+    if (spaceAnimationFrame) {
+        window.cancelAnimationFrame(spaceAnimationFrame);
+        spaceAnimationFrame = null;
+    }
+    showResult('victory', {
+        timeUsedSeconds: getGlobalElapsedSeconds(state),
+        score: spaceGame.score,
+    });
+}
+
+function finishSpaceDefeat() {
+    if (!activeGame || spaceGame.finished) {
+        return;
+    }
+    spaceGame.finished = true;
+    activeGame = false;
+    if (spaceAnimationFrame) {
+        window.cancelAnimationFrame(spaceAnimationFrame);
+        spaceAnimationFrame = null;
+    }
+    showResult('defeat', {
+        timeUsedSeconds: getGlobalElapsedSeconds(state),
+        score: spaceGame.score,
+    });
+}
+
+function startSpaceDefender() {
+    resetSpaceDefender();
+    resizeSpaceCanvas();
+    spaceGame.lastMeteorAt = performance.now();
+    spaceGame.lastSphereAt = performance.now();
+    let previousTime = performance.now();
+
+    const frame = (currentTime) => {
+        if (!activeGame || spaceGame.finished) {
+            return;
+        }
+
+        const deltaSeconds = Math.min((currentTime - previousTime) / 1000, 0.05);
+        previousTime = currentTime;
+        spaceGame.elapsed += deltaSeconds;
+        addSurvivalScore(spaceGame, deltaSeconds);
+        if (spaceScore) {
+            spaceScore.textContent = Number.isInteger(spaceGame.score)
+                ? String(spaceGame.score)
+                : spaceGame.score.toFixed(1);
+        }
+        if (spaceStage) {
+            spaceStage.textContent = String(spaceGame.stage);
+        }
+
+        const ship = spaceGame.ship;
+        let horizontal = 0;
+        let vertical = 0;
+        horizontal += spaceGame.keys.ArrowRight || spaceGame.keys.KeyD ? 1 : 0;
+        horizontal -= spaceGame.keys.ArrowLeft || spaceGame.keys.KeyA ? 1 : 0;
+        vertical += spaceGame.keys.ArrowDown || spaceGame.keys.KeyS ? 1 : 0;
+        vertical -= spaceGame.keys.ArrowUp || spaceGame.keys.KeyW ? 1 : 0;
+
+        if (horizontal !== 0 && vertical !== 0) {
+            horizontal *= Math.SQRT1_2;
+            vertical *= Math.SQRT1_2;
+        }
+        ship.x += horizontal * ship.speed * deltaSeconds;
+        ship.y += vertical * ship.speed * deltaSeconds;
+        ship.x = Math.min(Math.max(ship.radius, ship.x), spaceGame.width - ship.radius);
+        ship.y = Math.min(Math.max(ship.radius, ship.y), spaceGame.height - ship.radius);
+
+        const difficulty = getSpaceDifficulty(spaceGame.stage);
+        if (currentTime - spaceGame.lastMeteorAt >= difficulty.meteorInterval) {
+            const count = difficulty.meteorCount;
+            for (let index = 0; index < count; index += 1) {
+                spawnSpaceMeteor();
+            }
+            spaceGame.lastMeteorAt = currentTime;
+        }
+        if (currentTime - spaceGame.lastSphereAt >= 1800) {
+            spawnSpaceSphere();
+            spaceGame.lastSphereAt = currentTime;
+        }
+
+        spaceGame.meteors.forEach((meteor) => {
+            meteor.x += meteor.velocityX * deltaSeconds;
+            meteor.y += meteor.velocityY * deltaSeconds;
+            meteor.rotation += deltaSeconds * 1.5;
+            if (circleCollision(ship, meteor)) {
+                finishSpaceDefeat();
+            }
+        });
+        if (!activeGame) {
+            return;
+        }
+        spaceGame.meteors = spaceGame.meteors.filter((meteor) => (
+            meteor.x > -meteor.radius * 2
+            && meteor.x < spaceGame.width + meteor.radius * 2
+            && meteor.y > -meteor.radius * 2
+            && meteor.y < spaceGame.height + meteor.radius * 2
+        ));
+
+        const collected = [];
+        spaceGame.spheres.forEach((sphere, index) => {
+            sphere.pulse += deltaSeconds * 4;
+            if (circleCollision(ship, sphere)) {
+                collected.push(index);
+                spaceGame.score += 1;
+            }
+        });
+        if (collected.length > 0) {
+            collected.reverse().forEach((index) => spaceGame.spheres.splice(index, 1));
+            updateSpaceStage(spaceGame);
+            spaceScore.textContent = String(spaceGame.score);
+            spaceStage.textContent = String(spaceGame.stage);
+            playInterfaceSound(state.soundEnabled, 'selection');
+        }
+
+        drawSpaceDefender(spaceCanvas.getContext('2d'));
+        if (spaceGame.score >= 20) {
+            finishSpaceVictory();
+            return;
+        }
+        spaceAnimationFrame = window.requestAnimationFrame(frame);
+    };
+
+    drawSpaceDefender(spaceCanvas.getContext('2d'));
+    spawnSpaceSphere();
+    spaceAnimationFrame = window.requestAnimationFrame(frame);
+}
+
 function returnToRoulette() {
     resetChallengeView();
     resetRockPaperScissors();
+    resetSpaceDefender();
     state.selectedId = null;
     selectedPanel.hidden = true;
     spinButton.disabled = false;
@@ -258,6 +541,10 @@ function returnToRoulette() {
 function showResult(result, details = {}) {
     stopGlobalTimer(state);
     stopIndividualTimer();
+    if (spaceAnimationFrame) {
+        window.cancelAnimationFrame(spaceAnimationFrame);
+        spaceAnimationFrame = null;
+    }
     activeGame = false;
     individualTimeWrapper.hidden = true;
 
@@ -308,6 +595,51 @@ backButtons.forEach((button) => {
     });
 });
 
+window.addEventListener('keydown', (event) => {
+    if (!activeGame || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(event.code)) {
+        return;
+    }
+    if (spaceGame && state.activeScreen === 'space-defender') {
+        spaceGame.keys[event.code] = true;
+        event.preventDefault();
+    }
+});
+
+window.addEventListener('keyup', (event) => {
+    if (spaceGame) {
+        spaceGame.keys[event.code] = false;
+    }
+});
+
+spaceControlButtons.forEach((button) => {
+    const control = button.dataset.spaceControl;
+    const keyMap = {
+        up: 'ArrowUp',
+        down: 'ArrowDown',
+        left: 'ArrowLeft',
+        right: 'ArrowRight',
+    };
+    const key = keyMap[control];
+
+    const press = (event) => {
+        event.preventDefault();
+        if (activeGame && state.activeScreen === 'space-defender') {
+            spaceGame.keys[key] = true;
+        }
+    };
+    const release = (event) => {
+        event.preventDefault();
+        spaceGame.keys[key] = false;
+    };
+
+    button.addEventListener('pointerdown', press);
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointerleave', release);
+    button.addEventListener('pointercancel', release);
+});
+
+window.addEventListener('resize', resizeSpaceCanvas);
+
 beginButton?.addEventListener('click', () => {
     beginButton.hidden = true;
     instructionsScreen.querySelectorAll('[data-instructions-content]').forEach((element) => {
@@ -348,6 +680,12 @@ beginButton?.addEventListener('click', () => {
                 resetRockPaperScissors();
                 state.activeScreen = 'rock-paper-scissors';
                 setActiveScreen(state.activeScreen);
+            }
+            if (selectedChallenge?.id === 'space-defender') {
+                resetSpaceDefender();
+                state.activeScreen = 'space-defender';
+                setActiveScreen(state.activeScreen);
+                startSpaceDefender();
             }
 
             startIndividualTimer(individualSeconds, () => {
@@ -423,6 +761,7 @@ soundButton?.addEventListener('click', () => {
 retryButton?.addEventListener('click', () => {
     resetChallengeView();
     resetRockPaperScissors();
+    resetSpaceDefender();
     state.activeScreen = 'instructions';
     setActiveScreen(state.activeScreen);
     beginButton?.click();
