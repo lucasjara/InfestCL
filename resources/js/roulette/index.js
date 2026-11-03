@@ -14,6 +14,11 @@ import {
     getResultCopy,
     playInterfaceSound,
 } from './ui.js';
+import {
+    createRockPaperScissorsGame,
+    getComputerChoice,
+    playRockPaperScissorsRound,
+} from './rock-paper-scissors.js';
 
 const state = createRouletteState();
 
@@ -27,6 +32,7 @@ const startButton = document.querySelector('[data-start-challenge]');
 const backButtons = document.querySelectorAll('[data-back-to-roulette]');
 const soundButton = document.querySelector('[data-sound-toggle]');
 const progress = document.querySelector('[data-roulette-progress]');
+const completedCount = document.querySelector('[data-roulette-completed]');
 const timer = document.querySelector('[data-global-time]');
 const instructionName = document.querySelector('[data-instruction-name]');
 const beginButton = document.querySelector('[data-begin-challenge]');
@@ -44,10 +50,19 @@ const resultDescription = document.querySelector('[data-result-description]');
 const retryButton = document.querySelector('[data-retry-challenge]');
 const returnButtons = document.querySelectorAll('[data-return-to-roulette]');
 const abandonDialog = document.querySelector('[data-abandon-dialog]');
+const rpsScreen = document.querySelector('[data-rps-screen]');
+const rpsChoiceButtons = document.querySelectorAll('[data-rps-choice]');
+const rpsPlayerChoice = document.querySelector('[data-rps-player-choice]');
+const rpsComputerChoice = document.querySelector('[data-rps-computer-choice]');
+const rpsRoundResult = document.querySelector('[data-rps-round-result]');
+const rpsPlayerWins = document.querySelector('[data-rps-player-wins]');
+const rpsComputerWins = document.querySelector('[data-rps-computer-wins]');
+const rpsRounds = document.querySelector('[data-rps-rounds]');
 let countdownInterval = null;
 let currentRouletteRotation = 0;
 let individualTimerRemaining = null;
 let activeGame = false;
+let rpsGame = createRockPaperScissorsGame();
 
 const challengeColors = {
     'rock-paper-scissors': '#ef4444',
@@ -94,6 +109,10 @@ function renderProgress() {
     if (progress) {
         progress.textContent = `${completed}/4`;
         progress.setAttribute('aria-label', `${completed} de 4 experiencias completadas`);
+    }
+    if (completedCount) {
+        completedCount.textContent = `${completed}/4`;
+        completedCount.setAttribute('aria-label', `${completed} de 4 desafíos completados`);
     }
 
     document.querySelectorAll('[data-challenge-status]').forEach((status) => {
@@ -196,8 +215,38 @@ function resetChallengeView() {
     beginButton.hidden = false;
 }
 
+const rpsLabels = {
+    rock: 'Piedra',
+    paper: 'Papel',
+    scissors: 'Tijera',
+};
+
+const rpsIcons = {
+    rock: '✊',
+    paper: '✋',
+    scissors: '✌️',
+};
+
+function renderRockPaperScissors() {
+    rpsPlayerWins.textContent = String(rpsGame.playerWins);
+    rpsComputerWins.textContent = String(rpsGame.computerWins);
+    rpsRounds.textContent = `${rpsGame.decisiveRounds}/3`;
+}
+
+function resetRockPaperScissors() {
+    rpsGame = createRockPaperScissorsGame();
+    rpsPlayerChoice.textContent = '—';
+    rpsComputerChoice.textContent = '—';
+    rpsRoundResult.textContent = 'Elige tu jugada';
+    rpsChoiceButtons.forEach((button) => {
+        button.disabled = false;
+    });
+    renderRockPaperScissors();
+}
+
 function returnToRoulette() {
     resetChallengeView();
+    resetRockPaperScissors();
     state.activeScreen = 'roulette';
     setActiveScreen(state.activeScreen);
 }
@@ -290,11 +339,21 @@ beginButton?.addEventListener('click', () => {
             document.querySelectorAll('[data-individual-time]').forEach((element) => {
                 element.textContent = `${individualSeconds}s`;
             });
+
+            if (selectedChallenge?.id === 'rock-paper-scissors') {
+                resetRockPaperScissors();
+                state.activeScreen = 'rock-paper-scissors';
+                setActiveScreen(state.activeScreen);
+            }
+
             startIndividualTimer(individualSeconds, () => {
                 if (!activeGame) {
                     return;
                 }
-                showResult('defeat', { timeUsedSeconds: individualSeconds, score: 0 });
+                showResult('defeat', {
+                    timeUsedSeconds: individualSeconds,
+                    score: state.selectedId === 'rock-paper-scissors' ? rpsGame.playerWins : 0,
+                });
             });
             return;
         }
@@ -304,6 +363,53 @@ beginButton?.addEventListener('click', () => {
     }, 700);
 });
 
+rpsChoiceButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        if (!activeGame || rpsGame.finished || rpsGame.locked) {
+            return;
+        }
+
+        const playerChoice = button.dataset.rpsChoice;
+        const computerChoice = getComputerChoice();
+        const result = playRockPaperScissorsRound(rpsGame, playerChoice, computerChoice);
+
+        rpsPlayerChoice.textContent = `${rpsIcons[playerChoice]} ${rpsLabels[playerChoice]}`;
+        rpsComputerChoice.textContent = `${rpsIcons[computerChoice]} ${rpsLabels[computerChoice]}`;
+
+        if (result.roundResult === 'tie') {
+            rpsRoundResult.textContent = 'Empate — repitan la jugada';
+        } else if (result.roundResult === 'victory') {
+            rpsRoundResult.textContent = 'Ganaste esta ronda';
+            playInterfaceSound(state.soundEnabled, 'selection');
+        } else {
+            rpsRoundResult.textContent = 'La computadora ganó esta ronda';
+            playInterfaceSound(state.soundEnabled, 'defeat');
+        }
+
+        renderRockPaperScissors();
+
+        if (result.outcome) {
+            window.setTimeout(() => {
+                showResult(result.outcome, {
+                    timeUsedSeconds: getGlobalElapsedSeconds(state),
+                    score: rpsGame.playerWins,
+                });
+            }, 550);
+            return;
+        }
+
+        rpsChoiceButtons.forEach((choiceButton) => {
+            choiceButton.disabled = true;
+        });
+        window.setTimeout(() => {
+            rpsGame.locked = false;
+            rpsChoiceButtons.forEach((choiceButton) => {
+                choiceButton.disabled = false;
+            });
+        }, 650);
+    });
+});
+
 soundButton?.addEventListener('click', () => {
     state.soundEnabled = !state.soundEnabled;
     renderSoundButton();
@@ -311,8 +417,11 @@ soundButton?.addEventListener('click', () => {
 });
 
 retryButton?.addEventListener('click', () => {
+    resetChallengeView();
+    resetRockPaperScissors();
     state.activeScreen = 'instructions';
     setActiveScreen(state.activeScreen);
+    beginButton?.click();
 });
 
 returnButtons.forEach((button) => {
