@@ -22,7 +22,7 @@
         align-items: end;
         justify-content: space-between;
         gap: 1.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     .roulette-heading p,
@@ -45,8 +45,8 @@
 
     .roulette-layout {
         display: grid;
-        grid-template-columns: minmax(320px, 1fr) minmax(280px, 380px);
-        align-items: center;
+        grid-template-columns: minmax(320px, 1fr) minmax(280px, 340px);
+        align-items: start;
         gap: clamp(1.25rem, 5vw, 4rem);
     }
 
@@ -55,6 +55,7 @@
         display: grid;
         justify-items: center;
         gap: 1rem;
+        padding-top: .35rem;
     }
 
     .roulette-stage::before {
@@ -74,7 +75,7 @@
 
     .roulette-wheel {
         position: relative;
-        width: min(440px, 80vw);
+        width: min(420px, 76vw);
         aspect-ratio: 1;
         border: 10px solid var(--surface);
         border-radius: 50%;
@@ -125,11 +126,8 @@
         aspect-ratio: 1;
         object-fit: contain;
         filter: drop-shadow(0 5px 10px rgb(0 0 0 / 25%));
-    }
-
-    .roulette-label span {
-        max-width: 90px;
-        line-height: 1.05;
+        transform: rotate(var(--roulette-counter-rotation, 0deg));
+        transition: transform 1.8s cubic-bezier(.12, .65, .16, 1);
     }
 
     .roulette-control,
@@ -165,6 +163,8 @@
     .roulette-panel {
         display: grid;
         gap: 1rem;
+        min-height: 420px;
+        align-content: start;
     }
 
     .roulette-selected-card,
@@ -196,12 +196,12 @@
 
     .roulette-selected-image {
         width: 100%;
-        aspect-ratio: 16 / 7;
-        object-fit: cover;
+        height: 220px;
+        object-fit: contain;
         margin-bottom: .85rem;
         border: 1px solid var(--line);
         border-radius: 14px;
-        background: var(--paper);
+        background: var(--selected-challenge-color, var(--paper));
     }
 
     .roulette-selected-card p {
@@ -211,7 +211,8 @@
     }
 
     .roulette-status-card {
-        padding: 1rem;
+        width: min(320px, 100%);
+        padding: .75rem 1rem;
     }
 
     .roulette-status-list {
@@ -247,20 +248,22 @@
     }
 
     .roulette-hud {
+        width: fit-content;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: .65rem;
+        grid-template-columns: repeat(2, max-content);
+        column-gap: .75rem;
         margin-bottom: 1rem;
-        padding: .7rem;
+        padding: .45rem .6rem;
         border: 1px solid var(--line);
         border-radius: 16px;
         background: var(--surface);
+        box-shadow: 0 10px 30px rgb(23 21 27 / 6%);
     }
 
     .roulette-hud div {
         display: grid;
         gap: .15rem;
-        padding: .35rem;
+        padding: .15rem .25rem;
     }
 
     .roulette-hud span {
@@ -293,6 +296,8 @@
         margin-inline: auto;
         padding: clamp(1.25rem, 4vw, 2rem);
         text-align: center;
+        min-height: 420px;
+        align-content: center;
     }
 
     .roulette-instructions-card h1 {
@@ -348,10 +353,62 @@
         line-height: 1;
     }
 
+    .roulette-result-card {
+        max-width: 620px;
+        margin-inline: auto;
+        padding: clamp(1.5rem, 5vw, 2.5rem);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgb(23 21 27 / 10%);
+        text-align: center;
+    }
+
+    .roulette-result-card[data-result="victory"] { border-color: rgb(34 197 94 / 55%); }
+    .roulette-result-card[data-result="defeat"] { border-color: rgb(239 68 68 / 45%); }
+
+    .roulette-result-card h1 {
+        margin: .35rem 0 .75rem;
+        font-size: clamp(2.25rem, 8vw, 4.5rem);
+        letter-spacing: -.07em;
+    }
+
+    .roulette-result-card p { margin: 0 0 1.25rem; color: var(--muted); }
+
+    .roulette-result-actions {
+        display: flex;
+        justify-content: center;
+        gap: .75rem;
+    }
+
+    .roulette-confirmation {
+        width: min(440px, calc(100vw - 2rem));
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: 0 24px 80px rgb(0 0 0 / 25%);
+    }
+
+    .roulette-confirmation::backdrop {
+        background: rgb(23 21 27 / 55%);
+        backdrop-filter: blur(4px);
+    }
+
+    .roulette-confirmation-inner { padding: 1.25rem; }
+
+    .roulette-confirmation-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: .75rem;
+        margin-top: 1.25rem;
+    }
+
     @media (max-width: 850px) {
         .roulette-heading {
             align-items: start;
             flex-direction: column;
+            gap: .75rem;
         }
 
         .roulette-layout {
@@ -361,6 +418,11 @@
         .roulette-panel {
             width: min(100%, 520px);
             margin-inline: auto;
+            min-height: 0;
+        }
+
+        .roulette-status-card {
+            width: 100%;
         }
     }
 
@@ -375,6 +437,17 @@
         }
 
         .roulette-instructions-actions {
+            flex-direction: column;
+        }
+
+        .roulette-instructions-actions .roulette-primary-button,
+        .roulette-instructions-actions .roulette-secondary-button,
+        .roulette-result-actions .roulette-primary-button,
+        .roulette-result-actions .roulette-secondary-button {
+            width: 100%;
+        }
+
+        .roulette-result-actions {
             flex-direction: column;
         }
     }
@@ -399,10 +472,10 @@
             <div class="roulette-layout">
                 <div class="roulette-stage">
                     <div class="roulette-wheel" data-roulette aria-label="Ruleta de cuatro experiencias">
-                        <span class="roulette-label"><img src="{{ asset('images/challenges/rock-paper-scissors.svg') }}" alt=""><span>Piedra, papel o tijera</span></span>
-                        <span class="roulette-label"><img src="{{ asset('images/challenges/space-defender.svg') }}" alt=""><span>Space Defender</span></span>
-                        <span class="roulette-label"><img src="{{ asset('images/challenges/trivia.svg') }}" alt=""><span>Trivia Express</span></span>
-                        <span class="roulette-label"><img src="{{ asset('images/challenges/maze.svg') }}" alt=""><span>Laberinto</span></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/rock-paper-scissors.svg') }}" alt="Piedra, papel o tijera"></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/space-defender.svg') }}" alt="Space Defender"></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/trivia.svg') }}" alt="Trivia Express"></span>
+                        <span class="roulette-label"><img src="{{ asset('images/challenges/maze.svg') }}" alt="Laberinto"></span>
                     </div>
                     <button class="roulette-control" type="button" data-spin-roulette>
                         Girar ruleta
@@ -419,15 +492,6 @@
                             Iniciar experiencia
                         </button>
                     </div>
-
-                    <div class="roulette-status-card">
-                        <ul class="roulette-status-list">
-                            <x-challenge-status id="rock-paper-scissors" name="Piedra, papel o tijera" />
-                            <x-challenge-status id="space-defender" name="INFEST Space Defender" />
-                            <x-challenge-status id="trivia" name="Trivia Express" />
-                            <x-challenge-status id="maze" name="Laberinto" />
-                        </ul>
-                    </div>
                 </aside>
             </div>
         </section>
@@ -440,15 +504,15 @@
                     <div class="roulette-instructions-grid">
                         <div class="roulette-instruction">
                             <span>Objetivo</span>
-                            <p>Completa la condición principal antes de que termine el tiempo.</p>
+                            <p data-instruction-objective>Completa la condición principal antes de que termine el tiempo.</p>
                         </div>
                         <div class="roulette-instruction">
                             <span>Controles</span>
-                            <p>Los controles se mostrarán cuando el minijuego esté disponible.</p>
+                            <p data-instruction-controls>Los controles se mostrarán cuando el minijuego esté disponible.</p>
                         </div>
                         <div class="roulette-instruction">
                             <span>Tiempo</span>
-                            <p>El cronómetro comenzará después de la cuenta regresiva.</p>
+                            <p data-instruction-time>El cronómetro comenzará después de la cuenta regresiva.</p>
                         </div>
                     </div>
                     <div class="roulette-instructions-actions">
@@ -468,5 +532,32 @@
                 </div>
             </div>
         </section>
+
+        <section class="shell" data-roulette-screen="result" hidden>
+            <div class="roulette-result-card" data-result-card data-result="defeat">
+                <p class="roulette-instructions-kicker" data-result-eyebrow>Resultado</p>
+                <h1 data-result-title>Derrota</h1>
+                <p data-result-description>Puedes reintentar el desafío o volver a la ruleta.</p>
+                <div class="roulette-result-actions">
+                    <button class="roulette-secondary-button" type="button" data-return-to-roulette>
+                        Volver a la ruleta
+                    </button>
+                    <button class="roulette-primary-button" type="button" data-retry-challenge>
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <dialog class="roulette-confirmation" data-abandon-dialog>
+        <form method="dialog" class="roulette-confirmation-inner">
+            <h2>¿Abandonar el desafío?</h2>
+            <p>El intento quedará registrado como abandono.</p>
+            <div class="roulette-confirmation-actions">
+                <button class="roulette-secondary-button" value="cancel" type="submit">Continuar jugando</button>
+                <button class="roulette-primary-button" value="confirm" type="submit">Abandonar</button>
+            </div>
+        </form>
+    </dialog>
 @endsection

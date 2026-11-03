@@ -121,7 +121,7 @@ export function recordChallengeOutcome(state, challengeId, result, details = {},
 
     const completedCount = state.challenges.filter((item) => item.completed).length;
     if (completedCount === 4 && !state.speedMasterUnlocked) {
-        state.speedMasterUnlocked = getGlobalElapsedSeconds(state, now) <= 120;
+        state.speedMasterUnlocked = getGlobalElapsedSeconds(state) <= 120;
     }
 
     const record = {
