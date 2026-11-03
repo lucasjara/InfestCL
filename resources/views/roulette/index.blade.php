@@ -15,6 +15,7 @@
         background:
             radial-gradient(circle at 12% 15%, rgb(196 240 91 / 10%), transparent 24rem),
             radial-gradient(circle at 88% 75%, rgb(92 54 165 / 12%), transparent 28rem);
+        position: relative;
     }
 
     .roulette-heading {
@@ -41,6 +42,53 @@
         font-size: clamp(2rem, 6vw, 4rem);
         letter-spacing: -.07em;
         line-height: .92;
+    }
+
+    .roulette-completed-box {
+        position: absolute;
+        top: clamp(1.25rem, 4vw, 2.5rem);
+        right: max(1rem, calc((100% - 1080px) / 2));
+        z-index: 2;
+        min-width: 148px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .65rem;
+        padding: .6rem .75rem .6rem .65rem;
+        border: 1px solid rgb(92 54 165 / 20%);
+        border-radius: 14px;
+        background: var(--surface);
+        box-shadow: 0 10px 30px rgb(23 21 27 / 8%);
+        text-align: right;
+    }
+
+    .roulette-completed-box span {
+        position: relative;
+        padding-left: .55rem;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-align: left;
+        line-height: 1.2;
+    }
+
+    .roulette-completed-box span::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        border-radius: 999px;
+        background: var(--accent);
+    }
+
+    .roulette-completed-box strong {
+        color: var(--ink);
+        font-size: 1.35rem;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
     }
 
     .roulette-layout {
@@ -278,6 +326,19 @@
         font-size: 1.25rem;
     }
 
+    [data-game-hud] {
+        width: min(100% - 2rem, 1080px);
+        margin-inline: auto;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    [data-game-hud][hidden],
+    [data-individual-time-wrapper][hidden] {
+        display: none;
+    }
+
     .roulette-sound-button {
         grid-column: 1 / -1;
         min-height: 40px;
@@ -404,7 +465,151 @@
         margin-top: 1.25rem;
     }
 
+    .rps-card {
+        max-width: 760px;
+        margin-inline: auto;
+        padding: clamp(1rem, 4vw, 2rem);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgb(23 21 27 / 10%);
+        text-align: center;
+    }
+
+    .rps-card h1 {
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        letter-spacing: -.06em;
+    }
+
+    .rps-scoreboard {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .75rem;
+        margin: 1rem 0;
+    }
+
+    .rps-score {
+        padding: .75rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .rps-score span {
+        display: block;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .rps-score strong {
+        display: block;
+        margin-top: .15rem;
+        font-size: 1.6rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .rps-choices {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+        margin-bottom: 1rem;
+    }
+
+    .rps-choice,
+    .rps-actions {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--paper);
+    }
+
+    .rps-choice {
+        min-height: 110px;
+    }
+
+    .rps-choice span {
+        display: block;
+        font-size: 2rem;
+        line-height: 1;
+    }
+
+    .rps-choice strong {
+        display: block;
+        margin-top: .55rem;
+        color: var(--muted);
+        font-size: .72rem;
+        text-transform: uppercase;
+    }
+
+    .rps-choice:disabled {
+        cursor: wait;
+        opacity: .55;
+    }
+
+    .rps-choice-panel {
+        display: grid;
+        min-height: 110px;
+        place-items: center;
+        font-size: 1.1rem;
+        font-weight: 850;
+    }
+
+    .rps-choice-label {
+        display: block;
+        margin-bottom: .35rem;
+        color: var(--muted);
+        font-size: .68rem;
+        text-transform: uppercase;
+    }
+
+    .rps-choice-panel strong {
+        display: block;
+        font-size: 1rem;
+    }
+
+    .rps-round-result {
+        min-height: 24px;
+        margin: 0 0 .75rem;
+        font-weight: 850;
+    }
+
+    .rps-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .65rem;
+        padding: .75rem;
+    }
+
+    .rps-option {
+        min-height: 78px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        color: var(--ink);
+        font: inherit;
+        font-weight: 850;
+        cursor: pointer;
+    }
+
+    .rps-option span {
+        display: block;
+        margin-bottom: .25rem;
+        font-size: 1.65rem;
+    }
+
+    .rps-option:disabled {
+        cursor: wait;
+        opacity: .55;
+    }
+
     @media (max-width: 850px) {
+        .roulette-completed-box {
+            top: .75rem;
+            right: 1rem;
+        }
+
         .roulette-heading {
             align-items: start;
             flex-direction: column;
@@ -450,6 +655,26 @@
         .roulette-result-actions {
             flex-direction: column;
         }
+
+        .rps-scoreboard {
+            gap: .45rem;
+        }
+
+        .rps-score {
+            padding: .55rem .35rem;
+        }
+
+        .rps-actions {
+            grid-template-columns: repeat(3, 1fr);
+            gap: .35rem;
+            padding: .45rem;
+        }
+
+        .rps-option {
+            min-height: 72px;
+            padding-inline: .25rem;
+            font-size: .78rem;
+        }
     }
 @endsection
 
@@ -459,15 +684,21 @@
 
 @section('content')
     <div class="roulette-page">
+        <div data-game-hud hidden>
+            <x-game-hud show-sound />
+        </div>
+
         <section class="shell" data-roulette-screen="roulette" aria-labelledby="roulette-title">
+            <div class="roulette-completed-box" aria-label="Desafíos completados">
+                <span>Completados</span>
+                <strong data-roulette-completed>0/4</strong>
+            </div>
             <header class="roulette-heading">
                 <div>
                     <p>INFEST Ultimate Challenge</p>
                     <h1 id="roulette-title">Elige tu próximo desafío</h1>
                 </div>
             </header>
-
-            <x-game-hud show-sound />
 
             <div class="roulette-layout">
                 <div class="roulette-stage">
@@ -526,6 +757,66 @@
                 </div>
                 <div data-countdown-panel hidden>
                     <div class="roulette-countdown" data-countdown aria-live="assertive" hidden></div>
+                    <button class="roulette-secondary-button" type="button" data-back-to-roulette>
+                        Volver a la ruleta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell" data-roulette-screen="rock-paper-scissors" data-rps-screen hidden>
+            <div class="rps-card">
+                <p class="roulette-instructions-kicker">Piedra, papel o tijera</p>
+                <h1>Primero en dos victorias</h1>
+
+                <div class="rps-scoreboard" aria-label="Marcador">
+                    <div class="rps-score">
+                        <span>Jugador</span>
+                        <strong data-rps-player-wins>0</strong>
+                    </div>
+                    <div class="rps-score">
+                        <span>Rondas</span>
+                        <strong data-rps-rounds>0/3</strong>
+                    </div>
+                    <div class="rps-score">
+                        <span>Computadora</span>
+                        <strong data-rps-computer-wins>0</strong>
+                    </div>
+                </div>
+
+                <div class="rps-choices" aria-live="polite">
+                    <div class="rps-choice-panel">
+                        <div>
+                            <span class="rps-choice-label">Jugador</span>
+                            <strong data-rps-player-choice>—</strong>
+                        </div>
+                    </div>
+                    <div class="rps-choice-panel">
+                        <div>
+                            <span class="rps-choice-label">Computadora</span>
+                            <strong data-rps-computer-choice>—</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="rps-round-result" data-rps-round-result aria-live="polite">Elige tu jugada</p>
+
+                <div class="rps-actions" aria-label="Elegir jugada">
+                    <button class="rps-option" type="button" data-rps-choice="rock">
+                        <span aria-hidden="true">✊</span>
+                        Piedra
+                    </button>
+                    <button class="rps-option" type="button" data-rps-choice="paper">
+                        <span aria-hidden="true">✋</span>
+                        Papel
+                    </button>
+                    <button class="rps-option" type="button" data-rps-choice="scissors">
+                        <span aria-hidden="true">✌️</span>
+                        Tijera
+                    </button>
+                </div>
+
+                <div class="roulette-instructions-actions">
                     <button class="roulette-secondary-button" type="button" data-back-to-roulette>
                         Volver a la ruleta
                     </button>

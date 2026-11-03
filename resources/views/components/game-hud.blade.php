@@ -12,9 +12,9 @@
         <span>Tiempo efectivo</span>
         <strong data-global-time>00:00</strong>
     </div>
-    <div data-individual-time-wrapper hidden>
+    <div data-individual-time-wrapper hidden role="timer" aria-label="Tiempo restante del desafío">
         <span>Tiempo del desafío</span>
-        <strong data-individual-time>30s</strong>
+        <strong data-individual-time aria-live="polite">30s</strong>
     </div>
     @if ($showSound)
     <!--
