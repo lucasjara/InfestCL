@@ -12,3 +12,4 @@ Route::view('/cards/list', 'cards.list')->name('cards.list');
 Route::view('/album', 'album.index')->name('album.index');
 Route::view('/album/{id}', 'album.show')->name('album.show');
 Route::view('/experiencias', 'experiences.index')->name('experiences.index');
+Route::view('/roulette', 'roulette.index')->name('roulette.index');

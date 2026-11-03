@@ -165,6 +165,19 @@
                     </div>
                 </a>
             </article>
+
+            <article class="experience-card">
+                <a class="experience-card-link" href="{{ route('roulette.index') }}">
+                    <div class="experience-card-image">
+                        <img src="{{ asset('images/brand/Infest_Logo completo.png') }}" alt="INFEST Ultimate Challenge">
+                    </div>
+                    <div class="experience-card-content">
+                        <h2>Ultimate Challenge</h2>
+                        <p>Supera los cuatro desafíos, descubre la ruleta y desbloquea recompensas especiales.</p>
+                        <span class="experience-card-action">Iniciar desafío <span aria-hidden="true">→</span></span>
+                    </div>
+                </a>
+            </article>
         </div>
     </div>
 @endsection

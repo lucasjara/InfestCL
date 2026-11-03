@@ -36,3 +36,4 @@ public/img/easter_eggs/
 # AI local configurations
 .claude/
 .mcp.json
+docs/INFEST_ULTIMATE_CHALLENGE.md
