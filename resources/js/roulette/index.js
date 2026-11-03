@@ -46,6 +46,7 @@ const soundButton = document.querySelector('[data-sound-toggle]');
 const progress = document.querySelector('[data-roulette-progress]');
 const completedCount = document.querySelector('[data-roulette-completed]');
 const timer = document.querySelector('[data-global-time]');
+const effectiveTimeDisplays = document.querySelectorAll('[data-roulette-effective-time], [data-global-time]');
 const instructionName = document.querySelector('[data-instruction-name]');
 const beginButton = document.querySelector('[data-begin-challenge]');
 const countdown = document.querySelector('[data-countdown]');
@@ -127,7 +128,11 @@ function stopIndividualTimer() {
 
 function updateGlobalTimerDisplay() {
     const elapsed = Math.floor(getGlobalElapsedSeconds(state));
-    timer.textContent = formatTime(elapsed);
+    const formattedTime = formatTime(elapsed);
+    timer.textContent = formattedTime;
+    effectiveTimeDisplays.forEach((element) => {
+        element.textContent = formattedTime;
+    });
 }
 
 function renderProgress() {
@@ -593,6 +598,9 @@ function startSpaceDefender() {
 }
 
 function returnToRoulette() {
+    if (state.globalTimerRunning) {
+        stopGlobalTimer(state);
+    }
     resetChallengeView();
     resetRockPaperScissors();
     resetSpaceDefender();
@@ -603,6 +611,7 @@ function returnToRoulette() {
     state.activeScreen = 'roulette';
     renderProgress();
     setActiveScreen(state.activeScreen);
+    updateGlobalTimerDisplay();
 }
 
 function showResult(result, details = {}) {
@@ -926,6 +935,6 @@ document.addEventListener('visibilitychange', () => {
     returnToRoulette();
 });
 
-timer.textContent = formatTime(state.globalElapsedSeconds);
+updateGlobalTimerDisplay();
 renderProgress();
 renderSoundButton();

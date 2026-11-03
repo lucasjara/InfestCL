@@ -38,6 +38,10 @@ test('global timer accumulates only active elapsed game time', () => {
 
     assert.equal(stopGlobalTimer(state, 1250), 0.25);
     assert.equal(getGlobalElapsedSeconds(state, 2000), 0.25);
+
+    startGlobalTimer(state, 3000);
+    assert.equal(stopGlobalTimer(state, 3250), 0.5);
+    assert.equal(getGlobalElapsedSeconds(state, 4000), 0.5);
 });
 
 test('victory records an attempt and completion once', () => {

@@ -91,6 +91,26 @@
         line-height: 1;
     }
 
+    .roulette-completed-box .roulette-effective-time {
+        padding-left: .65rem;
+        border-left: 1px solid var(--line);
+        text-align: right;
+    }
+
+    .roulette-completed-box .roulette-effective-time span {
+        padding-left: 0;
+    }
+
+    .roulette-completed-box .roulette-effective-time span::before {
+        display: none;
+    }
+
+    .roulette-completed-box .roulette-effective-time strong {
+        display: block;
+        margin-top: .15rem;
+        font-size: 1rem;
+    }
+
     .roulette-layout {
         display: grid;
         grid-template-columns: minmax(320px, 1fr) minmax(280px, 340px);
@@ -870,6 +890,10 @@
             <div class="roulette-completed-box" aria-label="Desafíos completados">
                 <span>Completados</span>
                 <strong data-roulette-completed>0/4</strong>
+                <div class="roulette-effective-time" role="timer" aria-label="Tiempo efectivo">
+                    <span>Tiempo efectivo</span>
+                    <strong data-roulette-effective-time>00:00</strong>
+                </div>
             </div>
             <header class="roulette-heading">
                 <div>
