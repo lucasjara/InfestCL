@@ -53,10 +53,7 @@ export function selectPendingChallenge(challenges) {
         return null;
     }
 
-    const unattempted = pending.filter((challenge) => challenge.attempts === 0);
-    const candidates = unattempted.length > 0 ? unattempted : pending;
-
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return pending[Math.floor(Math.random() * pending.length)];
 }
 
 export function startGlobalTimer(state, now = performance.now()) {

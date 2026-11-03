@@ -12,13 +12,15 @@ import {
     stopGlobalTimer,
 } from './state.js';
 
-test('selection prioritizes pending challenges that have never been attempted', () => {
+test('selection includes attempted challenges while they remain incomplete', () => {
     const state = createRouletteState();
     state.challenges[0].attempts = 2;
+    state.challenges[1].completed = true;
+
     const selected = selectPendingChallenge(state.challenges);
 
-    assert.equal(selected.attempts, 0);
-    assert.notEqual(selected.id, state.challenges[0].id);
+    assert.equal(selected.completed, false);
+    assert.notEqual(selected.id, state.challenges[1].id);
 });
 
 test('selection returns null when all challenges are completed', () => {
@@ -53,6 +55,24 @@ test('victory records an attempt and completion once', () => {
     assert.equal(state.challenges.find((challenge) => challenge.id === 'maze').completed, true);
     assert.equal(state.history.length, 1);
     assert.equal(state.history[0].attemptNumber, 1);
+});
+
+test('defeat and abandonment do not complete challenges', () => {
+    const state = createRouletteState();
+
+    registerChallengeAttempt(state, 'maze');
+    recordChallengeOutcome(state, 'maze', 'defeat', { attemptNumber: 1 });
+    assert.equal(state.challenges.find((challenge) => challenge.id === 'maze').completed, false);
+
+    recordChallengeOutcome(state, 'maze', 'abandonment', { attemptNumber: 2 });
+    assert.equal(state.challenges.find((challenge) => challenge.id === 'maze').completed, false);
+
+    state.challenges
+        .filter((challenge) => challenge.id !== 'maze')
+        .forEach((challenge) => {
+            challenge.completed = true;
+        });
+    assert.equal(selectPendingChallenge(state.challenges).id, 'maze');
 });
 
 test('reload-style reset creates a fresh in-memory state', () => {

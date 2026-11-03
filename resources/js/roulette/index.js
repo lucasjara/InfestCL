@@ -247,7 +247,11 @@ function resetRockPaperScissors() {
 function returnToRoulette() {
     resetChallengeView();
     resetRockPaperScissors();
+    state.selectedId = null;
+    selectedPanel.hidden = true;
+    spinButton.disabled = false;
     state.activeScreen = 'roulette';
+    renderProgress();
     setActiveScreen(state.activeScreen);
 }
 
