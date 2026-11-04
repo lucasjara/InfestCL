@@ -564,6 +564,87 @@
     .space-defender-control[data-space-control="down"] { grid-column: 2; grid-row: 2; }
     .space-defender-control[data-space-control="right"] { grid-column: 3; grid-row: 2; }
 
+    .maze-card {
+        max-width: 760px;
+        margin-inline: auto;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: 0 20px 60px rgb(23 21 27 / 10%);
+        text-align: center;
+    }
+
+    .maze-card h1 {
+        margin: .35rem 0 1rem;
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        letter-spacing: -.04em;
+    }
+
+    .maze-hud {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+        margin-bottom: 1rem;
+    }
+
+    .maze-hud div {
+        padding: .65rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .maze-hud span {
+        display: block;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .maze-hud strong {
+        font-size: 1.2rem;
+    }
+
+    .maze-canvas {
+        width: min(600px, 100%);
+        height: min(600px, 60vh);
+        aspect-ratio: 1;
+        display: block;
+        margin-inline: auto;
+        border: 2px solid var(--line);
+        border-radius: 18px;
+        background: var(--paper);
+        touch-action: none;
+    }
+
+    .maze-controls {
+        width: 180px;
+        margin: .75rem auto 0;
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        grid-template-rows: repeat(2, 52px);
+        justify-content: center;
+        gap: .35rem;
+    }
+
+    .maze-control {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 900;
+        touch-action: none;
+        user-select: none;
+    }
+
+    .maze-control[data-maze-control="up"] { grid-column: 2; grid-row: 1; }
+    .maze-control[data-maze-control="left"] { grid-column: 1; grid-row: 2; }
+    .maze-control[data-maze-control="down"] { grid-column: 2; grid-row: 2; }
+    .maze-control[data-maze-control="right"] { grid-column: 3; grid-row: 2; }
+
     .trivia-card {
         max-width: 760px;
         margin-inline: auto;
@@ -1093,6 +1174,45 @@
                 <p class="trivia-feedback" data-trivia-feedback aria-live="polite"></p>
 
                 <div class="roulette-instructions-actions">
+                    <button class="roulette-secondary-button" type="button" data-back-to-roulette>
+                        Volver a la ruleta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell" data-roulette-screen="maze" data-maze-screen hidden>
+            <div class="maze-card">
+                <p class="roulette-instructions-kicker">INFEST Laberinto</p>
+                <h1>Encuentra la salida</h1>
+
+                <div class="maze-hud" aria-label="Estado del laberinto">
+                    <div>
+                        <span>Cuadrícula</span>
+                        <strong>15 × 15</strong>
+                    </div>
+                    <div>
+                        <span>Tiempo</span>
+                        <strong><span data-individual-time>30</span></strong>
+                    </div>
+                </div>
+
+                <canvas
+                    class="maze-canvas"
+                    data-maze-canvas
+                    width="600"
+                    height="600"
+                    aria-label="Laberinto aleatorio de 15 por 15"
+                ></canvas>
+
+                <div class="maze-controls" aria-label="Controles táctiles del laberinto">
+                    <button class="maze-control" type="button" data-maze-control="up" aria-label="Mover arriba">▲</button>
+                    <button class="maze-control" type="button" data-maze-control="left" aria-label="Mover izquierda">◀</button>
+                    <button class="maze-control" type="button" data-maze-control="down" aria-label="Mover abajo">▼</button>
+                    <button class="maze-control" type="button" data-maze-control="right" aria-label="Mover derecha">▶</button>
+                </div>
+
+                <div class="roulette-instructions-actions" style="margin-top: 1rem;">
                     <button class="roulette-secondary-button" type="button" data-back-to-roulette>
                         Volver a la ruleta
                     </button>

@@ -31,6 +31,10 @@ import {
     fetchTriviaQuestions,
     resolveTriviaAnswer,
 } from './trivia.js';
+import {
+    createMazeGame,
+    moveMazePlayer,
+} from './maze.js';
 
 const state = createRouletteState();
 
@@ -82,6 +86,9 @@ const triviaDifficulty = document.querySelector('[data-trivia-difficulty]');
 const triviaQuestion = document.querySelector('[data-trivia-question]');
 const triviaAnswers = document.querySelector('[data-trivia-answers]');
 const triviaFeedback = document.querySelector('[data-trivia-feedback]');
+const mazeScreen = document.querySelector('[data-maze-screen]');
+const mazeCanvas = document.querySelector('[data-maze-canvas]');
+const mazeControlButtons = document.querySelectorAll('[data-maze-control]');
 let countdownInterval = null;
 let currentRouletteRotation = 0;
 let individualTimerRemaining = null;
@@ -90,6 +97,7 @@ let rpsGame = createRockPaperScissorsGame();
 let spaceGame = createSpaceDefenderGame();
 let spaceAnimationFrame = null;
 let triviaGame = createTriviaGame();
+let mazeGame = createMazeGame();
 
 const challengeColors = {
     'rock-paper-scissors': '#ef4444',
@@ -299,6 +307,72 @@ function resetTrivia() {
     triviaQuestion.textContent = 'Preparando preguntas...';
     triviaFeedback.textContent = '';
     triviaAnswers.innerHTML = '';
+}
+
+function resetMaze() {
+    mazeGame = createMazeGame();
+    drawMaze();
+}
+
+function drawMaze() {
+    if (!mazeCanvas) {
+        return;
+    }
+
+    const context = mazeCanvas.getContext('2d');
+    const cellSize = mazeCanvas.width / mazeGame.size;
+    context.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+
+    mazeGame.grid.forEach((row, rowIndex) => {
+        row.forEach((cell, columnIndex) => {
+            context.fillStyle = cell === 1 ? '#202331' : '#f5f3ed';
+            context.fillRect(
+                columnIndex * cellSize,
+                rowIndex * cellSize,
+                cellSize,
+                cellSize,
+            );
+        });
+    });
+
+    context.fillStyle = '#eab308';
+    context.fillRect(
+        mazeGame.exit.column * cellSize + cellSize * 0.18,
+        mazeGame.exit.row * cellSize + cellSize * 0.18,
+        cellSize * 0.64,
+        cellSize * 0.64,
+    );
+
+    context.fillStyle = '#5c36a5';
+    context.beginPath();
+    context.arc(
+        (mazeGame.player.column + 0.5) * cellSize,
+        (mazeGame.player.row + 0.5) * cellSize,
+        cellSize * 0.34,
+        0,
+        Math.PI * 2,
+    );
+    context.fill();
+}
+
+function moveMaze(rowOffset, columnOffset) {
+    if (!activeGame || state.activeScreen !== 'maze') {
+        return;
+    }
+
+    const moved = moveMazePlayer(mazeGame, rowOffset, columnOffset);
+    if (!moved) {
+        return;
+    }
+
+    drawMaze();
+    if (mazeGame.won) {
+        activeGame = false;
+        showResult('victory', {
+            timeUsedSeconds: getGlobalElapsedSeconds(state),
+            score: 1,
+        });
+    }
 }
 
 function renderTriviaQuestion() {
@@ -605,6 +679,7 @@ function returnToRoulette() {
     resetRockPaperScissors();
     resetSpaceDefender();
     resetTrivia();
+    resetMaze();
     state.selectedId = null;
     selectedPanel.hidden = true;
     spinButton.disabled = false;
@@ -722,6 +797,23 @@ window.addEventListener('keydown', (event) => {
         spaceGame.keys[event.code] = true;
         event.preventDefault();
     }
+    if (state.activeScreen === 'maze') {
+        const mazeDirections = {
+            ArrowUp: [-1, 0],
+            KeyW: [-1, 0],
+            ArrowDown: [1, 0],
+            KeyS: [1, 0],
+            ArrowLeft: [0, -1],
+            KeyA: [0, -1],
+            ArrowRight: [0, 1],
+            KeyD: [0, 1],
+        };
+        const direction = mazeDirections[event.code];
+        if (direction) {
+            moveMaze(...direction);
+            event.preventDefault();
+        }
+    }
 });
 
 window.addEventListener('keyup', (event) => {
@@ -755,6 +847,20 @@ spaceControlButtons.forEach((button) => {
     button.addEventListener('pointerup', release);
     button.addEventListener('pointerleave', release);
     button.addEventListener('pointercancel', release);
+});
+
+mazeControlButtons.forEach((button) => {
+    const directions = {
+        up: [-1, 0],
+        down: [1, 0],
+        left: [0, -1],
+        right: [0, 1],
+    };
+
+    button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        moveMaze(...directions[button.dataset.mazeControl]);
+    });
 });
 
 window.addEventListener('resize', resizeSpaceCanvas);
@@ -812,6 +918,11 @@ beginButton?.addEventListener('click', () => {
                 setActiveScreen(state.activeScreen);
                 startTrivia();
             }
+            if (selectedChallenge?.id === 'maze') {
+                resetMaze();
+                state.activeScreen = 'maze';
+                setActiveScreen(state.activeScreen);
+            }
 
             startIndividualTimer(individualSeconds, () => {
                 if (!activeGame) {
@@ -823,7 +934,11 @@ beginButton?.addEventListener('click', () => {
                 }
                 showResult('defeat', {
                     timeUsedSeconds: individualSeconds,
-                    score: state.selectedId === 'rock-paper-scissors' ? rpsGame.playerWins : 0,
+                    score: state.selectedId === 'rock-paper-scissors'
+                        ? rpsGame.playerWins
+                        : state.selectedId === 'maze'
+                            ? (mazeGame.won ? 1 : 0)
+                            : 0,
                 });
             });
             return;
