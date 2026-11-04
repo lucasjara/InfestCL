@@ -35,6 +35,7 @@ export function createRouletteState() {
             ...challenge,
             attempts: 0,
             completed: false,
+            firstVictory: false,
         })),
         selectedId: null,
         globalElapsedSeconds: 0,
@@ -43,6 +44,7 @@ export function createRouletteState() {
         history: [],
         soundEnabled: true,
         activeScreen: 'roulette',
+        infestMasterUnlocked: false,
         speedMasterUnlocked: false,
     };
 }
@@ -112,11 +114,16 @@ export function recordChallengeOutcome(state, challengeId, result, details = {},
     const attemptNumber = details.attemptNumber ?? challenge.attempts + 1;
     challenge.attempts = Math.max(challenge.attempts, attemptNumber);
 
+    const wasFirstVictory = result === 'victory' && !challenge.completed && !challenge.firstVictory;
     if (result === 'victory') {
         challenge.completed = true;
+        challenge.firstVictory = true;
     }
 
     const completedCount = state.challenges.filter((item) => item.completed).length;
+    if (completedCount === 4) {
+        state.infestMasterUnlocked = true;
+    }
     if (completedCount === 4 && !state.speedMasterUnlocked) {
         state.speedMasterUnlocked = getGlobalElapsedSeconds(state) <= 120;
     }
@@ -128,6 +135,7 @@ export function recordChallengeOutcome(state, challengeId, result, details = {},
         timeUsedSeconds: details.timeUsedSeconds ?? 0,
         score: details.score ?? null,
         completedAt: new Date(now).toISOString(),
+        firstVictory: wasFirstVictory,
     };
     state.history.push(record);
 

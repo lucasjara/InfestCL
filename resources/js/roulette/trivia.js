@@ -71,9 +71,13 @@ export function selectFiveProgressiveQuestions(questions) {
 }
 
 export async function fetchTriviaQuestions() {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     try {
-        //const response = await fetch('https://opentdb.com/api.php?amount=20&category=18&type=multiple');
-        const response = await fetch('https://opentdbasdasdasd.com/api.php?amount=20&category=18&type=multiple');
+        const response = await fetch(
+            'https://opentdb.com/api.php?amount=20&category=18&type=multiple',
+            { signal: controller.signal },
+        );
         if (!response.ok) {
             return getProgressiveFallbackQuestions();
         }
@@ -85,6 +89,8 @@ export async function fetchTriviaQuestions() {
         return selectFiveProgressiveQuestions(normalized);
     } catch {
         return getProgressiveFallbackQuestions();
+    } finally {
+        clearTimeout(timeout);
     }
 }
 

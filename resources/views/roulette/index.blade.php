@@ -456,6 +456,90 @@
 
     .roulette-result-card p { margin: 0 0 1.25rem; color: var(--muted); }
 
+    .roulette-direct-selector {
+        margin-top: 1.25rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+    }
+
+    .roulette-direct-selector > span {
+        display: block;
+        margin-bottom: .65rem;
+        color: var(--muted);
+        font-size: .72rem;
+        font-weight: 850;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .roulette-direct-games {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .55rem;
+    }
+
+    .roulette-direct-game {
+        min-height: 52px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface-strong, var(--surface));
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .roulette-direct-game[data-completed="true"] {
+        border-color: rgb(34 197 94 / 55%);
+        color: #15803d;
+    }
+
+    .roulette-direct-game:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
+
+    .roulette-badges {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+        margin: 1rem 0 1.25rem;
+    }
+
+    [data-celebration-badges][hidden],
+    [data-infest-master-badge][hidden],
+    [data-speed-master-badge][hidden],
+    [data-direct-selector][hidden] {
+        display: none !important;
+    }
+
+    .roulette-badge {
+        min-height: 116px;
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: .35rem;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgb(255 255 255 / 35%);
+        opacity: .45;
+    }
+
+    .roulette-badge[data-unlocked="true"] {
+        border-color: rgb(196 240 91 / 75%);
+        background: rgb(196 240 91 / 12%);
+        opacity: 1;
+        box-shadow: 0 12px 34px rgb(196 240 91 / 12%);
+    }
+
+    .roulette-badge strong {
+        font-size: .95rem;
+    }
+
+    .roulette-badge span {
+        color: var(--muted);
+        font-size: .75rem;
+    }
+
     .roulette-result-actions {
         display: flex;
         justify-content: center;
@@ -954,6 +1038,18 @@
         .trivia-hud {
             gap: .35rem;
         }
+
+        .roulette-direct-games,
+        .roulette-badges {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .roulette-wheel,
+        .roulette-label img {
+            transition-duration: .01ms;
+        }
     }
 @endsection
 
@@ -1005,6 +1101,23 @@
                         <button class="roulette-primary-button" type="button" data-start-challenge>
                             Iniciar experiencia
                         </button>
+                    </div>
+                    <div class="roulette-direct-selector" data-direct-selector hidden>
+                        <span>Elegir directamente</span>
+                        <div class="roulette-direct-games">
+                            <button class="roulette-direct-game" type="button" data-direct-challenge="rock-paper-scissors">
+                                Piedra, papel o tijera
+                            </button>
+                            <button class="roulette-direct-game" type="button" data-direct-challenge="space-defender">
+                                Space Defender
+                            </button>
+                            <button class="roulette-direct-game" type="button" data-direct-challenge="trivia">
+                                Trivia Express
+                            </button>
+                            <button class="roulette-direct-game" type="button" data-direct-challenge="maze">
+                                Laberinto
+                            </button>
+                        </div>
                     </div>
                 </aside>
             </div>
@@ -1225,6 +1338,19 @@
                 <p class="roulette-instructions-kicker" data-result-eyebrow>Resultado</p>
                 <h1 data-result-title>Derrota</h1>
                 <p data-result-description>Puedes reintentar el desafío o volver a la ruleta.</p>
+                <div class="roulette-badges" data-celebration-badges hidden>
+                    <div class="roulette-badge" data-infest-master-badge data-unlocked="false" hidden>
+                        <strong>INFEST MASTER</strong>
+                        <span>Cuatro primeras victorias</span>
+                    </div>
+                    <div class="roulette-badge" data-speed-master-badge data-unlocked="false" hidden>
+                        <strong>INFEST Speed Master</strong>
+                        <span>Meta completada en 02:00</span>
+                    </div>
+                </div>
+                <p data-celebration-time hidden>
+                    Tiempo final: <strong data-roulette-final-time>00:00</strong>
+                </p>
                 <div class="roulette-result-actions">
                     <button class="roulette-secondary-button" type="button" data-return-to-roulette>
                         Volver a la ruleta

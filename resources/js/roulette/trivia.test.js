@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
     createTriviaGame,
+    fetchTriviaQuestions,
     getProgressiveFallbackQuestions,
     resolveTriviaAnswer,
     selectFiveProgressiveQuestions,
@@ -37,4 +38,19 @@ test('trivia selection always returns five questions', () => {
     const selected = selectFiveProgressiveQuestions(questions);
 
     assert.equal(selected.length, 5);
+});
+
+test('trivia API failure uses the local fallback', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () => {
+        throw new Error('network unavailable');
+    };
+
+    try {
+        const questions = await fetchTriviaQuestions();
+        assert.equal(questions.length, 5);
+        assert.equal(questions.every((question) => question.correctAnswer), true);
+    } finally {
+        globalThis.fetch = originalFetch;
+    }
 });

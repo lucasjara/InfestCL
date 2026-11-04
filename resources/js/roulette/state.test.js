@@ -89,3 +89,41 @@ test('reload-style reset creates a fresh in-memory state', () => {
     assert.equal(resetState.globalElapsedSeconds, 0);
     assert.equal(resetState.challenges.every((challenge) => challenge.attempts === 0), true);
 });
+
+test('first victory is recorded only once for a challenge', () => {
+    const state = createRouletteState();
+
+    const firstVictory = recordChallengeOutcome(state, 'maze', 'victory', { attemptNumber: 1 });
+    const secondVictory = recordChallengeOutcome(state, 'maze', 'victory', { attemptNumber: 2 });
+
+    assert.equal(firstVictory.firstVictory, true);
+    assert.equal(secondVictory.firstVictory, false);
+});
+
+test('INFEST MASTER unlocks after all four challenges are completed', () => {
+    const state = createRouletteState();
+    startGlobalTimer(state, 0);
+
+    state.challenges.forEach((challenge) => {
+        recordChallengeOutcome(state, challenge.id, 'victory', { attemptNumber: 1 });
+    });
+
+    assert.equal(state.infestMasterUnlocked, true);
+    assert.equal(state.speedMasterUnlocked, true);
+});
+
+test('INFEST Speed Master stays locked when the accumulated time exceeds two minutes', () => {
+    const state = createRouletteState();
+    startGlobalTimer(state, 0);
+
+    state.challenges.forEach((challenge, index) => {
+        stopGlobalTimer(state, 31_000 * (index + 1));
+        recordChallengeOutcome(state, challenge.id, 'victory', { attemptNumber: 1 });
+        if (index < state.challenges.length - 1) {
+            startGlobalTimer(state, 31_000 * (index + 1));
+        }
+    });
+
+    assert.equal(state.infestMasterUnlocked, true);
+    assert.equal(state.speedMasterUnlocked, false);
+});

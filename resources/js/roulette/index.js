@@ -66,6 +66,13 @@ const resultTitle = document.querySelector('[data-result-title]');
 const resultDescription = document.querySelector('[data-result-description]');
 const retryButton = document.querySelector('[data-retry-challenge]');
 const returnButtons = document.querySelectorAll('[data-return-to-roulette]');
+const directSelector = document.querySelector('[data-direct-selector]');
+const directChallengeButtons = document.querySelectorAll('[data-direct-challenge]');
+const celebrationBadges = document.querySelector('[data-celebration-badges]');
+const celebrationTime = document.querySelector('[data-celebration-time]');
+const finalTime = document.querySelector('[data-roulette-final-time]');
+const infestMasterBadge = document.querySelector('[data-infest-master-badge]');
+const speedMasterBadge = document.querySelector('[data-speed-master-badge]');
 const abandonDialog = document.querySelector('[data-abandon-dialog]');
 const rpsScreen = document.querySelector('[data-rps-screen]');
 const rpsChoiceButtons = document.querySelectorAll('[data-rps-choice]');
@@ -137,7 +144,9 @@ function stopIndividualTimer() {
 function updateGlobalTimerDisplay() {
     const elapsed = Math.floor(getGlobalElapsedSeconds(state));
     const formattedTime = formatTime(elapsed);
-    timer.textContent = formattedTime;
+    if (timer) {
+        timer.textContent = formattedTime;
+    }
     effectiveTimeDisplays.forEach((element) => {
         element.textContent = formattedTime;
     });
@@ -145,6 +154,9 @@ function updateGlobalTimerDisplay() {
 
 function renderProgress() {
     const completed = state.challenges.filter((challenge) => challenge.completed).length;
+    if (directSelector) {
+        directSelector.hidden = completed !== 4;
+    }
     if (progress) {
         progress.textContent = `${completed}/4`;
         progress.setAttribute('aria-label', `${completed} de 4 experiencias completadas`);
@@ -153,6 +165,14 @@ function renderProgress() {
         completedCount.textContent = `${completed}/4`;
         completedCount.setAttribute('aria-label', `${completed} de 4 desafíos completados`);
     }
+
+    directChallengeButtons.forEach((button) => {
+        const challenge = state.challenges.find((item) => item.id === button.dataset.directChallenge);
+        button.dataset.completed = challenge?.completed ? 'true' : 'false';
+        button.setAttribute('aria-label', challenge?.completed
+            ? `${challenge.name}, completado. Seleccionar para reintentar`
+            : `Seleccionar ${challenge?.name ?? button.textContent.trim()}`);
+    });
 
     document.querySelectorAll('[data-challenge-status]').forEach((status) => {
         const challenge = state.challenges.find((item) => item.id === status.dataset.challengeStatus);
@@ -224,7 +244,7 @@ function spinRoulette() {
         roulette.classList.remove('is-spinning');
         roulette.classList.add('is-selected');
         renderSelection(challenge);
-        spinButton.disabled = false;
+        spinButton.disabled = state.challenges.every((challenge) => challenge.completed);
         playInterfaceSound(state.soundEnabled, 'selection');
     }, 1800);
 }
@@ -683,6 +703,9 @@ function returnToRoulette() {
     state.selectedId = null;
     selectedPanel.hidden = true;
     spinButton.disabled = false;
+    celebrationBadges.hidden = true;
+    celebrationTime.hidden = true;
+    retryButton.hidden = false;
     state.activeScreen = 'roulette';
     renderProgress();
     setActiveScreen(state.activeScreen);
@@ -713,6 +736,29 @@ function showResult(result, details = {}) {
     resultEyebrow.textContent = copy.eyebrow;
     resultTitle.textContent = copy.title;
     resultDescription.textContent = copy.description;
+    celebrationBadges.hidden = true;
+    celebrationTime.hidden = true;
+    infestMasterBadge.hidden = true;
+    speedMasterBadge.hidden = true;
+    const completed = state.challenges.filter((item) => item.completed).length;
+    const isCelebration = result === 'victory' && completed === 4 && state.infestMasterUnlocked;
+    celebrationBadges.hidden = !isCelebration;
+    celebrationTime.hidden = !isCelebration;
+    retryButton.hidden = isCelebration;
+    infestMasterBadge.hidden = !isCelebration || !state.infestMasterUnlocked;
+    speedMasterBadge.hidden = !isCelebration || !state.speedMasterUnlocked;
+    if (isCelebration) {
+        const finalElapsed = getGlobalElapsedSeconds(state);
+        resultEyebrow.textContent = '¡Desafío completado!';
+        resultTitle.textContent = '¡INFEST MASTER!';
+        resultDescription.textContent = 'Has conseguido la victoria en los cuatro juegos.';
+        finalTime.textContent = formatTime(finalElapsed);
+        infestMasterBadge.dataset.unlocked = 'true';
+        speedMasterBadge.dataset.unlocked = state.speedMasterUnlocked ? 'true' : 'false';
+        speedMasterBadge.querySelector('span').textContent = state.speedMasterUnlocked
+            ? `Desbloqueado · ${formatTime(finalElapsed)}`
+            : 'Completa los cuatro juegos en menos de 02:00';
+    }
     state.activeScreen = 'result';
     setActiveScreen(state.activeScreen);
     renderProgress();
@@ -734,6 +780,20 @@ spinButton?.addEventListener('click', spinRoulette);
 startButton?.addEventListener('click', () => {
     state.activeScreen = 'instructions';
     setActiveScreen(state.activeScreen);
+});
+
+directChallengeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const challenge = state.challenges.find((item) => item.id === button.dataset.directChallenge);
+        if (!challenge) {
+            return;
+        }
+        resetChallengeView();
+        renderSelection(challenge);
+        state.activeScreen = 'instructions';
+        setActiveScreen(state.activeScreen);
+        playInterfaceSound(state.soundEnabled, 'selection');
+    });
 });
 
 backButtons.forEach((button) => {
@@ -1007,6 +1067,7 @@ retryButton?.addEventListener('click', () => {
     resetRockPaperScissors();
     resetSpaceDefender();
     resetTrivia();
+    resetMaze();
     state.activeScreen = 'instructions';
     setActiveScreen(state.activeScreen);
     beginButton?.click();
@@ -1053,3 +1114,6 @@ document.addEventListener('visibilitychange', () => {
 updateGlobalTimerDisplay();
 renderProgress();
 renderSoundButton();
+if (spinButton && state.challenges.every((challenge) => challenge.completed)) {
+    spinButton.disabled = true;
+}
