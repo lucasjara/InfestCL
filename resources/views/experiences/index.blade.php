@@ -167,7 +167,7 @@
             <article class="experience-card">
                 <a class="experience-card-link" href="{{ route('roulette.index') }}">
                     <div class="experience-card-image">
-                        <img src="{{ asset('images/brand/Infest_Logo completo.png') }}" alt="INFEST Ultimate Challenge">
+                        <img src="{{ asset('images/experiences/infest_roulette.png') }}" alt="INFEST Ultimate Challenge">
                     </div>
                     <div class="experience-card-content">
                         <h2>Ultimate Challenge</h2>
