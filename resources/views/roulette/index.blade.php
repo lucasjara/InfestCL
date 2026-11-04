@@ -1058,7 +1058,7 @@
 @endpush
 
 @section('content')
-    <div class="roulette-page">
+    <div class="roulette-page" data-roulette-page data-trivia-api-url="{{ url('/api/questions') }}">
         <div data-game-hud hidden>
             <x-game-hud show-sound />
         </div>

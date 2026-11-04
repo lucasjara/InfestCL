@@ -4,7 +4,7 @@ export function createSpaceDefenderGame(width = 760, height = 440) {
         height,
         score: 0,
         stage: 1,
-        ship: { x: width / 2, y: height / 2, radius: 14, speed: 220 },
+        ship: { x: width / 2, y: height / 2, radius: 14, speed: 220, rotation: 0 },
         meteors: [],
         spheres: [],
         particles: [],
@@ -34,6 +34,14 @@ export function updateSpaceStage(game) {
     } else {
         game.stage = 1;
     }
+}
+
+export function getShipRotation(horizontal, vertical) {
+    if (horizontal === 0 && vertical === 0) {
+        return null;
+    }
+
+    return Math.atan2(vertical, horizontal);
 }
 
 export function addSurvivalScore(game, deltaSeconds) {

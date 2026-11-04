@@ -827,7 +827,7 @@
                 page.innerHTML = `
                     <div class="bracket-heading">
                         <div>
-                            <p class="bracket-kicker"></p>
+                            <p class="bracket-kicker">Cuadro generado</p>
                             <h1>${escapeHtml(tournament.name)}</h1>
                         </div>
                         <a class="new-tournament-button" href="{{ route('tournaments.create') }}">Nuevo torneo</a>

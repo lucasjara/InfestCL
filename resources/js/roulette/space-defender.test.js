@@ -5,6 +5,7 @@ import {
     addSurvivalScore,
     circleCollision,
     createSpaceDefenderGame,
+    getShipRotation,
     getSpaceDifficulty,
     updateSpaceStage,
 } from './space-defender.js';
@@ -47,4 +48,12 @@ test('circle collision detects overlapping ship and collectible', () => {
         { x: 10, y: 10, radius: 5 },
         { x: 100, y: 100, radius: 5 },
     ), false);
+});
+
+test('ship rotation points toward each movement direction', () => {
+    assert.equal(getShipRotation(1, 0), 0);
+    assert.equal(getShipRotation(-1, 0), Math.PI);
+    assert.equal(getShipRotation(0, 1), Math.PI / 2);
+    assert.equal(getShipRotation(0, -1), -Math.PI / 2);
+    assert.equal(getShipRotation(0, 0), null);
 });

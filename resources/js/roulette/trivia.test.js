@@ -54,3 +54,19 @@ test('trivia API failure uses the local fallback', async () => {
         globalThis.fetch = originalFetch;
     }
 });
+
+test('trivia API uses the configured site URL', async () => {
+    const originalFetch = globalThis.fetch;
+    let requestedUrl = null;
+    globalThis.fetch = async (url) => {
+        requestedUrl = url;
+        throw new Error('network unavailable');
+    };
+
+    try {
+        await fetchTriviaQuestions('https://example.test/infest/api/questions');
+        assert.equal(requestedUrl, 'https://example.test/infest/api/questions');
+    } finally {
+        globalThis.fetch = originalFetch;
+    }
+});

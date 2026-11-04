@@ -23,6 +23,7 @@ import {
     addSurvivalScore,
     circleCollision,
     createSpaceDefenderGame,
+    getShipRotation,
     getSpaceDifficulty,
     updateSpaceStage,
 } from './space-defender.js';
@@ -56,6 +57,8 @@ const beginButton = document.querySelector('[data-begin-challenge]');
 const countdown = document.querySelector('[data-countdown]');
 const instructionsScreen = document.querySelector('[data-instructions-panel]');
 const countdownPanel = document.querySelector('[data-countdown-panel]');
+const roulettePage = document.querySelector('[data-roulette-page]');
+const triviaApiUrl = roulettePage?.dataset.triviaApiUrl ?? '/api/questions';
 const instructionObjective = document.querySelector('[data-instruction-objective]');
 const instructionControls = document.querySelector('[data-instruction-controls]');
 const instructionTime = document.querySelector('[data-instruction-time]');
@@ -139,6 +142,24 @@ function stopIndividualTimer() {
         window.clearInterval(individualTimerRemaining);
         individualTimerRemaining = null;
     }
+}
+
+function centerActiveGame() {
+    window.requestAnimationFrame(() => {
+        const screen = document.querySelector(`[data-roulette-screen="${state.activeScreen}"]`);
+        const card = screen?.firstElementChild;
+        if (!screen || !card) {
+            return;
+        }
+
+        card.setAttribute('tabindex', '-1');
+        card.focus({ preventScroll: true });
+
+        const cardTop = card.getBoundingClientRect().top + window.scrollY;
+        const visibleHeight = window.innerHeight;
+        const targetTop = Math.max(0, cardTop - Math.max(16, (visibleHeight - card.offsetHeight) / 2));
+        window.scrollTo({ top: targetTop, behavior: 'auto' });
+    });
 }
 
 function updateGlobalTimerDisplay() {
@@ -420,7 +441,7 @@ function renderTriviaQuestion() {
 
 async function startTrivia() {
     resetTrivia();
-    triviaGame.questions = await fetchTriviaQuestions();
+    triviaGame.questions = await fetchTriviaQuestions(triviaApiUrl);
     if (!activeGame) {
         return;
     }
@@ -514,6 +535,7 @@ function drawSpaceDefender(context) {
 
     context.save();
     context.translate(spaceGame.ship.x, spaceGame.ship.y);
+    context.rotate(spaceGame.ship.rotation);
     context.fillStyle = '#c4f05b';
     context.beginPath();
     context.moveTo(18, 0);
@@ -625,6 +647,10 @@ function startSpaceDefender() {
         if (horizontal !== 0 && vertical !== 0) {
             horizontal *= Math.SQRT1_2;
             vertical *= Math.SQRT1_2;
+        }
+        const rotation = getShipRotation(horizontal, vertical);
+        if (rotation !== null) {
+            ship.rotation = rotation;
         }
         ship.x += horizontal * ship.speed * deltaSeconds;
         ship.y += vertical * ship.speed * deltaSeconds;
@@ -964,25 +990,27 @@ beginButton?.addEventListener('click', () => {
             if (selectedChallenge?.id === 'rock-paper-scissors') {
                 resetRockPaperScissors();
                 state.activeScreen = 'rock-paper-scissors';
-                setActiveScreen(state.activeScreen);
+                setActiveScreen(state.activeScreen, { scroll: false });
             }
             if (selectedChallenge?.id === 'space-defender') {
                 resetSpaceDefender();
                 state.activeScreen = 'space-defender';
-                setActiveScreen(state.activeScreen);
+                setActiveScreen(state.activeScreen, { scroll: false });
                 startSpaceDefender();
             }
             if (selectedChallenge?.id === 'trivia') {
                 resetTrivia();
                 state.activeScreen = 'trivia';
-                setActiveScreen(state.activeScreen);
+                setActiveScreen(state.activeScreen, { scroll: false });
                 startTrivia();
             }
             if (selectedChallenge?.id === 'maze') {
                 resetMaze();
                 state.activeScreen = 'maze';
-                setActiveScreen(state.activeScreen);
+                setActiveScreen(state.activeScreen, { scroll: false });
             }
+
+            centerActiveGame();
 
             startIndividualTimer(individualSeconds, () => {
                 if (!activeGame) {

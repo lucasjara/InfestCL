@@ -70,12 +70,12 @@ export function selectFiveProgressiveQuestions(questions) {
     return selected.length === 5 ? selected : getProgressiveFallbackQuestions();
 }
 
-export async function fetchTriviaQuestions() {
+export async function fetchTriviaQuestions(apiUrl = '/api/questions') {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     try {
         const response = await fetch(
-            'https://opentdb.com/api.php?amount=20&category=18&type=multiple',
+            apiUrl,
             { signal: controller.signal },
         );
         if (!response.ok) {
