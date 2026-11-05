@@ -5,9 +5,7 @@
 @section('meta_description', 'Explora las experiencias de colecciones, torneos y creación de cartas de INFEST Chile.')
 
 @section('navigation')
-    <a href="{{ route('album.index') }}">Colecciones</a>
-    <a href="{{ route('tournaments.create') }}">Torneos</a>
-    <a href="{{ route('cards.list') }}">Cartas</a>
+    <x-experience-navigation />
 @endsection
 
 @section('styles')
@@ -162,6 +160,19 @@
                         <h2>Mi colección</h2>
                         <p>Organiza tus cartas, crea colecciones y conserva tu álbum personalizado.</p>
                         <span class="experience-card-action">Abrir colección <span aria-hidden="true">→</span></span>
+                    </div>
+                </a>
+            </article>
+
+            <article class="experience-card">
+                <a class="experience-card-link" href="{{ route('roulette.index') }}">
+                    <div class="experience-card-image">
+                        <img src="{{ asset('images/experiences/infest_roulette.png') }}" alt="INFEST Ultimate Challenge">
+                    </div>
+                    <div class="experience-card-content">
+                        <h2>Ultimate Challenge</h2>
+                        <p>Supera los cuatro desafíos, descubre la ruleta y desbloquea recompensas especiales.</p>
+                        <span class="experience-card-action">Iniciar desafío <span aria-hidden="true">→</span></span>
                     </div>
                 </a>
             </article>
