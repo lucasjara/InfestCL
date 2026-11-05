@@ -78,6 +78,47 @@ function makeQrSerializable(value) {
     return value;
 }
 
+async function getAbsoluteCardImageUrl(card) {
+    const image = createCardImage(card);
+
+    if (typeof image !== 'string') {
+        return null;
+    }
+
+    if (image.startsWith('blob:')) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+
+        const formData = new FormData();
+        formData.append('image', blob, 'card.webp');
+
+        const uploadResponse = await fetch('/api/cards/upload-image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector(
+                    'meta[name="csrf-token"]'
+                )?.content
+            }
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Error al subir la imagen');
+        }
+        const result = await uploadResponse.json();
+        return result.url;
+    }
+
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+        return image;
+    }
+
+    return new URL(
+        image.startsWith('/') ? image : `/${image}`,
+        window.location.origin
+    ).href;
+}
+
 async function openCardQr(card, quantity, collection) {
     const dialog = document.querySelector('[data-card-qr-dialog]');
     const qrImage = dialog?.querySelector('[data-card-qr-image]');
@@ -91,7 +132,7 @@ async function openCardQr(card, quantity, collection) {
     const payload = {
         card: {
             ...makeQrSerializable(card),
-            imageUrl: createCardImage(card),
+            imageUrl: await getAbsoluteCardImageUrl(card),
         },
         collection: {
             id: collection.id,
@@ -106,11 +147,12 @@ async function openCardQr(card, quantity, collection) {
     }
 
     try {
-        qrImage.src = await QRCode.toDataURL(JSON.stringify(payload), {
+        const generatedImage = await QRCode.toDataURL(JSON.stringify(payload), {
             width: 320,
             margin: 2,
             errorCorrectionLevel: 'M',
         });
+        qrImage.src = generatedImage;
         qrImage.hidden = false;
         qrStatus.textContent = '';
 

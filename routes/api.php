@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\CardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:public-api')->post('/tournaments', [TournamentController::class, 'generate']);
@@ -233,3 +234,4 @@ Route::middleware('throttle:public-api')->get('/questions', function () {
     ]);
 
 });
+Route::post('/cards/upload-image', [CardController::class, 'uploadImage']);
