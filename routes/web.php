@@ -30,3 +30,4 @@ Route::prefix('app')->name('app.')->group(function () {
         );
     })->name('apk');
 });
+Route::view('/politica-de-privacidad', 'pages.privacy-policy')->name('privacy-policy');
