@@ -176,6 +176,18 @@
                     </div>
                 </a>
             </article>
+            <article class="experience-card">
+                <a class="experience-card-link" href="{{ route('app.index') }}">
+                    <div class="experience-card-image">
+                        <img src="{{ asset('images/experiences/infest_app.png') }}" alt="INFEST App">
+                    </div>
+                    <div class="experience-card-content">
+                        <h2>INFEST App Móvil</h2>
+                        <p>Descarga nuestra aplicación para poder guardar tus cartas y acceder a todas las funciones.</p>
+                        <span class="experience-card-action">Descargar app <span aria-hidden="true">→</span></span>
+                    </div>
+                </a>
+            </article>
         </div>
     </div>
 @endsection
