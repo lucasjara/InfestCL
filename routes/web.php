@@ -19,7 +19,7 @@ Route::prefix('app')->name('app.')->group(function () {
     Route::view('/', 'app-download')->name('download');
 
     Route::get('/apk', function () {
-        $path = public_path('downloads\cl.infest.infestcard.apk');
+        $path = public_path('downloads/cl.infest.infestcard.apk');
         abort_unless(is_file($path), 404, 'APK no encontrado');
         return response()->download(
             $path,
