@@ -124,52 +124,66 @@ async function openCardQr(card, quantity, collection) {
     const qrImage = dialog?.querySelector('[data-card-qr-image]');
     const qrStatus = dialog?.querySelector('[data-card-qr-status]');
     const qrTitle = dialog?.querySelector('[data-card-qr-title]');
+    const qrLoading = dialog?.querySelector('[data-card-qr-loading]');
 
     if (!dialog || !qrImage || !qrStatus) {
         return;
     }
 
-    const payload = {
-        card: {
-            ...makeQrSerializable(card),
-            imageUrl: await getAbsoluteCardImageUrl(card),
-        },
-        collection: {
-            id: collection.id,
-            name: collection.name,
-        },
-        quantity,
-    };
+    // Mostrar diálogo inmediatamente.
+    qrImage.hidden = true;
+    qrLoading && (qrLoading.hidden = false);
+    qrStatus.textContent = 'Generando código QR...';
 
-    qrStatus.textContent = 'Generando QR...';
     if (qrTitle) {
         qrTitle.textContent = card.name;
     }
 
-    try {
-        const generatedImage = await QRCode.toDataURL(JSON.stringify(payload), {
-            width: 320,
-            margin: 2,
-            errorCorrectionLevel: 'M',
-        });
-        qrImage.src = generatedImage;
-        qrImage.hidden = false;
-        qrStatus.textContent = '';
-
+    if (!dialog.open) {
         if (typeof dialog.showModal === 'function') {
             dialog.showModal();
         } else {
             dialog.setAttribute('open', '');
         }
+    }
+
+    try {
+        const payload = {
+            card: {
+                ...makeQrSerializable(card),
+                imageUrl: await getAbsoluteCardImageUrl(card),
+                image: "",
+            },
+            collection: {
+                id: collection.id,
+                name: collection.name,
+            },
+            quantity,
+        };
+
+        const generatedImage = await QRCode.toDataURL(
+            JSON.stringify(payload),
+            {
+                width: 320,
+                margin: 2,
+                errorCorrectionLevel: 'M',
+            }
+        );
+
+        qrImage.src = generatedImage;
+        qrImage.hidden = false;
+        qrStatus.textContent = '';
+
     } catch (error) {
         qrImage.hidden = true;
-        qrStatus.textContent = 'No fue posible generar el QR. La carta contiene demasiada información.';
+        qrStatus.textContent =
+            'No fue posible generar el QR. La carta contiene demasiada información.';
+
         console.error('No fue posible generar el QR de la carta.', error);
 
-        if (typeof dialog.showModal === 'function') {
-            dialog.showModal();
-        } else {
-            dialog.setAttribute('open', '');
+    } finally {
+        if (qrLoading) {
+            qrLoading.hidden = true;
         }
     }
 }
