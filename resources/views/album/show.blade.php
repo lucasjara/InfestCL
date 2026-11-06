@@ -214,6 +214,39 @@
             grid-template-columns: 1fr;
         }
     }
+    .qr-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 2rem;
+    }
+
+    .qr-loading[hidden] {
+        display: none;
+    }
+
+    .qr-spinner {
+        width: 42px;
+        height: 42px;
+        border: 4px solid #e5e7eb;
+        border-top-color: #8b5cf6;
+        border-radius: 50%;
+        animation: qr-spin 0.8s linear infinite;
+    }
+
+    @keyframes qr-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .qr-spinner {
+            animation-duration: 2s;
+        }
+    }
 @endsection
 
 @section('content')
@@ -239,6 +272,14 @@
             </div>
         </dialog>
     </div>
+    <div data-card-qr-loading class="qr-loading" hidden>
+        <div class="qr-spinner"></div>
+        <span>Generando código QR...</span>
+    </div>
+
+    <img data-card-qr-image alt="Código QR de la carta" hidden>
+
+    <p data-card-qr-status></p>
 @endsection
 
 @push('head')
