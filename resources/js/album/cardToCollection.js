@@ -78,7 +78,18 @@ addButton?.addEventListener('click', async () => {
     try {
         const card = await cardService.createCard(currentCard);
         await inventoryService.addCardToCollection(collectionId, card.id);
-        setStatus(`«${card.name}» añadida a la colección.`);
+        var name_card = `«${card.name}»`;
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `${name_card} añadida con éxito`,
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#18181b',
+            color: '#f4f4f5'
+        });
+        setStatus('');
     } catch (error) {
         console.error(error);
         setStatus(error.message, true);

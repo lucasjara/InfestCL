@@ -412,11 +412,93 @@ export async function initializeCollectionDetail(container, collectionId) {
 
             const footer = document.createElement('div');
             footer.className = 'collection-card-footer';
+
             const number = document.createElement('span');
             number.textContent = card.number ? `#${card.number}` : `× ${item.quantity}`;
+            
             const quantity = document.createElement('span');
             quantity.textContent = card.number ? `× ${item.quantity}` : '';
-            footer.append(number, quantity);
+
+            // --- MEJORA DEL BOTÓN DE ELIMINAR ---
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'collection-card-remove';
+            // Usamos un ícono SVG de papelera limpio en lugar de una 'x' roja plana
+            removeButton.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            `;
+            removeButton.setAttribute('aria-label', `Eliminar ${card.name} de esta colección`);
+            removeButton.addEventListener('click', async (event) => {
+                event.stopPropagation();
+
+                // Alerta de confirmación personalizada estilo oscuro/TCG
+                const result = await Swal.fire({
+                    title: '¿Eliminar carta?',
+                    text: `¿Estás seguro de quitar "${card.name}" de esta colección?`,
+                    icon: 'warning',
+                    background: '#18181b', // Fondo oscuro acorde a tus tarjetas
+                    color: '#f4f4f5',      // Texto claro
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444', // Rojo elegante para eliminar
+                    cancelButtonColor: '#3f3f46',   // Gris sutil para cancelar
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    customClass: {
+                        popup: 'rounded-xl border border-neutral-800 shadow-2xl'
+                    }
+                });
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                removeButton.disabled = true;
+
+                try {
+                    await inventoryService.removeCardFromCollection(
+                        collection.id,
+                        card.id
+                    );
+
+                    figure.remove();
+
+                    if (!container.querySelector('.collection-card')) {
+                        container.textContent = 'Esta colección todavía no tiene cartas.';
+                    }
+
+                    // Toast de éxito opcional
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Carta eliminada con éxito',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        background: '#18181b',
+                        color: '#f4f4f5'
+                    });
+
+                } catch (error) {
+                    console.error(error);
+                    
+                    // Alerta de error personalizada
+                    Swal.fire({
+                        title: 'Error',
+                        text: error.message || 'No fue posible eliminar la carta.',
+                        icon: 'error',
+                        background: '#18181b',
+                        color: '#f4f4f5',
+                        confirmButtonColor: '#3f3f46'
+                    });
+
+                    removeButton.disabled = false;
+                }
+            });
+
+            footer.append(removeButton,number);
 
             figure.append(header, imageContainer, descriptionContainer, footer);
             const openQr = () => openCardQr(card, item.quantity, collection);
