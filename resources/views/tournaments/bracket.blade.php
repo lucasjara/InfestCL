@@ -434,6 +434,9 @@
         if (!tournament) {
             // The empty state remains visible.
         } else {
+            setTimeout(() => {
+                notifyAchievement('tournament_bracket_viewed');
+            }, 3000);
             const moneyFormatter = new Intl.NumberFormat('es-CL', {
                 style: 'currency',
                 currency: tournament.prizes?.find((prize) => prize.currency)?.currency || 'CLP',
@@ -764,11 +767,17 @@
                     </section>
                 `).join('');
 
-            const johnCenaHtml = hasJohnCena ? `
-                <div class="easter-egg-card">
+            let johnCenaHtml = '';
+             if(hasJohnCena){
+                johnCenaHtml = `<div class="easter-egg-card">
                     <img src="{{ asset('img/easter_eggs/jhon_cena.jpg') }}" alt="John Cena">
-                </div>
-            ` : '';
+                </div>`
+                notifyAchievement('tournament_john_cena');
+             }else
+             {
+                johnCenaHtml = '';
+             }
+
 
             const prizesHtml = prizes.length || hasJohnCena ? `
                 <aside class="prizes-panel">
@@ -851,6 +860,7 @@
                     if (celebratedChampionKey !== championKey) {
                         celebratedChampionKey = championKey;
                         requestAnimationFrame(celebrateChampion);
+                        notifyAchievement('tournament_final_animation');
                     }
                 } else {
                     celebratedChampionKey = null;

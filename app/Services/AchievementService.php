@@ -86,6 +86,7 @@ class AchievementService
                     $unlocked[] = [
                         'id' => $achievement->id,
                         'name' => $achievement->name,
+                        'description' => $achievement->description,
                         'xp_reward' => $achievement->xp_reward,
                     ];
                 }

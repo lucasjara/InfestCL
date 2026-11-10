@@ -355,6 +355,7 @@
                     console.error('No fue posible guardar la preferencia de tema.', error);
                 }
             });
+            
             async function notifyAchievement(event) {
                 try {
                     const response = await fetch('/achievements/events', {
@@ -364,12 +365,15 @@
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector(
                                 'meta[name="csrf-token"]'
-                            ).content
+                            )?.content
                         },
-                        body: JSON.stringify({
-                            event: event
-                        })
+                        body: JSON.stringify({ event })
                     });
+
+                    // Usuario no autenticado: no registrar logros.
+                    if (response.status === 401) {
+                        return null;
+                    }
 
                     const result = await response.json();
 
@@ -378,11 +382,12 @@
                             result.message || 'No se pudo registrar el logro.'
                         );
                     }
-
-                    // Mostrar Toast únicamente si se desbloqueó un logro nuevo.
+                    console.log(result);
+                    // Mostrar Toast solo cuando se desbloquea un logro nuevo.
                     if (result.unlocked?.length > 0) {
-                        result.unlocked.forEach(achievement => {
-                            Swal.fire({
+                        for (const achievement of result.unlocked) {
+                            
+                            await Swal.fire({
                                 toast: true,
                                 position: 'top-end',
                                 icon: 'success',
@@ -396,11 +401,11 @@
                                     </div>
                                 `,
                                 showConfirmButton: false,
-                                timer: 4000,
+                                timer: 7000,
                                 background: '#18181b',
                                 color: '#f4f4f5'
                             });
-                        });
+                        }
                     }
 
                     return result;
