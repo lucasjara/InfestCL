@@ -77,6 +77,14 @@ addButton?.addEventListener('click', async () => {
 
     try {
         const card = await cardService.createCard(currentCard);
+        notifyAchievement('first_card_collected');
+        notifyAchievement('ten_cards_collected');
+        notifyAchievement('thousand_cards_collected');
+        if(card.type === 'pokemon'){
+            notifyAchievement('poke_maniaco');
+        }else if(card.type === 'personal'){
+            notifyAchievement('custom_card_created');
+        }
         await inventoryService.addCardToCollection(collectionId, card.id);
         var name_card = `«${card.name}»`;
         Swal.fire({

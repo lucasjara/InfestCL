@@ -319,6 +319,7 @@
                 behavior: 'smooth',
                 block: 'center'
             });
+            notifyAchievement('app_downloaded');
         });
     </script>
 

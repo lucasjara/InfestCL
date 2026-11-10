@@ -4,6 +4,9 @@
 
 @section('meta_description', 'Consulta tus logros, experiencia y trofeos desbloqueados en INFEST Chile.')
 
+@section('navigation')
+    <x-experience-navigation />
+@endsection
 @section('styles')
     .trophy-page {
         padding-block: 3rem 5rem;
