@@ -875,7 +875,6 @@
                     <button type="button" data-scroll="#historia">Historia</button>
                     <button type="button" data-scroll="#facetas">Facetas</button>
                     <button type="button" data-scroll="#gallery">Experiencias</button>
-                    <a class="nav-cta" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
                     <button class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
                         <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>

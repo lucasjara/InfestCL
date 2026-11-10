@@ -188,6 +188,9 @@
                     </div>
                 </a>
             </article>
+            <a href="{{ route('auth.google') }}">
+                Continuar con Google
+            </a>
         </div>
     </div>
 @endsection
