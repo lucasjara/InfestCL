@@ -315,7 +315,6 @@
         default => null
     };
 @endphp
-<script src="https://unpkg.com/lucide@latest"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         if (window.lucide) {

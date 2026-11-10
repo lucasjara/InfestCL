@@ -8,7 +8,7 @@
         <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Borde s-fondo.png') }}">
 
         <title>@yield('title', 'INFEST Chile')</title>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @vite(['resources/js/app.js'])
         <script>
             (() => {
                 let theme;

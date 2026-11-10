@@ -293,34 +293,45 @@
 @endsection
 
 @push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        const qrContainer = document.getElementById('app-qrcode');
+        const QRCode = window.QRCodeGenerator;
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        if (!QRCode || !qrContainer) {
+            console.error('No fue posible cargar la librería QR.');
+            return;
+        }
 
-            const qrContainer = document.getElementById('app-qrcode');
+        const downloadUrl = @json(route('app.apk'));
 
-            if (typeof QRCode === 'undefined' || !qrContainer) {
-                console.error('No fue posible cargar la librería QR.');
-                return;
-            }
+        try {
+            const canvas = document.createElement('canvas');
 
-            const downloadUrl = @json(route('app.apk'));
-            new QRCode(qrContainer, {
-                text: downloadUrl,
+            await QRCode.toCanvas(canvas, downloadUrl, {
                 width: 250,
-                height: 250,
-                colorDark: '#090516',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
+                margin: 1,
+                color: {
+                    dark: '#090516',
+                    light: '#ffffff'
+                },
+                errorCorrectionLevel: 'H'
             });
-            document.querySelector('.app-qr-wrapper')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-            notifyAchievement('app_downloaded');
-        });
-    </script>
 
+            qrContainer.innerHTML = '';
+            qrContainer.appendChild(canvas);
+
+        } catch (error) {
+            console.error('Error generando código QR:', error);
+        }
+
+        document.querySelector('.app-qr-wrapper')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+
+        notifyAchievement('app_downloaded');
+    });
+</script>
 @endpush

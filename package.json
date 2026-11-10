@@ -18,6 +18,8 @@
         "@laravel/multiplex": "^0.4.1"
     },
     "dependencies": {
-        "qrcode": "^1.5.4"
+        "lucide": "^1.71.0",
+        "qrcode": "^1.5.4",
+        "sweetalert2": "^11.26.25"
     }
 }

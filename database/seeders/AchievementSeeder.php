@@ -45,7 +45,7 @@ class AchievementSeeder extends Seeder
             ],
             [
                 'code' => 'first_card_collected',
-                'name' => 'Coleccionista de cartas',
+                'name' => 'La primera de muchas',
                 'description' => 'Conseguiste tu primera carta. Todas las grandes colecciones empiezan con una.',
                 'icon' => 'playing-card',
                 'category' => 'cards',
