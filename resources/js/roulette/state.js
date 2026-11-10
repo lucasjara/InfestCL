@@ -123,9 +123,11 @@ export function recordChallengeOutcome(state, challengeId, result, details = {},
     const completedCount = state.challenges.filter((item) => item.completed).length;
     if (completedCount === 4) {
         state.infestMasterUnlocked = true;
+        notifyAchievement('ultimate_challenge_completed');
     }
     if (completedCount === 4 && !state.speedMasterUnlocked) {
         state.speedMasterUnlocked = getGlobalElapsedSeconds(state) <= 120;
+        notifyAchievement('speed_run_completed');
     }
 
     const record = {

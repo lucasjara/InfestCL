@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\AchievementProgressController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,3 +34,36 @@ Route::prefix('app')->name('app.')->group(function () {
     })->name('apk');
 });
 Route::view('/politica-de-privacidad', 'pages.privacy-policy')->name('privacy-policy');
+// Acceso público
+Route::get('/login', function () {
+    return redirect()->route('auth.google');
+})->name('login');
+
+// Autenticación Google
+Route::get('/auth/google/redirect', [
+    GoogleAuthController::class,
+    'redirect'
+])->name('auth.google');
+
+Route::get('/auth/google/callback', [
+    GoogleAuthController::class,
+    'callback'
+])->name('auth.google.callback');
+
+Route::post('/logout', [
+    GoogleAuthController::class,
+    'logout'
+])->middleware('auth')->name('logout');
+
+// Trofeos: acceso exclusivo para usuarios autenticados
+Route::middleware('auth')->group(function () {
+    Route::get('/trofeos', [
+        AchievementProgressController::class,
+        'index'
+    ])->name('achievements.index');
+});
+// Registro de eventos de logros: acceso exclusivo para usuarios autenticados
+Route::middleware('auth')->post(
+    '/achievements/events',
+    [AchievementProgressController::class, 'store']
+)->name('achievements.events.store');

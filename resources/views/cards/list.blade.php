@@ -1286,7 +1286,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 level: Number(elements.level.value),
                 image: `images/cards/${card.image}`
             };
-            
             elements.pokemon = isPokemon;
             elements.name.value = card.name;
             elements.description.value = card.description;
@@ -1295,7 +1294,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
-
+            if (isPokemon) {
+                notifyAchievement('pokemon_collected');
+            }
             resetImageAdjustment();
             updatePreview();
 

@@ -188,6 +188,21 @@
                     </div>
                 </a>
             </article>
+             <article class="experience-card">
+                <a class="experience-card-link" href="{{ route('achievements.index') }}">
+                    <div class="experience-card-image">
+                        <img src="{{ asset('images/experiences/infest_logros.png') }}" alt="INFEST Logros">
+                    </div>
+                    <div class="experience-card-content">
+                        <h2>INFEST Logros</h2>
+                        <p>Descubre tus logros desbloqueados dentro de INFEST.</p>
+                        <span class="experience-card-action">
+                            <i class="fas fa-lock" aria-hidden="true"></i>
+                            Requiere iniciar sesión <span aria-hidden="true">→</span>
+                        </span>
+                    </div>
+                </a>
+            </article>
         </div>
     </div>
 @endsection

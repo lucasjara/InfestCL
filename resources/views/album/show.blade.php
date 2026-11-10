@@ -73,13 +73,12 @@
     }
 
     .collection-card-header,
-    .collection-card-footer {
+    .collection-card-footer{
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: .4rem;
     }
-
     .collection-card-header h3 {
         overflow: hidden;
         margin: 0;
@@ -247,6 +246,23 @@
             animation-duration: 2s;
         }
     }
+    .collection-card-remove {
+    background: transparent;
+    border: none;
+    color: #888; /* Color sutil por defecto */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.collection-card-remove:hover {
+    color: #ff4d4d; /* Se pone rojo sutil solo al hacer hover */
+    background-color: rgba(255, 77, 77, 0.1);
+}
 @endsection
 
 @section('content')
