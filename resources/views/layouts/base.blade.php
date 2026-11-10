@@ -304,7 +304,7 @@
                     @hasSection('navigation')
                         @yield('navigation')
                     @else
-                        <a class="nav-cta" href="https://www.instagram.com/infestchile/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
+                        
                     @endif
 
                     <button class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
@@ -355,6 +355,61 @@
                     console.error('No fue posible guardar la preferencia de tema.', error);
                 }
             });
+            async function notifyAchievement(event) {
+                try {
+                    const response = await fetch('/achievements/events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector(
+                                'meta[name="csrf-token"]'
+                            ).content
+                        },
+                        body: JSON.stringify({
+                            event: event
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            result.message || 'No se pudo registrar el logro.'
+                        );
+                    }
+
+                    // Mostrar Toast únicamente si se desbloqueó un logro nuevo.
+                    if (result.unlocked?.length > 0) {
+                        result.unlocked.forEach(achievement => {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: `🏆 ${achievement.name}`,
+                                html: `
+                                    <div style="text-align: left;">
+                                        <div>${achievement.description}</div>
+                                        <strong style="color: #facc15;">
+                                            +${achievement.xp_reward} XP
+                                        </strong>
+                                    </div>
+                                `,
+                                showConfirmButton: false,
+                                timer: 4000,
+                                background: '#18181b',
+                                color: '#f4f4f5'
+                            });
+                        });
+                    }
+
+                    return result;
+
+                } catch (error) {
+                    console.error('Error registrando logro:', error);
+                    return null;
+                }
+            }
         </script>
         @stack('scripts')
     </body>
