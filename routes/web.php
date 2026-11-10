@@ -59,3 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/trofeos', 'achievements.index')
         ->name('achievements.index');
 });
+// Registro de eventos de logros: acceso exclusivo para usuarios autenticados
+Route::middleware('auth')->post(
+    '/achievements/events',
+    [AchievementProgressController::class, 'store']
+)->name('achievements.events.store');
