@@ -189,7 +189,7 @@
                 </a>
             </article>
              <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('app.index') }}">
+                <a class="experience-card-link" href="{{ route('achievements.index') }}">
                     <div class="experience-card-image">
                         <img src="{{ asset('images/experiences/infest_logros.png') }}" alt="INFEST Logros">
                     </div>
@@ -203,9 +203,6 @@
                     </div>
                 </a>
             </article>
-            <a href="{{ route('auth.google') }}">
-                Continuar con Google
-            </a>
         </div>
     </div>
 @endsection
