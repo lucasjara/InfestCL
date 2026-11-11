@@ -247,22 +247,66 @@
         }
     }
     .collection-card-remove {
-    background: transparent;
-    border: none;
-    color: #888; /* Color sutil por defecto */
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
+        background: transparent;
+        border: none;
+        color: #888; /* Color sutil por defecto */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
 
-.collection-card-remove:hover {
-    color: #ff4d4d; /* Se pone rojo sutil solo al hacer hover */
-    background-color: rgba(255, 77, 77, 0.1);
-}
+    .collection-card-remove:hover {
+        color: #ff4d4d; /* Se pone rojo sutil solo al hacer hover */
+        background-color: rgba(255, 77, 77, 0.1);
+    }
+
+    .collection-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .65rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .collection-filter-btn {
+        padding: .6rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--muted);
+        font-size: .8rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .collection-filter-btn:hover {
+        border-color: #8b5cf6;
+        color: var(--ink);
+    }
+
+    .collection-filter-btn.active {
+        border-color: #8b5cf6;
+        background: #8b5cf6;
+        color: #fff;
+    }
+
+    .collection-filter-btn:focus-visible {
+        outline: 2px solid #a78bfa;
+        outline-offset: 3px;
+    }
+
+    .collection-filters[hidden] {
+        display: none;
+    }
+
+    .collection-card[hidden] {
+        display: none !important;
+    }
 @endsection
 
 @section('content')
@@ -274,6 +318,11 @@
         </header>
 
         <section aria-label="Cartas de la colección">
+            <div class="collection-filters"
+                data-collection-filters
+                aria-label="Filtrar cartas por tipo"
+                hidden>
+            </div>
             <div class="collection-card-grid" data-collection-cards>
                 Contenedor para las cartas de la colección.
             </div>

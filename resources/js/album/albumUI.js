@@ -202,6 +202,7 @@ function initializeCardQrDialog() {
     });
 }
 
+
 export async function initializeCollectionList(container) {
     if (!container) {
         return;
@@ -349,7 +350,9 @@ export async function initializeCollectionDetail(container, collectionId) {
 
     container.setAttribute('data-album-ready', 'true');
     container.setAttribute('data-loaded-collection-id', collectionId);
-
+    const filtersContainer = document.querySelector(
+        '[data-collection-filters]'
+    );
     try {
         const collections = await collectionService.getCollections();
         const collection = collections.find((item) => item.id === collectionId)
@@ -376,6 +379,7 @@ export async function initializeCollectionDetail(container, collectionId) {
         initializeCardQrDialog();
 
         for (const item of inventory) {
+
             const card = await cardService.getCardById(item.cardId);
             if (!card) {
                 continue;
@@ -384,6 +388,7 @@ export async function initializeCollectionDetail(container, collectionId) {
             const figure = document.createElement('figure');
             figure.className = 'collection-card';
             figure.tabIndex = 0;
+            figure.dataset.cardType = String(card.type ?? '').trim().toLowerCase();
             figure.setAttribute('role', 'button');
             figure.setAttribute('aria-label', `Generar QR con la información de ${card.name}`);
             const categoryPresentation = getCategoryPresentation(card);
@@ -464,7 +469,7 @@ export async function initializeCollectionDetail(container, collectionId) {
                     );
 
                     figure.remove();
-
+                    updateCollectionTypeFilters(container, filtersContainer);
                     if (!container.querySelector('.collection-card')) {
                         container.textContent = 'Esta colección todavía no tiene cartas.';
                     }
@@ -511,7 +516,100 @@ export async function initializeCollectionDetail(container, collectionId) {
             });
             container.append(figure);
         }
+        updateCollectionTypeFilters(container, filtersContainer);
     } catch (error) {
         container.textContent = error.message;
     }
+}
+
+const cardTypePresentation = {
+    pokemon: 'Pokémon',
+    personal: 'Personalizadas',
+    default: 'Predeterminadas',
+};
+
+function updateCollectionTypeFilters(container, filtersContainer) {
+    if (!filtersContainer) return;
+
+    const activeButton = filtersContainer.querySelector(
+        '.collection-filter-btn.active'
+    );
+
+    let selectedType = activeButton?.dataset.type ?? 'all';
+
+    const cards = [
+        ...container.querySelectorAll('.collection-card[data-card-type]')
+    ];
+
+    const availableTypes = [
+        ...new Set(
+            cards
+                .map(card => card.dataset.cardType)
+                .filter(Boolean)
+        )
+    ];
+
+    filtersContainer.replaceChildren();
+
+    if (availableTypes.length === 0) {
+        filtersContainer.hidden = true;
+        return;
+    }
+
+    if (
+        selectedType !== 'all' &&
+        !availableTypes.includes(selectedType)
+    ) {
+        selectedType = 'all';
+    }
+
+    const types = [
+        { value: 'all', label: 'Todas' },
+        ...availableTypes.map(type => ({
+            value: type,
+            label: cardTypePresentation[type] ?? type.toUpperCase()
+        }))
+    ];
+
+    types.forEach(({ value, label }) => {
+        const button = document.createElement('button');
+
+        button.type = 'button';
+        button.className = 'collection-filter-btn';
+        button.dataset.type = value;
+        button.textContent = label;
+
+        const active = selectedType === value;
+
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+
+        button.addEventListener('click', () => {
+            selectedType = value;
+
+            filtersContainer
+                .querySelectorAll('.collection-filter-btn')
+                .forEach(btn => {
+                    const isActive = btn.dataset.type === value;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', String(isActive));
+                });
+
+            cards.forEach(card => {
+                card.hidden =
+                    value !== 'all' &&
+                    card.dataset.cardType !== value;
+            });
+        });
+
+        filtersContainer.append(button);
+    });
+
+    filtersContainer.hidden = false;
+
+    cards.forEach(card => {
+        card.hidden =
+            selectedType !== 'all' &&
+            card.dataset.cardType !== selectedType;
+    });
 }
