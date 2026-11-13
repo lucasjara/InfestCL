@@ -6,30 +6,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-
 class CardController extends Controller
 {
     public function uploadImage(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'image' => [
                 'required',
                 'image',
                 'mimes:jpeg,png,webp',
                 'max:5120',
+                'dimensions:max_width=3000,max_height=3000',
             ],
         ]);
 
-        $filename = Str::uuid() . '.webp';
+        $image = $validated['image'];
 
-        $path = $request->file('image')->storeAs(
+        $extension = $image->extension();
+
+        $filename = Str::uuid() . '.' . $extension;
+
+        $path = $image->storeAs(
             'cards',
             $filename,
             'public'
         );
 
         return response()->json([
+            'success' => true,
             'url' => Storage::disk('public')->url($path),
-        ]);
+        ], 201);
     }
 }

@@ -184,4 +184,86 @@ export const indexedDBAdapter = Object.freeze({
     getInventoryByCollectionAndCard,
     putInventory: (inventory) => putRecord(STORES.inventory, inventory),
     deleteInventory: (id) => deleteRecord(STORES.inventory, id),
+    moveInventoryRecords,
 });
+async function moveInventoryRecords(sourceCollectionId, targetCollectionId, cardIds) {
+    if (!sourceCollectionId || !targetCollectionId) {
+        throw new Error('Source and target collections are required.');
+    }
+
+    if (sourceCollectionId === targetCollectionId) {
+        throw new Error('Source and target collections must be different.');
+    }
+
+    const selectedCardIds = [...new Set(cardIds)];
+
+    if (selectedCardIds.length === 0) {
+        return { moved: 0, cards: [] };
+    }
+
+    const database = await openCollectionDatabase();
+    const transaction = database.transaction(
+        [STORES.collections, STORES.inventory],
+        'readwrite',
+    );
+
+    const collections = transaction.objectStore(STORES.collections);
+    const inventoryStore = transaction.objectStore(STORES.inventory);
+    const inventoryIndex = inventoryStore.index('collectionCard');
+    const completion = transactionToPromise(transaction);
+
+    try {
+        const [sourceCollection, targetCollection] = await Promise.all([
+            requestToPromise(collections.get(sourceCollectionId)),
+            requestToPromise(collections.get(targetCollectionId)),
+        ]);
+
+        if (!sourceCollection || !targetCollection) {
+            throw new Error('The source or target collection does not exist.');
+        }
+
+        const movedCards = [];
+
+        for (const cardId of selectedCardIds) {
+            const sourceRecord = await requestToPromise(
+                inventoryIndex.get([sourceCollectionId, cardId]),
+            );
+
+            // Ignore cards that are no longer in the source collection.
+            if (!sourceRecord) continue;
+
+            const targetRecord = await requestToPromise(
+                inventoryIndex.get([targetCollectionId, cardId]),
+            );
+
+            if (targetRecord) {
+                targetRecord.quantity += sourceRecord.quantity;
+                await requestToPromise(inventoryStore.put(targetRecord));
+            } else {
+                await requestToPromise(inventoryStore.add({
+                    ...sourceRecord,
+                    id: crypto.randomUUID(),
+                    collectionId: targetCollectionId,
+                }));
+            }
+
+            await requestToPromise(inventoryStore.delete(sourceRecord.id));
+
+            movedCards.push({
+                cardId,
+                quantity: sourceRecord.quantity,
+            });
+        }
+
+        await completion;
+
+        return {
+            moved: movedCards.length,
+            cards: movedCards,
+        };
+    } catch (error) {
+        transaction.abort();
+        await completion.catch(() => undefined);
+        throw error;
+    }
+}
