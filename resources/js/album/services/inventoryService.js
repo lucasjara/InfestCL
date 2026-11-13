@@ -96,4 +96,19 @@ export class InventoryService {
     getInventoryRecord(collectionId, cardId) {
         return this.adapter.getInventoryByCollectionAndCard(collectionId, cardId);
     }
+    async moveCardsToCollection(sourceCollectionId, targetCollectionId, cardIds) {
+        if (!Array.isArray(cardIds)) {
+            throw new Error('Card IDs must be an array.');
+        }
+
+        if (sourceCollectionId === targetCollectionId) {
+            throw new Error('Source and target collections must be different.');
+        }
+
+        return this.adapter.moveInventoryRecords(
+            sourceCollectionId,
+            targetCollectionId,
+            cardIds,
+        );
+    }
 }

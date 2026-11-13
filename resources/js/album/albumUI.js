@@ -342,21 +342,102 @@ export async function initializeCollectionList(container) {
         container.textContent = error.message;
     }
 }
+function createSelectionToolbar() {
+    let toolbar = document.querySelector('[data-card-selection-toolbar]');
 
-export async function initializeCollectionDetail(container, collectionId) {
-    if (!container) {
-        return;
+    if (toolbar) {
+        return toolbar;
     }
+
+    toolbar = document.createElement('div');
+    toolbar.className = 'card-selection-toolbar';
+    toolbar.dataset.cardSelectionToolbar = '';
+    toolbar.hidden = true;
+
+    const counter = document.createElement('span');
+    counter.className = 'card-selection-count';
+    counter.dataset.selectionCount = '';
+    counter.textContent = '0 seleccionadas';
+
+    const selectAllButton = document.createElement('button');
+    selectAllButton.type = 'button';
+    selectAllButton.dataset.selectionAll = '';
+    selectAllButton.textContent = 'Seleccionar todas';
+
+    const moveButton = document.createElement('button');
+    moveButton.type = 'button';
+    moveButton.dataset.selectionMove = '';
+    moveButton.textContent = 'Mover';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.dataset.selectionCancel = '';
+    cancelButton.textContent = 'Cancelar';
+
+    toolbar.append(counter, selectAllButton, moveButton, cancelButton);
+
+    return toolbar;
+}
+
+function createMoveCollectionDialog() {
+    let dialog = document.querySelector('[data-move-cards-dialog]');
+
+    if (dialog) {
+        return dialog;
+    }
+
+    dialog = document.createElement('dialog');
+    dialog.className = 'move-cards-dialog';
+    dialog.dataset.moveCardsDialog = '';
+
+    dialog.innerHTML = `
+        <form data-move-cards-form>
+            <h2>Mover cartas</h2>
+            <p data-move-cards-description>
+                Selecciona la colección de destino.
+            </p>
+
+            <label for="move-cards-target">
+                Colección de destino
+            </label>
+
+            <select id="move-cards-target" required data-move-cards-target>
+                <option value="">Selecciona una colección</option>
+            </select>
+
+            <p class="move-cards-status" data-move-cards-status role="status"></p>
+
+            <div class="move-cards-actions">
+                <button type="button" data-move-cards-cancel>
+                    Cancelar
+                </button>
+                <button type="submit" data-move-cards-submit>
+                    Confirmar movimiento
+                </button>
+            </div>
+        </form>
+    `;
+
+    document.body.append(dialog);
+
+    dialog.querySelector('[data-move-cards-cancel]')
+        ?.addEventListener('click', () => dialog.close());
+
+    return dialog;
+}
+// Mejora en el manejo de selección y limpieza de estados al refrescar
+export async function initializeCollectionDetail(container, collectionId, activeTypeFilter = 'all') {
+    if (!container) return;
 
     container.setAttribute('data-album-ready', 'true');
     container.setAttribute('data-loaded-collection-id', collectionId);
-    const filtersContainer = document.querySelector(
-        '[data-collection-filters]'
-    );
+
+    const filtersContainer = document.querySelector('[data-collection-filters]');
+    const selectedCardIds = new Set();
+
     try {
         const collections = await collectionService.getCollections();
-        const collection = collections.find((item) => item.id === collectionId)
-            ?? collections.find((item) => item.id === 'default');
+        const collection = collections.find(item => item.id === collectionId) ?? collections.find(item => item.id === 'default');
 
         if (!collection) {
             container.textContent = 'La colección predeterminada no está disponible.';
@@ -373,151 +454,270 @@ export async function initializeCollectionDetail(container, collectionId) {
 
         if (inventory.length === 0) {
             container.textContent = 'Esta colección todavía no tiene cartas.';
+            if (filtersContainer) filtersContainer.hidden = true;
             return;
         }
 
         initializeCardQrDialog();
+        const toolbar = createSelectionToolbar();
+        container.before(toolbar);
 
-        for (const item of inventory) {
+        const selectionCount = toolbar.querySelector('[data-selection-count]');
+        const selectAllButton = toolbar.querySelector('[data-selection-all]');
+        const moveButton = toolbar.querySelector('[data-selection-move]');
+        const cancelButton = toolbar.querySelector('[data-selection-cancel]');
 
-            const card = await cardService.getCardById(item.cardId);
-            if (!card) {
-                continue;
+        const moveDialog = createMoveCollectionDialog();
+        const moveForm = moveDialog.querySelector('[data-move-cards-form]');
+        const targetSelect = moveDialog.querySelector('[data-move-cards-target]');
+        const moveStatus = moveDialog.querySelector('[data-move-cards-status]');
+        const moveSubmit = moveDialog.querySelector('[data-move-cards-submit]');
+        const moveDescription = moveDialog.querySelector('[data-move-cards-description]');
+
+        const updateSelectionUI = () => {
+            const count = selectedCardIds.size;
+            toolbar.hidden = count === 0;
+
+            if (selectionCount) {
+                selectionCount.textContent = `${count} carta(s) seleccionada(s)`;
             }
+            moveButton.disabled = count === 0;
+
+            container.querySelectorAll('.collection-card').forEach((figure) => {
+                const isSelected = selectedCardIds.has(figure.dataset.cardId);
+                figure.classList.toggle('is-selected', isSelected);
+                
+                const selectButton = figure.querySelector('[data-card-select]');
+                if (selectButton) {
+                    selectButton.setAttribute('aria-pressed', String(isSelected));
+                    selectButton.textContent = '';
+                }
+            });
+        };
+
+        const clearSelection = () => {
+            selectedCardIds.clear();
+            updateSelectionUI();
+        };
+
+        selectAllButton.onclick = () => {
+            const visibleCards = [...container.querySelectorAll('.collection-card[data-card-id]')].filter((figure) => !figure.hidden);
+            const allVisibleSelected = visibleCards.length > 0 && visibleCards.every((figure) => selectedCardIds.has(figure.dataset.cardId));
+
+            if (allVisibleSelected) {
+                visibleCards.forEach((figure) => selectedCardIds.delete(figure.dataset.cardId));
+            } else {
+                visibleCards.forEach((figure) => selectedCardIds.add(figure.dataset.cardId));
+            }
+            updateSelectionUI();
+        };
+
+        cancelButton.onclick = clearSelection;
+
+        moveButton.onclick = () => {
+            if (selectedCardIds.size === 0) return;
+            targetSelect.replaceChildren();
+
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Selecciona una colección';
+            targetSelect.append(placeholder);
+
+            collections
+                .filter((item) => item.id !== collection.id)
+                .forEach((item) => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    targetSelect.append(option);
+                });
+
+            moveDescription.textContent = `Vas a mover ${selectedCardIds.size} carta(s) desde "${collection.name}".`;
+            moveStatus.textContent = '';
+            moveSubmit.disabled = false;
+
+            if (typeof moveDialog.showModal === 'function') {
+                moveDialog.showModal();
+            } else {
+                moveDialog.setAttribute('open', '');
+            }
+        };
+
+        moveForm.onsubmit = async (event) => {
+            event.preventDefault();
+            const targetCollectionId = targetSelect.value;
+            if (!targetCollectionId) {
+                moveStatus.textContent = 'Selecciona una colección de destino.';
+                return;
+            }
+
+            const cardIds = [...selectedCardIds];
+            moveSubmit.disabled = true;
+            moveStatus.textContent = 'Moviendo cartas...';
+
+            try {
+                const result = await inventoryService.moveCardsToCollection(collection.id, targetCollectionId, cardIds);
+                moveDialog.close();
+
+                await Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `${result.moved} carta(s) movida(s)`,
+                    showConfirmButton: false,
+                    timer: 2200,
+                    background: '#18181b',
+                    color: '#f4f4f5',
+                });
+
+                await initializeCollectionDetail(container, collection.id);
+            } catch (error) {
+                console.error('Error al mover cartas:', error);
+                moveStatus.textContent = error.message || 'No fue posible mover las cartas.';
+                moveSubmit.disabled = false;
+            }
+        };
+
+        // Renderizado eficiente de cartas
+        for (const item of inventory) {
+            const card = await cardService.getCardById(item.cardId);
+            if (!card) continue;
 
             const figure = document.createElement('figure');
             figure.className = 'collection-card';
             figure.tabIndex = 0;
+            figure.dataset.cardId = card.id;
             figure.dataset.cardType = String(card.type ?? '').trim().toLowerCase();
-            figure.setAttribute('role', 'button');
-            figure.setAttribute('aria-label', `Generar QR con la información de ${card.name}`);
-            const categoryPresentation = getCategoryPresentation(card);
-            figure.style.setProperty('--category-color', categoryPresentation.color);
+            figure.setAttribute('aria-label', `Carta ${card.name}. Pulsa para generar su código QR.`);
 
+            const category = getCategoryPresentation(card);
+            figure.style.setProperty('--category-color', category.color);
+
+            // ==========================================
+            // ENCABEZADO: Selector + Nombre + Categoría
+            // ==========================================
             const header = document.createElement('div');
             header.className = 'collection-card-header';
+
+            // 1. Selector de carta (checkbox) a la izquierda del nombre
+            const selectButton = document.createElement('button');
+            selectButton.type = 'button';
+            selectButton.className = 'collection-card-select';
+            selectButton.dataset.cardSelect = '';
+            selectButton.setAttribute('aria-pressed', 'false');
+            selectButton.setAttribute('aria-label', `Seleccionar ${card.name}`);
+
+            selectButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (selectedCardIds.has(card.id)) {
+                    selectedCardIds.delete(card.id);
+                } else {
+                    selectedCardIds.add(card.id);
+                }
+                updateSelectionUI();
+            });
+
+            // Nombre de la carta
             const name = document.createElement('h3');
             name.textContent = card.name;
-            const category = document.createElement('span');
-            category.textContent = categoryPresentation.label;
-            header.append(name, category);
 
+            // 2. Categoría ubicada a la derecha del nombre (donde estaba el selector antes)
+            const categoryLabel = document.createElement('span');
+            categoryLabel.className = 'collection-card-category-label';
+            categoryLabel.textContent = category.label;
+
+            header.append(selectButton, name);
+
+            // ==========================================
+            // IMAGEN DE LA CARTA
+            // ==========================================
             const imageContainer = document.createElement('div');
             imageContainer.className = 'collection-card-image';
+
             const image = document.createElement('img');
             image.src = createCardImage(card);
             image.alt = card.name;
             imageContainer.append(image);
 
+            // ==========================================
+            // DESCRIPCIÓN
+            // ==========================================
             const descriptionContainer = document.createElement('div');
             descriptionContainer.className = 'collection-card-description';
+
             const description = document.createElement('p');
             description.textContent = card.description ?? '';
             descriptionContainer.append(description);
 
+            // ==========================================
+            // FOOTER: Papelera + Número/Cantidad
+            // ==========================================
             const footer = document.createElement('div');
             footer.className = 'collection-card-footer';
 
             const number = document.createElement('span');
             number.textContent = card.number ? `#${card.number}` : `× ${item.quantity}`;
-            
-            const quantity = document.createElement('span');
-            quantity.textContent = card.number ? `× ${item.quantity}` : '';
 
-            // --- MEJORA DEL BOTÓN DE ELIMINAR ---
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'collection-card-remove';
-            // Usamos un ícono SVG de papelera limpio en lugar de una 'x' roja plana
             removeButton.innerHTML = `
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                 </svg>
             `;
-            removeButton.setAttribute('aria-label', `Eliminar ${card.name} de esta colección`);
+
             removeButton.addEventListener('click', async (event) => {
                 event.stopPropagation();
-
-                // Alerta de confirmación personalizada estilo oscuro/TCG
                 const result = await Swal.fire({
                     title: '¿Eliminar carta?',
                     text: `¿Estás seguro de quitar "${card.name}" de esta colección?`,
                     icon: 'warning',
-                    background: '#18181b', // Fondo oscuro acorde a tus tarjetas
-                    color: '#f4f4f5',      // Texto claro
+                    background: '#18181b',
+                    color: '#f4f4f5',
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444', // Rojo elegante para eliminar
-                    cancelButtonColor: '#3f3f46',   // Gris sutil para cancelar
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#3f3f46',
                     confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
-                    customClass: {
-                        popup: 'rounded-xl border border-neutral-800 shadow-2xl'
-                    }
                 });
 
-                if (!result.isConfirmed) {
-                    return;
-                }
+                if (!result.isConfirmed) return;
 
                 removeButton.disabled = true;
-
                 try {
-                    await inventoryService.removeCardFromCollection(
-                        collection.id,
-                        card.id
-                    );
-
+                    await inventoryService.removeCardFromCollection(collection.id, card.id);
+                    selectedCardIds.delete(card.id);
                     figure.remove();
                     updateCollectionTypeFilters(container, filtersContainer);
+                    updateSelectionUI();
+
                     if (!container.querySelector('.collection-card')) {
+                        toolbar.hidden = true;
                         container.textContent = 'Esta colección todavía no tiene cartas.';
                     }
-
-                    // Toast de éxito opcional
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Carta eliminada con éxito',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        background: '#18181b',
-                        color: '#f4f4f5'
-                    });
-
                 } catch (error) {
                     console.error(error);
-                    
-                    // Alerta de error personalizada
-                    Swal.fire({
-                        title: 'Error',
-                        text: error.message || 'No fue posible eliminar la carta.',
-                        icon: 'error',
-                        background: '#18181b',
-                        color: '#f4f4f5',
-                        confirmButtonColor: '#3f3f46'
-                    });
-
                     removeButton.disabled = false;
                 }
             });
 
-            footer.append(removeButton,number);
-
+            footer.append(categoryLabel,removeButton, number);
             figure.append(header, imageContainer, descriptionContainer, footer);
-            const openQr = () => openCardQr(card, item.quantity, collection);
-            figure.addEventListener('click', openQr);
-            figure.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    openQr();
-                }
+
+            figure.addEventListener('click', () => {
+                openCardQr(card, item.quantity, collection);
             });
+
             container.append(figure);
         }
+
         updateCollectionTypeFilters(container, filtersContainer);
+        updateSelectionUI();
+
     } catch (error) {
+        console.error(error);
         container.textContent = error.message;
     }
 }
