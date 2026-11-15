@@ -46,4 +46,14 @@ class AppServiceProvider extends ServiceProvider
             'Referrer-Policy' => 'no-referrer',
         ]));
     }
+
+    RateLimiter::for('achievements', function (Request $request) {
+        return Limit::perMinute(30)
+            ->by($request->user()?->id ?? $request->ip());
+    });
+
+    RateLimiter::for('google-auth', function (Request $request) {
+        return Limit::perMinute(10)
+            ->by($request->ip());
+    });
 }
