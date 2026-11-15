@@ -30,7 +30,6 @@ Route::middleware('throttle:120,1')->group(function () {
         ->name('album.index');
 
     Route::view('/album/{id}', 'album.show')
-        ->whereNumber('id')
         ->name('album.show');
 
     Route::view('/experiencias', 'experiences.index')
