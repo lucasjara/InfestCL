@@ -323,6 +323,20 @@ export async function initializeCollectionList(container) {
             const cards = await Promise.all(
                 inventory.map((item) => cardService.getCardById(item.cardId)),
             );
+
+            const entries = inventory
+                .map((item, index) => ({ item, card: cards[index] }))
+                .filter((entry) => entry.card)
+                .sort((a, b) => {
+                    const aTime = Date.parse(a.item.obtainedAt ?? '') || 0;
+                    const bTime = Date.parse(b.item.obtainedAt ?? '') || 0;
+                    return bTime - aTime;
+                });
+
+            const totalCards = entries.length;
+            const previewEntries = entries.slice(0, 3);
+            const additionalCount = Math.max(0, totalCards - previewEntries.length);
+
             const article = document.createElement('article');
             article.className = 'collection-card';
 
@@ -330,10 +344,51 @@ export async function initializeCollectionList(container) {
             link.href = `/album/${encodeURIComponent(collection.id)}`;
             link.className = 'collection-card-link';
 
-            const icon = document.createElement('span');
-            icon.className = 'collection-card-icon';
-            icon.setAttribute('aria-hidden', 'true');
-            icon.textContent = '◫';
+            const preview = document.createElement('div');
+            preview.className = 'collection-card-preview';
+
+            if (totalCards === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'collection-card-empty';
+                empty.innerHTML = `
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="6" width="13" height="16" rx="2"></rect>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v12"></path>
+                    </svg>
+                    <span>Aún no tienes cartas</span>
+                `;
+                preview.append(empty);
+            } else {
+                for (const { card } of previewEntries) {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'collection-card-thumb';
+                    thumb.style.setProperty(
+                        '--category-color',
+                        getCategoryPresentation(card).color
+                    );
+
+                    const image = document.createElement('img');
+                    image.src = createCardImage(card);
+                    image.alt = card.name;
+                    image.loading = 'lazy';
+
+                    const usesExternalApi = card.type === 'pokemon'
+                        || card.type === 'starwars'
+                        || card.type === 'dragonball';
+                    const isContainImage = usesExternalApi && !(card.image instanceof Blob);
+                    image.classList.toggle('is-contain', isContainImage);
+
+                    thumb.append(image);
+                    preview.append(thumb);
+                }
+
+                if (additionalCount > 0) {
+                    const more = document.createElement('div');
+                    more.className = 'collection-card-thumb collection-card-thumb-more';
+                    more.textContent = `+${additionalCount}`;
+                    preview.append(more);
+                }
+            }
 
             const content = document.createElement('div');
             content.className = 'collection-card-content';
@@ -342,10 +397,10 @@ export async function initializeCollectionList(container) {
             name.textContent = collection.name;
 
             const count = document.createElement('p');
-            count.textContent = `${cards.filter(Boolean).length} carta(s)`;
+            count.textContent = `${totalCards} carta(s)`;
 
             content.append(name, count);
-            link.append(icon, content);
+            link.append(preview, content);
             article.append(link);
             container.append(article);
         }
