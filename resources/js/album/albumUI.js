@@ -648,6 +648,13 @@ export async function initializeCollectionDetail(container, collectionId, active
             const image = document.createElement('img');
             image.src = createCardImage(card);
             image.alt = card.name;
+
+            const usesExternalApi = card.type === 'pokemon'
+                || card.type === 'starwars'
+                || card.type === 'dragonball';
+            const isContainImage = usesExternalApi && !(card.image instanceof Blob);
+            image.classList.toggle('is-contain', isContainImage);
+
             imageContainer.append(image);
 
             // ==========================================
