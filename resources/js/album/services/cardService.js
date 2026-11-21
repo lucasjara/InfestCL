@@ -17,7 +17,7 @@ export class CardService {
         }
 
         const type = String(data?.type ?? 'default');
-        const allowedTypes = ['default', 'pokemon', 'personal'];
+        const allowedTypes = ['default', 'pokemon', 'personal', 'starwars'];
 
         if (!allowedTypes.includes(type)) {
             throw new Error('The card type is invalid.');
