@@ -692,6 +692,29 @@
         transition: none;
     }
 
+    .card-loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(23, 18, 31, 0.6);
+        z-index: 50;
+    }
+
+    .card-loading-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: card-spin 0.8s linear infinite;
+    }
+
+    @keyframes card-spin {
+        to { transform: rotate(360deg); }
+    }
+
     .generated-card-description {
         display: flex;
         min-height: 20%;
@@ -908,6 +931,9 @@
                                 src="{{ asset('images/cards/dragon-astral.webp') }}"
                                 alt="Imagen de la carta"
                             >
+                            <div id="card-loading" class="card-loading" style="display:none;">
+                                <div class="card-loading-spinner"></div>
+                            </div>
                         </div>
 
                         <div class="generated-card-description">
@@ -1009,6 +1035,41 @@ document.addEventListener('DOMContentLoaded', () => {
         fairy: '#f472b6'
     };
 
+    const starwarsCategories = {
+        jedi: {
+            label: 'JEDI',
+            color: '#0ea5e9'
+        },
+        sith: {
+            label: 'SITH',
+            color: '#ef4444'
+        },
+        bounty_hunter: {
+            label: 'CAZARECOMPENSAS',
+            color: '#22c55e'
+        },
+        imperial: {
+            label: 'IMPERIAL',
+            color: '#64748b'
+        },
+        rebel: {
+            label: 'REBELDE',
+            color: '#f59e0b'
+        },
+        droid: {
+            label: 'DROIDE',
+            color: '#eab308'
+        }
+    };
+    const starwarsCategoryColors = {
+        jedi: '#0ea5e9',
+        sith: '#ef4444',
+        bounty_hunter: '#22c55e',
+        imperial: '#64748b',
+        rebel: '#f59e0b',
+        droid: '#eab308'
+    };
+
     const randomCards = [
         {
             id: 'default-dragon-astral',
@@ -1047,6 +1108,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    function categorizeStarWars(name) {
+        const n = name.toLowerCase();
+        if (n.includes('vader') || n.includes('sidious') || n.includes('emperor') || n.includes('sith')) return 'sith';
+        if (n.includes('luke') || n.includes('yoda') || n.includes('skywalker') || n.includes('obi-wan') || n.includes('jedi')) return 'jedi';
+        if (n.includes('fett') || n.includes('boba') || n.includes('assassin') || n.includes('hunter')) return 'bounty_hunter';
+        if (n.includes('trooper') || n.includes('imperial') || n.includes('empire') || n.includes('storm') || n.includes('officer')) return 'imperial';
+        if (n.includes('leia') || n.includes('organa') || n.includes('rebel') || n.includes('alliance')) return 'rebel';
+        return 'droid';
+    }
+
     const elements = {
         name: document.getElementById('card-name'),
         description: document.getElementById('card-description'),
@@ -1066,10 +1137,13 @@ document.addEventListener('DOMContentLoaded', () => {
         imageVertical: document.getElementById('image-vertical'),
         resetImage: document.getElementById('reset-image'),
         pokemon: false,
-        previewNumber: document.getElementById('preview-number')
+        starwars: false,
+        previewNumber: document.getElementById('preview-number'),
+        cardLoading: document.getElementById('card-loading')
     };
 
     let previousIndex = -1;
+    let usedStarWarsNumbers = new Set();
     let uploadedImageUrl = null;
     let dragStart = null;
     let imageLoadRequest = 0;
@@ -1105,6 +1179,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.min(maximum, Math.max(minimum, value));
     }
 
+    function getUniqueStarWarsNumber() {
+        if (usedStarWarsNumbers.size >= 964) {
+            usedStarWarsNumbers.clear();
+        }
+        let number;
+        do {
+            number = Math.floor(Math.random() * 964) + 1;
+        } while (usedStarWarsNumbers.has(number));
+        usedStarWarsNumbers.add(number);
+        return number;
+    }
+
     function applyImageAdjustment() {
         const zoom = Number(elements.imageZoom.value);
         const horizontal = Number(elements.imageHorizontal.value);
@@ -1131,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function setCardImage(url) {
+    async function setCardImage(url, onLoad) {
         const requestId = ++imageLoadRequest;
 
         try {
@@ -1144,6 +1230,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (requestId === imageLoadRequest) {
                 elements.previewImage.src = cardImageFallbackUrl;
             }
+        } finally {
+            if (typeof onLoad === 'function') {
+                onLoad();
+            }
         }
     }
 
@@ -1154,6 +1244,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category = {
                 label: pokemonCategories[categoryKey] ?? categoryKey.toUpperCase(),
                 color: pokemonCategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
+        }
+        else if(elements.starwars === true){
+            const categoryKey = elements.category.value;
+            category = {
+                label: starwarsCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
+                color: starwarsCategoryColors[categoryKey] ?? '#8b5cf6'
             };
             elements.previewCategory.textContent = category.label;
         }
@@ -1250,6 +1348,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 || pokemon.sprites.front_default
         };
     }
+    async function getRandomStarWars() {
+        try {
+            const response = await fetch('https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=100');
+            if (!response.ok) throw new Error('No se pudo obtener personajes de Star Wars');
+            const data = await response.json();
+            const characters = data.data;
+            if (!characters || characters.length === 0) throw new Error('Sin personajes disponibles');
+
+            const char = characters[Math.floor(Math.random() * characters.length)];
+            const category = categorizeStarWars(char.name);
+            const level = Math.floor(Math.random() * 10) + 1;
+
+            let description = char.description || `Personaje de Star Wars ${char.name}`;
+
+            const descriptionForTranslation = description.length > 500
+                ? description.slice(0, 500)
+                : description;
+
+            try {
+                const trResponse = await fetch(
+                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
+                );
+                const trData = await trResponse.json();
+                if (trData.responseData?.translatedText) {
+                    description = trData.responseData.translatedText;
+                }
+            } catch {
+                // mantener descripción original si falla la traducción
+            }
+
+            if (description.length > 105) {
+                description = description.slice(0, 105).trimEnd() + '...';
+            }
+
+            return {
+                id: `sw-${char._id}`,
+                externalId: char._id,
+                name: char.name,
+                description,
+                category,
+                level,
+                image: char.image
+            };
+        } catch {
+            const fallback = {
+                id: 'sw-fallback',
+                name: 'Personaje Desconocido',
+                description: 'Un habitante de la galaxia muy, muy lejana.',
+                category: 'droid',
+                level: 1,
+                image: cardImageFallbackUrl
+            };
+            return fallback;
+        }
+    }
     function setCategories(categories) {
         elements.category.innerHTML = Object.entries(categories)
             .map(([key, value]) => `
@@ -1262,16 +1415,54 @@ document.addEventListener('DOMContentLoaded', () => {
     
     generateButton.addEventListener('click', async () => {
         const isPokemon = elements.name.value.toLowerCase() === 'pokemon';
+        const isStarWars = elements.name.value.toLowerCase() === 'starwars';
+        elements.cardLoading.style.display = 'flex';
         try {
-            const card = isPokemon ? await getRandomPokemon() : randomCards[getRandomIndex()];
-            setCategories(isPokemon ? pokemonCategories : categories);
-            elements.level.value = isPokemon ? card.level : Math.floor(Math.random() * 10) + 1;
-            setCardImage(isPokemon ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`);
+            let card;
+            let type;
+            let categoryMap;
+            let categoryColors;
+            let imageBase;
+
+            if (isPokemon) {
+                card = await getRandomPokemon();
+                type = 'pokemon';
+                categoryMap = pokemonCategories;
+                categoryColors = pokemonCategoryColors;
+                imageBase = null;
+            } else if (isStarWars) {
+                card = await getRandomStarWars();
+                type = 'starwars';
+                categoryMap = starwarsCategories;
+                categoryColors = starwarsCategoryColors;
+                imageBase = null;
+            } else {
+                card = randomCards[getRandomIndex()];
+                type = 'default';
+                categoryMap = categories;
+                categoryColors = null;
+                imageBase = cardImageBaseUrl;
+            }
+
+            setCategories(isPokemon ? pokemonCategories : isStarWars ? starwarsCategories : categories);
+            elements.level.value = (isPokemon || isStarWars) ? card.level : Math.floor(Math.random() * 10) + 1;
+            setCardImage(isPokemon || isStarWars ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`, () => {
+                elements.cardLoading.style.display = 'none';
+            });
 
             currentCard = isPokemon ? {
                 id: `pokemon-${card.id}`,
                 externalId: card.id,
                 type: 'pokemon',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
+            } : isStarWars ? {
+                id: card.id,
+                externalId: card.id,
+                type: 'starwars',
                 name: card.name,
                 description: card.description,
                 category: card.category,
@@ -1287,15 +1478,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 image: `images/cards/${card.image}`
             };
             elements.pokemon = isPokemon;
+            elements.starwars = isStarWars;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
-            elements.previewNumber.textContent = isPokemon ? `#${String(card.id).padStart(4, '0')}` : `#0052`;
+            elements.previewNumber.textContent = isPokemon ? `#${String(card.id).padStart(4, '0')}` : isStarWars ? `#${getUniqueStarWarsNumber().toString().padStart(4, '0')}` : `#0052`;
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
             if (isPokemon) {
                 notifyAchievement('pokemon_collected');
+            } else if (isStarWars) {
+                notifyAchievement('starwars_collected');
             }
             resetImageAdjustment();
             updatePreview();
