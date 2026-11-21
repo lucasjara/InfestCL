@@ -1234,6 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let previousIndex = -1;
     let usedStarWarsNumbers = new Set();
     let uploadedImageUrl = null;
+    let cardBlobUrl = null;
     let dragStart = null;
     let imageLoadRequest = 0;
     let currentCard = {
@@ -1303,6 +1304,65 @@ document.addEventListener('DOMContentLoaded', () => {
             image.onload = () => resolve(image);
             image.onerror = () => reject(new Error('No se pudo cargar la imagen.'));
             image.src = url;
+        });
+    }
+
+    function loadImageForCanvas(url) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error('No se pudo cargar la imagen para normalizar.'));
+            image.src = url;
+        });
+    }
+
+    async function normalizeCardImage(url, size = 512) {
+        const image = await loadImageForCanvas(url);
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const context = canvas.getContext('2d');
+
+        if (!context) {
+            throw new Error('No se pudo preparar el lienzo de la imagen.');
+        }
+
+        const coverScale = Math.max(size / image.width, size / image.height);
+        const backgroundWidth = image.width * coverScale;
+        const backgroundHeight = image.height * coverScale;
+
+        context.save();
+        context.filter = 'blur(14px) brightness(0.5)';
+        context.drawImage(
+            image,
+            (size - backgroundWidth) / 2,
+            (size - backgroundHeight) / 2,
+            backgroundWidth,
+            backgroundHeight
+        );
+        context.restore();
+
+        const containScale = Math.min(size / image.width, size / image.height);
+        const foregroundWidth = image.width * containScale;
+        const foregroundHeight = image.height * containScale;
+
+        context.drawImage(
+            image,
+            (size - foregroundWidth) / 2,
+            (size - foregroundHeight) / 2,
+            foregroundWidth,
+            foregroundHeight
+        );
+
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(
+                (blob) => blob
+                    ? resolve(blob)
+                    : reject(new Error('No se pudo generar la imagen normalizada.')),
+                'image/jpeg',
+                0.85
+            );
         });
     }
 
@@ -1479,6 +1539,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 description = description.slice(0, 105).trimEnd() + '...';
             }
 
+            let image = char.image;
+            try {
+                image = await normalizeCardImage(char.image);
+            } catch {
+                // Mantener la URL original si falla la normalización.
+            }
+
             return {
                 id: `sw-${char._id}`,
                 externalId: char._id,
@@ -1486,7 +1553,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 description,
                 category,
                 level,
-                image: char.image
+                image
             };
         } catch {
             const fallback = {
@@ -1591,9 +1658,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setCategories(categoryMap);
             elements.level.value = usesExternalApi ? card.level : Math.floor(Math.random() * 10) + 1;
-            setCardImage(usesExternalApi ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`, () => {
-                elements.cardLoading.style.display = 'none';
-            });
+
+            if (card.image instanceof Blob) {
+                if (cardBlobUrl) {
+                    URL.revokeObjectURL(cardBlobUrl);
+                }
+                cardBlobUrl = URL.createObjectURL(card.image);
+                setCardImage(cardBlobUrl, () => {
+                    elements.cardLoading.style.display = 'none';
+                });
+            } else {
+                setCardImage(
+                    usesExternalApi ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`,
+                    () => {
+                        elements.cardLoading.style.display = 'none';
+                    }
+                );
+            }
 
             currentCard = isPokemon ? {
                 id: `pokemon-${card.id}`,
@@ -1647,7 +1728,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
-            elements.previewImage.classList.toggle('is-api-image', usesExternalApi);
+            elements.previewImage.classList.toggle(
+                'is-api-image',
+                usesExternalApi && !(card.image instanceof Blob)
+            );
             if (isPokemon) {
                 notifyAchievement('pokemon_collected');
             } else if (isStarWars) {
@@ -1690,6 +1774,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         ++imageLoadRequest;
+        if (cardBlobUrl) {
+            URL.revokeObjectURL(cardBlobUrl);
+            cardBlobUrl = null;
+        }
         uploadedImageUrl = URL.createObjectURL(file);
         elements.previewImage.src = uploadedImageUrl;
         elements.imageAdjustments.disabled = false;
