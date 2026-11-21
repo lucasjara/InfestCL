@@ -678,9 +678,14 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center;
         transform-origin: center;
         touch-action: none;
         user-select: none;
+    }
+
+    .generated-card-image img.is-api-image {
+        object-fit: contain;
     }
 
     .generated-card-image img.is-adjustable {
@@ -1070,6 +1075,68 @@ document.addEventListener('DOMContentLoaded', () => {
         droid: '#eab308'
     };
 
+    const DRAGONBALL_API_URL = 'https://dragonball-api.com/api';
+
+    const dragonballCategories = {
+        saiyan: {
+            label: 'SAIYAN',
+            color: '#eab308'
+        },
+        namekian: {
+            label: 'NAMEKIANO',
+            color: '#22c55e'
+        },
+        human: {
+            label: 'HUMANO',
+            color: '#0ea5e9'
+        },
+        majin: {
+            label: 'MAJIN',
+            color: '#f472b6'
+        },
+        frieza_race: {
+            label: 'RAZA DE FREEZER',
+            color: '#a855f7'
+        },
+        android: {
+            label: 'ANDRÓIDE',
+            color: '#64748b'
+        },
+        god: {
+            label: 'DIOS',
+            color: '#4f46e5'
+        },
+        angel: {
+            label: 'ÁNGEL',
+            color: '#67e8f9'
+        },
+        evil: {
+            label: 'MALIGNO',
+            color: '#dc2626'
+        },
+        nucleico: {
+            label: 'NUCLÉICO',
+            color: '#84cc16'
+        },
+        other: {
+            label: 'OTRO',
+            color: '#94a3b8'
+        }
+    };
+    const dragonballCategoryColors = {
+        saiyan: '#eab308',
+        namekian: '#22c55e',
+        human: '#0ea5e9',
+        majin: '#f472b6',
+        frieza_race: '#a855f7',
+        android: '#64748b',
+        god: '#4f46e5',
+        angel: '#67e8f9',
+        evil: '#dc2626',
+        nucleico: '#84cc16',
+        other: '#94a3b8'
+    };
+
     const randomCards = [
         {
             id: 'default-dragon-astral',
@@ -1118,6 +1185,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'droid';
     }
 
+    const DRAGONBALL_RACE_CATEGORIES = {
+        'saiyan': 'saiyan',
+        'namekian': 'namekian',
+        'human': 'human',
+        'majin': 'majin',
+        'frieza race': 'frieza_race',
+        'android': 'android',
+        'jiren race': 'other',
+        'god': 'god',
+        'angel': 'angel',
+        'evil': 'evil',
+        'nucleico': 'nucleico',
+        'nucleico benigno': 'nucleico',
+        'unknown': 'other'
+    };
+
+    function categorizeDragonBall(race) {
+        const key = String(race ?? '').trim().toLowerCase();
+        return DRAGONBALL_RACE_CATEGORIES[key] ?? 'other';
+    }
+
     const elements = {
         name: document.getElementById('card-name'),
         description: document.getElementById('card-description'),
@@ -1138,6 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetImage: document.getElementById('reset-image'),
         pokemon: false,
         starwars: false,
+        dragonball: false,
         previewNumber: document.getElementById('preview-number'),
         cardLoading: document.getElementById('card-loading')
     };
@@ -1252,6 +1341,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category = {
                 label: starwarsCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
                 color: starwarsCategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
+        }
+        else if(elements.dragonball === true){
+            const categoryKey = elements.category.value;
+            category = {
+                label: dragonballCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
+                color: dragonballCategoryColors[categoryKey] ?? '#8b5cf6'
             };
             elements.previewCategory.textContent = category.label;
         }
@@ -1403,6 +1500,44 @@ document.addEventListener('DOMContentLoaded', () => {
             return fallback;
         }
     }
+    async function getRandomDragonBall() {
+        try {
+            const response = await fetch(`${DRAGONBALL_API_URL}/characters?limit=100`);
+            if (!response.ok) throw new Error('No se pudo obtener personajes de Dragon Ball');
+            const data = await response.json();
+            const characters = data.items;
+            if (!characters || characters.length === 0) throw new Error('Sin personajes disponibles');
+
+            const character = characters[Math.floor(Math.random() * characters.length)];
+            const category = categorizeDragonBall(character.race);
+
+            let description = character.description || `Personaje de Dragon Ball ${character.name}`;
+
+            if (description.length > 105) {
+                description = description.slice(0, 105).trimEnd() + '...';
+            }
+
+            return {
+                id: `db-${character.id}`,
+                externalId: character.id,
+                name: character.name,
+                description,
+                category,
+                level: Math.floor(Math.random() * 10) + 1,
+                image: character.image
+            };
+        } catch {
+            const fallback = {
+                id: 'db-fallback',
+                name: 'Personaje Desconocido',
+                description: 'Un guerrero del universo Dragon Ball.',
+                category: 'other',
+                level: 1,
+                image: cardImageFallbackUrl
+            };
+            return fallback;
+        }
+    }
     function setCategories(categories) {
         elements.category.innerHTML = Object.entries(categories)
             .map(([key, value]) => `
@@ -1414,8 +1549,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     generateButton.addEventListener('click', async () => {
-        const isPokemon = elements.name.value.toLowerCase() === 'pokemon';
-        const isStarWars = elements.name.value.toLowerCase() === 'starwars';
+        const normalizedName = elements.name.value.trim().toLowerCase();
+        const isPokemon = normalizedName === 'pokemon';
+        const isStarWars = normalizedName === 'starwars';
+        const isDragonBall = normalizedName === 'dragonball';
         elements.cardLoading.style.display = 'flex';
         try {
             let card;
@@ -1436,6 +1573,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 categoryMap = starwarsCategories;
                 categoryColors = starwarsCategoryColors;
                 imageBase = null;
+            } else if (isDragonBall) {
+                card = await getRandomDragonBall();
+                type = 'dragonball';
+                categoryMap = dragonballCategories;
+                categoryColors = dragonballCategoryColors;
+                imageBase = null;
             } else {
                 card = randomCards[getRandomIndex()];
                 type = 'default';
@@ -1444,9 +1587,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 imageBase = cardImageBaseUrl;
             }
 
-            setCategories(isPokemon ? pokemonCategories : isStarWars ? starwarsCategories : categories);
-            elements.level.value = (isPokemon || isStarWars) ? card.level : Math.floor(Math.random() * 10) + 1;
-            setCardImage(isPokemon || isStarWars ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`, () => {
+            const usesExternalApi = isPokemon || isStarWars || isDragonBall;
+
+            setCategories(categoryMap);
+            elements.level.value = usesExternalApi ? card.level : Math.floor(Math.random() * 10) + 1;
+            setCardImage(usesExternalApi ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`, () => {
                 elements.cardLoading.style.display = 'none';
             });
 
@@ -1468,6 +1613,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: card.category,
                 level: card.level,
                 image: card.image
+            } : isDragonBall ? {
+                id: card.id,
+                externalId: card.id,
+                type: 'dragonball',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
             } : {
                 id: card.id,
                 type: 'default',
@@ -1479,17 +1633,27 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             elements.pokemon = isPokemon;
             elements.starwars = isStarWars;
+            elements.dragonball = isDragonBall;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
-            elements.previewNumber.textContent = isPokemon ? `#${String(card.id).padStart(4, '0')}` : isStarWars ? `#${getUniqueStarWarsNumber().toString().padStart(4, '0')}` : `#0052`;
+            elements.previewNumber.textContent = isPokemon
+                ? `#${String(card.id).padStart(4, '0')}`
+                : isDragonBall
+                    ? `#${String(card.id).replace('db-', '').padStart(4, '0')}`
+                    : isStarWars
+                        ? `#${getUniqueStarWarsNumber().toString().padStart(4, '0')}`
+                        : `#0052`;
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
+            elements.previewImage.classList.toggle('is-api-image', usesExternalApi);
             if (isPokemon) {
                 notifyAchievement('pokemon_collected');
             } else if (isStarWars) {
                 notifyAchievement('starwars_collected');
+            } else if (isDragonBall) {
+                notifyAchievement('dragonball_collected');
             }
             resetImageAdjustment();
             updatePreview();
@@ -1530,6 +1694,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.previewImage.src = uploadedImageUrl;
         elements.imageAdjustments.disabled = false;
         elements.previewImage.classList.add('is-adjustable');
+        elements.previewImage.classList.remove('is-api-image');
         resetImageAdjustment();
         currentCard = {
             id: crypto.randomUUID(),

@@ -84,6 +84,8 @@ addButton?.addEventListener('click', async () => {
             notifyAchievement('poke_maniaco');
         }else if(card.type === 'starwars'){
             notifyAchievement('starwars_collected');
+        }else if(card.type === 'dragonball'){
+            notifyAchievement('dragonball_collected');
         }else if(card.type === 'personal'){
             notifyAchievement('custom_card_created');
         }
