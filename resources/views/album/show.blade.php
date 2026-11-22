@@ -164,6 +164,10 @@
         object-fit: cover;
     }
 
+    .collection-card-image img.is-contain {
+        object-fit: contain;
+    }
+
     .collection-card-description {
         display: flex;
         min-height: 20%;

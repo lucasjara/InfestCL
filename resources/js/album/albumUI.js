@@ -41,6 +41,27 @@ const categoryPresentation = {
     dragon: { label: 'DRAGÓN', color: '#4f46e5' },
     steel: { label: 'ACERO', color: '#94a3b8' },
     fairy: { label: 'HADA', color: '#f472b6' },
+    jedi: { label: 'JEDI', color: '#0ea5e9' },
+    sith: { label: 'SITH', color: '#ef4444' },
+    bounty_hunter: { label: 'CAZARECOMPENSAS', color: '#22c55e' },
+    imperial: { label: 'IMPERIAL', color: '#64748b' },
+    rebel: { label: 'REBELDE', color: '#f59e0b' },
+    droid: { label: 'DROIDE', color: '#eab308' },
+    saiyan: { label: 'SAIYAN', color: '#eab308' },
+    namekian: { label: 'NAMEKIANO', color: '#22c55e' },
+    human: { label: 'HUMANO', color: '#0ea5e9' },
+    majin: { label: 'MAJIN', color: '#f472b6' },
+    frieza_race: { label: 'RAZA DE FREEZER', color: '#a855f7' },
+    android: { label: 'ANDRÓIDE', color: '#64748b' },
+    god: { label: 'DIOS', color: '#4f46e5' },
+    angel: { label: 'ÁNGEL', color: '#67e8f9' },
+    evil: { label: 'MALIGNO', color: '#dc2626' },
+    nucleico: { label: 'NUCLÉICO', color: '#84cc16' },
+    other: { label: 'OTRO', color: '#94a3b8' },
+    passive: { label: 'PASIVO', color: '#22c55e' },
+    neutral: { label: 'NEUTRAL', color: '#eab308' },
+    hostile: { label: 'HOSTIL', color: '#ef4444' },
+    boss: { label: 'JEFE', color: '#a855f7' },
 };
 
 function getCategoryPresentation(card) {
@@ -312,6 +333,20 @@ export async function initializeCollectionList(container) {
             const cards = await Promise.all(
                 inventory.map((item) => cardService.getCardById(item.cardId)),
             );
+
+            const entries = inventory
+                .map((item, index) => ({ item, card: cards[index] }))
+                .filter((entry) => entry.card)
+                .sort((a, b) => {
+                    const aTime = Date.parse(a.item.obtainedAt ?? '') || 0;
+                    const bTime = Date.parse(b.item.obtainedAt ?? '') || 0;
+                    return bTime - aTime;
+                });
+
+            const totalCards = entries.length;
+            const previewEntries = entries.slice(0, 3);
+            const additionalCount = Math.max(0, totalCards - previewEntries.length);
+
             const article = document.createElement('article');
             article.className = 'collection-card';
 
@@ -319,10 +354,52 @@ export async function initializeCollectionList(container) {
             link.href = `/album/${encodeURIComponent(collection.id)}`;
             link.className = 'collection-card-link';
 
-            const icon = document.createElement('span');
-            icon.className = 'collection-card-icon';
-            icon.setAttribute('aria-hidden', 'true');
-            icon.textContent = '◫';
+            const preview = document.createElement('div');
+            preview.className = 'collection-card-preview';
+
+            if (totalCards === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'collection-card-empty';
+                empty.innerHTML = `
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="6" width="13" height="16" rx="2"></rect>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v12"></path>
+                    </svg>
+                    <span>Aún no tienes cartas</span>
+                `;
+                preview.append(empty);
+            } else {
+                for (const { card } of previewEntries) {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'collection-card-thumb';
+                    thumb.style.setProperty(
+                        '--category-color',
+                        getCategoryPresentation(card).color
+                    );
+
+                    const image = document.createElement('img');
+                    image.src = createCardImage(card);
+                    image.alt = card.name;
+                    image.loading = 'lazy';
+
+                    const usesExternalApi = card.type === 'pokemon'
+                        || card.type === 'starwars'
+                        || card.type === 'dragonball'
+                        || card.type === 'minecraft';
+                    const isContainImage = usesExternalApi && !(card.image instanceof Blob);
+                    image.classList.toggle('is-contain', isContainImage);
+
+                    thumb.append(image);
+                    preview.append(thumb);
+                }
+
+                if (additionalCount > 0) {
+                    const more = document.createElement('div');
+                    more.className = 'collection-card-thumb collection-card-thumb-more';
+                    more.textContent = `+${additionalCount}`;
+                    preview.append(more);
+                }
+            }
 
             const content = document.createElement('div');
             content.className = 'collection-card-content';
@@ -331,10 +408,10 @@ export async function initializeCollectionList(container) {
             name.textContent = collection.name;
 
             const count = document.createElement('p');
-            count.textContent = `${cards.filter(Boolean).length} carta(s)`;
+            count.textContent = `${totalCards} carta(s)`;
 
             content.append(name, count);
-            link.append(icon, content);
+            link.append(preview, content);
             article.append(link);
             container.append(article);
         }
@@ -637,6 +714,14 @@ export async function initializeCollectionDetail(container, collectionId, active
             const image = document.createElement('img');
             image.src = createCardImage(card);
             image.alt = card.name;
+
+            const usesExternalApi = card.type === 'pokemon'
+                || card.type === 'starwars'
+                || card.type === 'dragonball'
+                || card.type === 'minecraft';
+            const isContainImage = usesExternalApi && !(card.image instanceof Blob);
+            image.classList.toggle('is-contain', isContainImage);
+
             imageContainer.append(image);
 
             // ==========================================
@@ -724,6 +809,9 @@ export async function initializeCollectionDetail(container, collectionId, active
 
 const cardTypePresentation = {
     pokemon: 'Pokémon',
+    starwars: 'Star Wars',
+    dragonball: 'Dragon Ball',
+    minecraft: 'Minecraft',
     personal: 'Personalizadas',
     default: 'Predeterminadas',
 };

@@ -5,10 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Conoce INFEST Chile: una marca con historia, nacida de los encuentros y abierta a distintas experiencias de entretenimiento.">
         <meta name="theme-color" content="#f5f2ed">
-        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Logo_completo.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('images/welcome/Infest_Logo_completo.png') }}">
         <meta property="og:title" content="INFEST Chile — Una historia de encuentros">
         <meta property="og:description" content="Conoce INFEST Chile, su historia y sus distintas experiencias de entretenimiento.">
-        <meta property="og:image" content="{{ asset('images/brand/Infest_Logo_completo.png') }}">
+        <meta property="og:image" content="{{ asset('images/welcome/Infest_Logo_completo.png') }}">
 
         <title>INFEST Chile — Una historia de encuentros</title>
 
@@ -861,13 +861,12 @@
     </head>
     <body>
         <button class="skip-link" type="button" data-scroll="#contenido">Saltar al contenido</button>
-
         <header class="site-header">
             <div class="shell header-inner">
                 <button class="brand" type="button" data-scroll="#inicio" aria-label="INFEST Chile, inicio">
                     <span class="brand-mark" aria-hidden="true">
-                        <img class="logo-light" src="{{ asset('images/brand/Logotipo-Infest-trazado-removebg-preview.png') }}" alt="" width="126" height="42">
-                        <img class="logo-dark" src="{{ asset('images/brand/Infest_Logo_completo.png') }}" alt="" width="126" height="42">
+                        <img class="logo-light" src="{{ asset('images/welcome/Logotipo_Infest_trazado.png') }}" alt="" width="126" height="42">
+                        <img class="logo-dark" src="{{ asset('images/welcome/Infest_Logo_completo.png') }}" alt="" width="126" height="42">
                     </span>
                 </button>
 
@@ -901,7 +900,7 @@
                 </div>
 
                 <div class="hero-visual">
-                    <img src="{{ asset('images/INFEST/2023-10-12_19-39-21_UTC_1.webp') }}" alt="Participantes junto a una zona de juegos y el espacio de INFEST" fetchpriority="high">
+                    <img src="{{ asset('images/welcome/2023-10-12_19-39-21_UTC_1.webp') }}" alt="Participantes junto a una zona de juegos y el espacio de INFEST" fetchpriority="high">
                     <div class="photo-label">
                         <p>Experiencias que se viven en comunidad.</p>
                         <span>Archivo visual</span>
@@ -964,7 +963,7 @@
                         <a class="button" href="https://www.instagram.com/infest_nightparty/" target="_blank" rel="noopener noreferrer">Ver archivo en Instagram <span aria-hidden="true">↗</span></a>
                     </div>
                     <div class="facet-image">
-                        <img src="{{ asset('images/INFEST_Night_Party/2024-08-06_19-29-45_UTC_1.webp') }}" alt="Registro visual de una producción nocturna de INFEST Night Party" loading="lazy">
+                        <img src="{{ asset('images/welcome/2024-08-06_19-29-45_UTC_1.webp') }}" alt="Registro visual de una producción nocturna de INFEST Night Party" loading="lazy">
                     </div>
                 </div>
             </section>
@@ -981,15 +980,15 @@
 
                     <div class="gallery-grid">
                         <figure class="gallery-card">
-                            <img src="{{ asset('images/INFEST/2023-10-14_00-06-15_UTC_1.webp') }}" alt="Participante caracterizada en una actividad de INFEST" loading="lazy">
+                            <img src="{{ asset('images/welcome/2023-10-14_00-06-15_UTC_1.webp') }}" alt="Participante caracterizada en una actividad de INFEST" loading="lazy">
                             <figcaption>Comunidad y creatividad</figcaption>
                         </figure>
                         <figure class="gallery-card">
-                            <img src="{{ asset('images/INFEST/2023-10-14_13-19-03_UTC_1.webp') }}" alt="Espacio de encuentro y actividades en un evento INFEST" loading="lazy">
+                            <img src="{{ asset('images/welcome/2023-10-14_13-19-03_UTC_1.webp') }}" alt="Espacio de encuentro y actividades en un evento INFEST" loading="lazy">
                             <figcaption>Espacios para compartir</figcaption>
                         </figure>
                         <figure class="gallery-card">
-                            <img src="{{ asset('images/INFEST_Night_Party/2024-08-07_01-08-03_UTC.jpg') }}" alt="Escenario iluminado y público en un evento de INFEST Night Party" loading="lazy">
+                            <img src="{{ asset('images/welcome/2024-08-07_01-08-03_UTC.jpg') }}" alt="Escenario iluminado y público en un evento de INFEST Night Party" loading="lazy">
                             <figcaption>INFEST Night Party</figcaption>
                         </figure>
                     </div>

@@ -33,17 +33,34 @@ class AppServiceProvider extends ServiceProvider
                     $this->rateLimitResponse($headers)
                 );
         });
+
+        RateLimiter::for('achievements', function (Request $request) {
+            return Limit::perMinute(30)
+                ->by($request->user()?->id ?? $request->ip());
+        });
+
+        RateLimiter::for('google-auth', function (Request $request) {
+            return Limit::perMinute(10)
+                ->by($request->ip());
+        });
     }
 
-    private function rateLimitResponse(array $headers)
+    private function rateLimitResponse(array $headers = [])
     {
-        return response()->json([
-            'message' => 'Demasiadas solicitudes. Intenta nuevamente más tarde.',
-        ], 429, array_merge($headers, [
-            'Cache-Control' => 'no-store, max-age=0',
+        $securityHeaders = [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
             'X-Content-Type-Options' => 'nosniff',
             'X-Frame-Options' => 'DENY',
             'Referrer-Policy' => 'no-referrer',
-        ]));
+        ];
+
+        return response()->json(
+            [
+                'message' => 'Demasiadas solicitudes. Intenta nuevamente más tarde.',
+            ],
+            429,
+            array_merge($headers, $securityHeaders)
+        );
     }
 }

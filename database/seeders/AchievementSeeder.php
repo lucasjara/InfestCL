@@ -142,6 +142,28 @@ class AchievementSeeder extends Seeder
                 'requirement_value' => 10,
                 'sort_order' => 12,
             ],
+            [
+                'code' => 'dragonball_collected',
+                'name' => 'Guerrero Z',
+                'description' => 'Conseguiste una carta de Dragon Ball. ¡El poder aumenta sin límite!',
+                'icon' => 'playing-card',
+                'category' => 'cards',
+                'xp_reward' => 150,
+                'requirement_type' => 'dragonball_collected',
+                'requirement_value' => 1,
+                'sort_order' => 13,
+            ],
+            [
+                'code' => 'minecraft_collected',
+                'name' => 'Creador de Mundos',
+                'description' => 'Conseguiste una carta de Minecraft. ¡Un nuevo bloque en tu colección!',
+                'icon' => 'cube',
+                'category' => 'cards',
+                'xp_reward' => 150,
+                'requirement_type' => 'minecraft_collected',
+                'requirement_value' => 1,
+                'sort_order' => 14,
+            ],
         ];
         
 

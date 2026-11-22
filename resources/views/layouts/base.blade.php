@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="@yield('meta_description', 'INFEST Chile')">
         <meta name="theme-color" content="#f5f2ed">
-        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Logo_completo.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Bordes_fondo.png') }}">
 
         <title>@yield('title', 'INFEST Chile')</title>
         @vite(['resources/js/app.js'])
