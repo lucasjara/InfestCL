@@ -41,6 +41,12 @@ const categoryPresentation = {
     dragon: { label: 'DRAGÓN', color: '#4f46e5' },
     steel: { label: 'ACERO', color: '#94a3b8' },
     fairy: { label: 'HADA', color: '#f472b6' },
+    jedi: { label: 'JEDI', color: '#0ea5e9' },
+    sith: { label: 'SITH', color: '#ef4444' },
+    bounty_hunter: { label: 'CAZARECOMPENSAS', color: '#22c55e' },
+    imperial: { label: 'IMPERIAL', color: '#64748b' },
+    rebel: { label: 'REBELDE', color: '#f59e0b' },
+    droid: { label: 'DROIDE', color: '#eab308' },
     saiyan: { label: 'SAIYAN', color: '#eab308' },
     namekian: { label: 'NAMEKIANO', color: '#22c55e' },
     human: { label: 'HUMANO', color: '#0ea5e9' },
@@ -52,6 +58,10 @@ const categoryPresentation = {
     evil: { label: 'MALIGNO', color: '#dc2626' },
     nucleico: { label: 'NUCLÉICO', color: '#84cc16' },
     other: { label: 'OTRO', color: '#94a3b8' },
+    passive: { label: 'PASIVO', color: '#22c55e' },
+    neutral: { label: 'NEUTRAL', color: '#eab308' },
+    hostile: { label: 'HOSTIL', color: '#ef4444' },
+    boss: { label: 'JEFE', color: '#a855f7' },
 };
 
 function getCategoryPresentation(card) {
@@ -374,7 +384,8 @@ export async function initializeCollectionList(container) {
 
                     const usesExternalApi = card.type === 'pokemon'
                         || card.type === 'starwars'
-                        || card.type === 'dragonball';
+                        || card.type === 'dragonball'
+                        || card.type === 'minecraft';
                     const isContainImage = usesExternalApi && !(card.image instanceof Blob);
                     image.classList.toggle('is-contain', isContainImage);
 
@@ -706,7 +717,8 @@ export async function initializeCollectionDetail(container, collectionId, active
 
             const usesExternalApi = card.type === 'pokemon'
                 || card.type === 'starwars'
-                || card.type === 'dragonball';
+                || card.type === 'dragonball'
+                || card.type === 'minecraft';
             const isContainImage = usesExternalApi && !(card.image instanceof Blob);
             image.classList.toggle('is-contain', isContainImage);
 
@@ -799,6 +811,7 @@ const cardTypePresentation = {
     pokemon: 'Pokémon',
     starwars: 'Star Wars',
     dragonball: 'Dragon Ball',
+    minecraft: 'Minecraft',
     personal: 'Personalizadas',
     default: 'Predeterminadas',
 };

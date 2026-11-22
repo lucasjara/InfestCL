@@ -642,7 +642,7 @@
         border-radius: 12px;
         background: #17121f;
         color: #fff;
-        box-shadow: 0 0 25px rgb(139 92 246 / 25%);
+        box-shadow: 0 0 25px color-mix(in srgb, var(--category-color) 25%, transparent);
     }
 
     .generated-card-header {
@@ -1137,6 +1137,21 @@ document.addEventListener('DOMContentLoaded', () => {
         other: '#94a3b8'
     };
 
+    const MINECRAFT_API_URL = 'https://api.mc-craft.com';
+
+    const minecraftCategories = {
+        passive: { label: 'PASIVO', color: '#22c55e' },
+        neutral: { label: 'NEUTRAL', color: '#eab308' },
+        hostile: { label: 'HOSTIL', color: '#ef4444' },
+        boss: { label: 'JEFE', color: '#a855f7' }
+    };
+    const minecraftCategoryColors = {
+        passive: '#22c55e',
+        neutral: '#eab308',
+        hostile: '#ef4444',
+        boss: '#a855f7'
+    };
+
     const randomCards = [
         {
             id: 'default-dragon-astral',
@@ -1206,6 +1221,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return DRAGONBALL_RACE_CATEGORIES[key] ?? 'other';
     }
 
+    function categorizeMinecraft(type) {
+        const key = String(type ?? '').trim().toLowerCase();
+        return minecraftCategories[key] ? key : 'passive';
+    }
+
     const elements = {
         name: document.getElementById('card-name'),
         description: document.getElementById('card-description'),
@@ -1227,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pokemon: false,
         starwars: false,
         dragonball: false,
+        minecraft: false,
         previewNumber: document.getElementById('preview-number'),
         cardLoading: document.getElementById('card-loading')
     };
@@ -1409,6 +1430,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category = {
                 label: dragonballCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
                 color: dragonballCategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
+        }
+        else if(elements.minecraft === true){
+            const categoryKey = elements.category.value;
+            category = {
+                label: minecraftCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
+                color: minecraftCategoryColors[categoryKey] ?? '#8b5cf6'
             };
             elements.previewCategory.textContent = category.label;
         }
@@ -1605,6 +1634,74 @@ document.addEventListener('DOMContentLoaded', () => {
             return fallback;
         }
     }
+    async function getRandomMinecraft() {
+        try {
+            const response = await fetch(`${MINECRAFT_API_URL}/mobs/en`);
+            if (!response.ok) throw new Error('No se pudo obtener mobs de Minecraft');
+            const data = await response.json();
+            const mobs = data.mobs;
+            if (!mobs || mobs.length === 0) throw new Error('Sin mobs disponibles');
+
+            const mob = mobs[Math.floor(Math.random() * mobs.length)];
+            const category = categorizeMinecraft(mob.type);
+
+            let description = mob.description || `Mob de Minecraft ${mob.name}`;
+
+            try {
+                const descriptionForTranslation = description.length > 500
+                    ? description.slice(0, 500)
+                    : description;
+
+                const trResponse = await fetch(
+                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
+                );
+                const trData = await trResponse.json();
+                if (trData.responseData?.translatedText) {
+                    description = trData.responseData.translatedText;
+                }
+            } catch {
+                // mantener descripción original si falla la traducción
+            }
+
+            if (description.length > 105) {
+                description = description.slice(0, 105).trimEnd() + '...';
+            }
+
+            // La imagen se obtiene desde bisai (CORS habilitado); el icono de
+            // MC-Craft bloquea la carga cross-origin con CORP same-origin.
+            const imageSlug = String(mob.id ?? mob.name ?? '')
+                .replace(/^minecraft:/, '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '_');
+
+            const cardSlug = String(mob.name ?? mob.id ?? '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-]/g, '');
+
+            return {
+                id: `mc-${cardSlug || imageSlug}`,
+                externalId: mob.id,
+                name: mob.name,
+                description,
+                category,
+                level: Math.floor(Math.random() * 10) + 1,
+                image: `https://mc-api.bisai.dev/v1/mobs/${imageSlug}/image.png`
+            };
+        } catch {
+            const fallback = {
+                id: 'mc-fallback',
+                name: 'Mob Desconocido',
+                description: 'Un habitante del mundo de Minecraft.',
+                category: 'passive',
+                level: 1,
+                image: cardImageFallbackUrl
+            };
+            return fallback;
+        }
+    }
     function setCategories(categories) {
         elements.category.innerHTML = Object.entries(categories)
             .map(([key, value]) => `
@@ -1620,6 +1717,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isPokemon = normalizedName === 'pokemon';
         const isStarWars = normalizedName === 'starwars';
         const isDragonBall = normalizedName === 'dragonball';
+        const isMinecraft = normalizedName === 'minecraft';
         elements.cardLoading.style.display = 'flex';
         try {
             let card;
@@ -1646,6 +1744,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 categoryMap = dragonballCategories;
                 categoryColors = dragonballCategoryColors;
                 imageBase = null;
+            } else if (isMinecraft) {
+                card = await getRandomMinecraft();
+                type = 'minecraft';
+                categoryMap = minecraftCategories;
+                categoryColors = minecraftCategoryColors;
+                imageBase = null;
             } else {
                 card = randomCards[getRandomIndex()];
                 type = 'default';
@@ -1654,7 +1758,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 imageBase = cardImageBaseUrl;
             }
 
-            const usesExternalApi = isPokemon || isStarWars || isDragonBall;
+            const usesExternalApi = isPokemon || isStarWars || isDragonBall || isMinecraft;
 
             setCategories(categoryMap);
             elements.level.value = usesExternalApi ? card.level : Math.floor(Math.random() * 10) + 1;
@@ -1703,6 +1807,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: card.category,
                 level: card.level,
                 image: card.image
+            } : isMinecraft ? {
+                id: card.id,
+                externalId: card.id,
+                type: 'minecraft',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
             } : {
                 id: card.id,
                 type: 'default',
@@ -1715,6 +1828,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.pokemon = isPokemon;
             elements.starwars = isStarWars;
             elements.dragonball = isDragonBall;
+            elements.minecraft = isMinecraft;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
@@ -1724,7 +1838,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `#${String(card.id).replace('db-', '').padStart(4, '0')}`
                     : isStarWars
                         ? `#${getUniqueStarWarsNumber().toString().padStart(4, '0')}`
-                        : `#0052`;
+                        : isMinecraft
+                            ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
+                            : `#0052`;
 
             elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
@@ -1738,6 +1854,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 notifyAchievement('starwars_collected');
             } else if (isDragonBall) {
                 notifyAchievement('dragonball_collected');
+            } else if (isMinecraft) {
+                notifyAchievement('minecraft_collected');
             }
             resetImageAdjustment();
             updatePreview();

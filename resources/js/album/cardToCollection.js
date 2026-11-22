@@ -86,6 +86,8 @@ addButton?.addEventListener('click', async () => {
             notifyAchievement('starwars_collected');
         }else if(card.type === 'dragonball'){
             notifyAchievement('dragonball_collected');
+        }else if(card.type === 'minecraft'){
+            notifyAchievement('minecraft_collected');
         }else if(card.type === 'personal'){
             notifyAchievement('custom_card_created');
         }

@@ -17,7 +17,7 @@ export class CardService {
         }
 
         const type = String(data?.type ?? 'default');
-        const allowedTypes = ['default', 'pokemon', 'personal', 'starwars', 'dragonball'];
+        const allowedTypes = ['default', 'pokemon', 'personal', 'starwars', 'dragonball', 'minecraft'];
 
         if (!allowedTypes.includes(type)) {
             throw new Error('The card type is invalid.');
@@ -39,7 +39,7 @@ export class CardService {
 
         if (requiresUuid) {
             id = this.createUuid();
-        } else if (type === 'pokemon' || type === 'dragonball') {
+        } else if (type === 'pokemon' || type === 'dragonball' || type === 'minecraft') {
             id = String(data.id ?? (
                 data.externalId ? `${type}-${data.externalId}` : ''
             )).trim();
@@ -48,7 +48,7 @@ export class CardService {
         }
 
         if (!id) {
-            throw new Error('Default, Pokemon and Dragon Ball cards require a stable identifier.');
+            throw new Error('Default, Pokemon, Dragon Ball and Minecraft cards require a stable identifier.');
         }
 
         const card = {
