@@ -1468,6 +1468,22 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         dispatchCardReady();
     }
+    async function translateToSpanish(text, maxLength = 500) {
+        const source = String(text ?? '').trim();
+        if (!source) return text;
+
+        const query = source.length > maxLength ? source.slice(0, maxLength) : source;
+
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=en|es`
+            );
+            const data = await response.json();
+            return data?.responseData?.translatedText || text;
+        } catch {
+            return text;
+        }
+    }
     async function getRandomPokemon() {
         // Pokédex nacional: primera generación hasta la novena
         const pokemonId = Math.floor(Math.random() * 1025) + 1;
@@ -1495,12 +1511,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Traducir al español si viene en inglés
         if (descriptionEntry?.language.name === 'en') {
-            const response = await fetch(
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(description)}&langpair=en|es`
-            );
-
-            const data = await response.json();
-            description = data.responseData.translatedText;
+            description = await translateToSpanish(description);
         }
         // Calcular rareza
         let level;
@@ -1526,7 +1537,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return {
             id: pokemon.id,
             name: pokemon.name,
-            description: descriptionEntry?.flavor_text
+            description: String(description)
                 .replace(/[\n\f]/g, ' ') || 'Sin descripción disponible.',
             category: pokemon.types[0].type.name,
             level,
@@ -1548,21 +1559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let description = char.description || `Personaje de Star Wars ${char.name}`;
 
-            const descriptionForTranslation = description.length > 500
-                ? description.slice(0, 500)
-                : description;
-
-            try {
-                const trResponse = await fetch(
-                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
-                );
-                const trData = await trResponse.json();
-                if (trData.responseData?.translatedText) {
-                    description = trData.responseData.translatedText;
-                }
-            } catch {
-                // mantener descripción original si falla la traducción
-            }
+            description = await translateToSpanish(description);
 
             if (description.length > 105) {
                 description = description.slice(0, 105).trimEnd() + '...';
@@ -1647,21 +1644,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let description = mob.description || `Mob de Minecraft ${mob.name}`;
 
-            try {
-                const descriptionForTranslation = description.length > 500
-                    ? description.slice(0, 500)
-                    : description;
-
-                const trResponse = await fetch(
-                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
-                );
-                const trData = await trResponse.json();
-                if (trData.responseData?.translatedText) {
-                    description = trData.responseData.translatedText;
-                }
-            } catch {
-                // mantener descripción original si falla la traducción
-            }
+            description = await translateToSpanish(description);
 
             if (description.length > 105) {
                 description = description.slice(0, 105).trimEnd() + '...';
