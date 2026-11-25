@@ -924,8 +924,9 @@
                 </div>
 
                 <div class="card-result">
-                    <div class="generated-card">
-                        <div class="generated-card-header">
+                    <div class="card-3d-stage">
+                        <div class="generated-card card-3d">
+                            <div class="generated-card-header">
                             <h3 id="preview-name">Dragón Astral</h3>
                             <span id="preview-category">MAGIA</span>
                         </div>
@@ -1851,7 +1852,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 notifyAchievement('minecraft_collected');
             }
             resetImageAdjustment();
-            updatePreview();
+    // Efecto 3D interactivo en «Tu carta obtenida».
+    function tryAttachTilt() {
+        const card3d = document.querySelector('.generated-card.card-3d');
+        if (card3d && window.InfestCardTilt) {
+            window.InfestCardTilt.attach(card3d);
+        } else {
+            setTimeout(tryAttachTilt, 50);
+        }
+    }
+    tryAttachTilt();
+
+    updatePreview();
             playCardReveal();
 
         } catch (error) {
@@ -1961,6 +1973,16 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', event => {
         event.preventDefault();
     });
+
+    function tryAttachTilt() {
+        const card3d = document.querySelector('.generated-card.card-3d');
+        if (card3d && window.InfestCardTilt) {
+            window.InfestCardTilt.attach(card3d);
+        } else {
+            setTimeout(tryAttachTilt, 50);
+        }
+    }
+    tryAttachTilt();
 
     updatePreview();
 });

@@ -42,6 +42,7 @@ class CardRevealController {
         if (!this._refs.root) return Promise.resolve();
 
         this.busy = true;
+        this._closing = false;
         this._token += 1;
         const token = this._token;
 
@@ -129,7 +130,13 @@ class CardRevealController {
         if (source && source.cloneNode) {
             const clone = source.cloneNode(true);
             clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
-            // Ocultar cualquier spinner de carga que haya quedado en la carta clonada.
+            // Limpiar efectos del tilt 3D para no interferir con el flip.
+            clone.classList.remove('card-3d');
+            clone.style.removeProperty('transform');
+            clone.style.removeProperty('--holo-x');
+            clone.style.removeProperty('--holo-y');
+            clone.style.removeProperty('--shadow-x');
+            clone.style.removeProperty('--shadow-y');
             clone.querySelectorAll('.card-loading').forEach((node) => {
                 node.style.display = 'none';
             });
@@ -285,7 +292,7 @@ class CardRevealController {
     /* ------------------------------------------------------------------ */
 
     _skip() {
-        if (!this._refs || this._revealed) return;
+        if (!this._refs || this._revealed || this._closing) return;
         this._token += 1; // cancela la secuencia pendiente
         this._refs.card?.classList.add('is-flipped');
         this._refs.root.classList.remove('is-portal', 'is-enter', 'is-flashing');
@@ -293,7 +300,8 @@ class CardRevealController {
     }
 
     _close() {
-        if (!this._refs) return;
+        if (!this._refs || this._closing) return;
+        this._closing = true;
         if (this._autoCloseTimer) {
             clearTimeout(this._autoCloseTimer);
             this._autoCloseTimer = null;
@@ -301,19 +309,26 @@ class CardRevealController {
         this._token += 1;
         this._holo?.disable();
         this._particles?.stop();
-        this._particles?.clear();
 
         const { root } = this._refs;
-        root.classList.remove('is-open', 'is-revealed', 'is-flashing');
-        root.hidden = true;
-        this._revealed = false;
-        this.busy = false;
+        root.classList.remove('is-open', 'is-revealed');
+        root.classList.add('is-closing');
 
-        if (this._resolve) {
-            const resolve = this._resolve;
-            this._resolve = null;
-            resolve();
-        }
+        // Transición de desaparición antes de ocultar.
+        setTimeout(() => {
+            root.classList.remove('is-closing', 'is-portal', 'is-enter', 'is-flashing');
+            root.hidden = true;
+            this._revealed = false;
+            this.busy = false;
+            this._closing = false;
+            this._particles?.clear();
+
+            if (this._resolve) {
+                const resolve = this._resolve;
+                this._resolve = null;
+                resolve();
+            }
+        }, 450);
     }
 
     _sleep(ms, token) {

@@ -110,6 +110,7 @@
     width: min(76vw, 350px);
     aspect-ratio: 15 / 23;
     opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .card-reveal.is-enter .card-reveal__card-wrap {

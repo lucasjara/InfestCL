@@ -1,0 +1,103 @@
+/* ==========================================================================
+   INFESTCard — Efecto 3D interactivo en «Tu carta obtenida»
+   Elevación, inclinación por cursor/touch, sombra dinámica y reflejo
+   holográfico sutil. Sin dependencias externas.
+   ========================================================================== */
+
+.card-3d-stage {
+    perspective: 1100px;
+    perspective-origin: 50% 50%;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    padding: 2rem 1.5rem 2.5rem;
+}
+
+.card-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+    cursor: grab;
+}
+
+.card-3d.is-dragging {
+    cursor: grabbing;
+    transition: none;
+}
+
+.card-3d.is-tilting {
+    transition: transform 0.12s linear;
+}
+
+/* Sombra dinámica (actualizada por JS vía --shadow-x/y/blur) */
+.card-3d::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 16px;
+    background: radial-gradient(
+        ellipse at 50% 100%,
+        rgba(0, 0, 0, 0.55),
+        transparent 65%
+    );
+    transform: translateZ(-30px) translate(var(--shadow-x, 0px), var(--shadow-y, 14px));
+    filter: blur(var(--shadow-blur, 18px));
+    opacity: var(--shadow-opacity, 0.55);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Reflejo holográfico sutil que reacciona a la inclinación */
+.card-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 5;
+    mix-blend-mode: screen;
+    background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.18) 48%,
+        rgba(168, 85, 247, 0.22) 52%,
+        rgba(34, 211, 238, 0.18) 56%,
+        transparent 68%
+    );
+    background-size: 220% 220%;
+    background-position: var(--holo-x, 120%) var(--holo-y, 0%);
+    opacity: 0.7;
+    transition: background-position 0.12s linear, opacity 0.3s ease;
+}
+
+.card-3d .generated-card {
+    transform: translateZ(22px);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+/* Elevación sutil de la imagen interior */
+.card-3d .generated-card-image img {
+    transform: translateZ(8px);
+}
+
+/* Accesibilidad: sin movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .card-3d {
+        transition: none;
+        transform: translateZ(14px);
+    }
+
+    .card-3d::after {
+        display: none;
+    }
+}
+
+/* Móvil: área táctil cómoda */
+@media (max-width: 600px) {
+    .card-3d-stage {
+        padding: 1.5rem 1rem 2rem;
+    }
+}
