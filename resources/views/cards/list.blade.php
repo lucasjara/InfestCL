@@ -460,11 +460,12 @@
         font-size: 1.2rem;
     }
 
-    .panel-heading .generate-button {
+    .generate-button {
         width: auto;
         min-height: 42px;
         padding-inline: 1.25rem;
         white-space: nowrap;
+        border-radius: 999px;
     }
 
     .result-actions {
@@ -602,7 +603,59 @@
         gap: 1rem;
     }
 
+    .generate-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
     .generate-button {
+        width: auto;
+        min-height: 42px;
+        padding-inline: 1.25rem;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .generate-button--primary {
+        background: #7c3aed;
+        color: #fff;
+        border-color: #7c3aed;
+    }
+
+    .generate-button--ai {
+        background: #0ea5e9;
+        color: #fff;
+        border-color: #0ea5e9;
+    }
+
+    .generate-button--api {
+        background: #22c55e;
+        color: #fff;
+        border-color: #22c55e;
+    }
+
+    .generate-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    @media (max-width: 600px) {
+        .generate-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .generate-actions .generate-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
         width: 100%;
         min-height: 48px;
         border: 0;
@@ -815,9 +868,6 @@
                         <span class="panel-kicker">CONFIGURACIÓN</span>
                         <h2>Datos de la carta</h2>
                     </div>
-                    <button type="button" class="generate-button">
-                        Obtener carta
-                    </button>
                 </div>
 
                 <form id="card-form">
@@ -869,29 +919,22 @@
                     <div class="form-field">
                         <label for="card-image">Imagen de la carta</label>
                         <input type="file" id="card-image" accept="image/*">
-                        <small>Selecciona una imagen para tu carta.</small>
                     </div>
 
-                    <fieldset class="image-adjustments" id="image-adjustments" disabled>
-                        <legend>Ajustes de imagen</legend>
-                        <div class="image-adjustment-grid">
-                            <label for="image-zoom">
-                                Zoom <output id="image-zoom-value">100%</output>
-                                <input type="range" id="image-zoom" min="100" max="300" value="100" step="1">
-                            </label>
-                            <label for="image-horizontal">
-                                Horizontal
-                                <input type="range" id="image-horizontal" min="-100" max="100" value="0" step="1">
-                            </label>
-                            <label for="image-vertical">
-                                Vertical
-                                <input type="range" id="image-vertical" min="-100" max="100" value="0" step="1">
-                            </label>
-                        </div>
-                        <button type="button" class="reset-image-button" id="reset-image">
-                            Restablecer imagen
-                        </button>
-                    </fieldset>
+                <div class="generate-actions">
+                    <button type="button" class="generate-button generate-button--primary">
+                        <i data-lucide="sparkles"></i>
+                        Obtener carta
+                    </button>
+                    <button type="button" class="generate-button generate-button--ai">
+                        <i data-lucide="bot"></i>
+                        Obtener con IA
+                    </button>
+                    <button type="button" class="generate-button generate-button--api">
+                        <i data-lucide="globe"></i>
+                        Obtener API
+                    </button>
+                </div>
                 </form>
             </section>
 
@@ -1320,6 +1363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyImageAdjustment() {
+        if (!elements.imageZoom) return;
         const zoom = Number(elements.imageZoom.value);
         const horizontal = Number(elements.imageHorizontal.value);
         const vertical = Number(elements.imageVertical.value);
@@ -1330,6 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetImageAdjustment() {
+        if (!elements.imageZoom) return;
         elements.imageZoom.value = '100';
         elements.imageHorizontal.value = '0';
         elements.imageVertical.value = '0';
@@ -1842,7 +1887,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
                             : `#0052`;
 
-            elements.imageAdjustments.disabled = true;
+            if (elements.imageAdjustments) elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
             elements.previewImage.classList.toggle(
                 'is-api-image',
@@ -1882,10 +1927,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.description.addEventListener('input', updatePreview);
     elements.category.addEventListener('change', updatePreview);
     elements.level.addEventListener('input', updatePreview);
-    elements.imageZoom.addEventListener('input', applyImageAdjustment);
-    elements.imageHorizontal.addEventListener('input', applyImageAdjustment);
-    elements.imageVertical.addEventListener('input', applyImageAdjustment);
-    elements.resetImage.addEventListener('click', resetImageAdjustment);
+    if (elements.imageZoom) elements.imageZoom.addEventListener('input', applyImageAdjustment);
+    if (elements.imageHorizontal) elements.imageHorizontal.addEventListener('input', applyImageAdjustment);
+    if (elements.imageVertical) elements.imageVertical.addEventListener('input', applyImageAdjustment);
+    if (elements.resetImage) elements.resetImage.addEventListener('click', resetImageAdjustment);
 
     // Permitir seleccionar una imagen local.
     elements.image.addEventListener('change', () => {
@@ -1910,7 +1955,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         uploadedImageUrl = URL.createObjectURL(file);
         elements.previewImage.src = uploadedImageUrl;
-        elements.imageAdjustments.disabled = false;
+        if (elements.imageAdjustments) elements.imageAdjustments.disabled = false;
         elements.previewImage.classList.add('is-adjustable');
         elements.previewImage.classList.remove('is-api-image');
         resetImageAdjustment();
@@ -1924,7 +1969,6 @@ document.addEventListener('DOMContentLoaded', () => {
             image: file
         };
         dispatchCardReady();
-        playCardReveal();
     });
 
     elements.previewImage.addEventListener('pointerdown', (event) => {
