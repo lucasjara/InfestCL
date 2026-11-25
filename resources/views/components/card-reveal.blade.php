@@ -15,7 +15,9 @@
             <div class="card-reveal__card">
                 <div class="card-reveal__face card-reveal__face--back" aria-hidden="true">
                     <div class="card-reveal__back-mark">
-                        <span class="card-reveal__back-emblem">I</span>
+                        <span class="card-reveal__back-emblem">
+                            <img src="{{ asset('images/brand/Infest_Logo_completo.png') }}" alt="INFEST">
+                        </span>
                         <span class="card-reveal__back-title">INFEST</span>
                         <span class="card-reveal__back-sub">Card</span>
                     </div>

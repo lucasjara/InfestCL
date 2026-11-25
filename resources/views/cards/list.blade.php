@@ -977,6 +977,12 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.querySelector('.generator-grid');
+    if (grid) {
+        const top = grid.getBoundingClientRect().top + window.scrollY - 20;
+        window.scrollTo({ top, behavior: 'smooth' });
+    }
+
     const form = document.getElementById('card-form');
     const generateButton = document.querySelector('.generate-button');
     const cardImageBaseUrl = @js(asset('images/cards'));

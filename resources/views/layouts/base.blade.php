@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="@yield('meta_description', 'INFEST Chile')">
         <meta name="theme-color" content="#f5f2ed">
-        <link rel="icon" type="image/png" href="{{ asset('images/brand/Infest_Bordes_fondo.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('images/welcome/Infest_Logo_completo.png') }}">
 
         <title>@yield('title', 'INFEST Chile')</title>
         @vite(['resources/js/app.js'])
@@ -295,8 +295,8 @@
             <div class="shell header-inner">
                 <a class="brand" href="{{ url('/') }}" aria-label="INFEST Chile, inicio">
                     <span class="brand-mark" aria-hidden="true">
-                        <img class="logo-light" src="{{ asset('images/brand/Logotipo-Infest-trazado-removebg-preview.png') }}" alt="" width="126" height="42">
-                        <img class="logo-dark" src="{{ asset('images/brand/Infest_Logo_completo.png') }}" alt="" width="126" height="42">
+<img class="logo-light" src="{{ asset('images/welcome/Logotipo_Infest_trazado.png') }}" alt="" width="126" height="42">
+<img class="logo-dark" src="{{ asset('images/welcome/Infest_Logo_completo.png') }}" alt="" width="126" height="42">
                     </span>
                 </a>
 
