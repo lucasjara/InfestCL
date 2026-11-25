@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/album/show.js',
                 'resources/js/album/cardToCollection.js',
                 'resources/js/roulette/index.js',
+                'resources/js/cards/index.js',
             ],
             refresh: true,
             fonts: [

@@ -968,8 +968,11 @@
 
         </div>
     </main>
+
+    <x-card-reveal />
 @endsection
 @push('scripts')
+    @vite(['resources/js/cards/index.js'])
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -1272,6 +1275,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.dispatchEvent(new CustomEvent('infest:card-ready', {
             detail: { ...currentCard }
         }));
+    }
+
+    // Lanza la animación de revelación (overlay visual, no bloqueante).
+    function playCardReveal() {
+        if (!window.InfestCardReveal) return;
+        const source = document.querySelector('.generated-card');
+        window.InfestCardReveal.play({ card: { ...currentCard }, source });
     }
 
     function getRandomIndex() {
@@ -1751,11 +1761,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(cardBlobUrl);
                 }
                 cardBlobUrl = URL.createObjectURL(card.image);
-                setCardImage(cardBlobUrl, () => {
+                await setCardImage(cardBlobUrl, () => {
                     elements.cardLoading.style.display = 'none';
                 });
             } else {
-                setCardImage(
+                await setCardImage(
                     usesExternalApi ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`,
                     () => {
                         elements.cardLoading.style.display = 'none';
@@ -1842,6 +1852,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             resetImageAdjustment();
             updatePreview();
+            playCardReveal();
 
         } catch (error) {
             console.error(error);
@@ -1895,6 +1906,7 @@ document.addEventListener('DOMContentLoaded', () => {
             image: file
         };
         dispatchCardReady();
+        playCardReveal();
     });
 
     elements.previewImage.addEventListener('pointerdown', (event) => {
