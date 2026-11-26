@@ -6,7 +6,14 @@
 
 @section('navigation')
     <x-experience-navigation />
-    <a href="{{ route('album.index') }}">Colecciones</a>
+    <a href="{{ route('album.index') }}">
+        <i data-lucide="layers"></i>
+        Colecciones
+    </a>
+    <a href="{{ route('cards.list') }}" aria-current="page">
+        <i data-lucide="sparkles"></i>
+        Generador
+    </a>
 @endsection
 
 @section('styles')
@@ -406,7 +413,7 @@
     }
     
     .card-generator-page {
-        padding-block: clamp(1.5rem, 5vw, 3rem);
+        padding-block: clamp(0.5rem, 5vw, 1rem);
     }
 
     .generator-heading {
@@ -460,11 +467,12 @@
         font-size: 1.2rem;
     }
 
-    .panel-heading .generate-button {
+    .generate-button {
         width: auto;
         min-height: 42px;
         padding-inline: 1.25rem;
         white-space: nowrap;
+        border-radius: 999px;
     }
 
     .result-actions {
@@ -602,7 +610,131 @@
         gap: 1rem;
     }
 
+    .generate-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
     .generate-button {
+        width: auto;
+        min-height: 42px;
+        padding-inline: 1.25rem;
+        padding-block: 0.6rem;
+        white-space: nowrap;
+        border-radius: 999px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        position: relative;
+        overflow: visible;
+    }
+
+    .generate-button__main {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .generate-button small {
+        font-size: 0.68rem;
+        font-weight: 400;
+        opacity: 0.85;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .generate-tag {
+        position: absolute;
+        top: -10px;
+        right: 12px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        background: #f472b6;
+        color: #fff;
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+
+    .generate-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .generate-button--primary {
+        background: #7c3aed;
+        color: #fff;
+        border-color: #7c3aed;
+    }
+
+    .generate-button--ai {
+        background: #0ea5e9;
+        color: #fff;
+        border-color: #0ea5e9;
+    }
+
+    .generate-button--api {
+        background: #22c55e;
+        color: #fff;
+        border-color: #22c55e;
+    }
+
+    .generate-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    @media (max-width: 600px) {
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .panel-kicker svg {
+        width: 0.7em;
+        height: 0.7em;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .panel-kicker i[data-lucide] {
+        width: 0.7em;
+        height: 0.7em;
+        flex-shrink: 0;
+    }
+
+    .description-counter {
+        display: block;
+        text-align: right;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.25rem;
+    }
+
+    .generate-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .generate-actions .generate-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
         width: 100%;
         min-height: 48px;
         border: 0;
@@ -625,7 +757,11 @@
         padding: 1rem;
         border: 1px dashed var(--line);
         border-radius: 14px;
-        background: var(--paper);
+        background:
+            radial-gradient(circle at 50% 40%, rgba(124, 58, 237, 0.12), transparent 60%),
+            var(--paper);
+        position: relative;
+        overflow: hidden;
     }
 
     .generated-card {
@@ -703,16 +839,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(23, 18, 31, 0.6);
-        z-index: 50;
+        background: #000;
+        z-index: 9997;
     }
 
     .card-loading-spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #fff;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(168, 85, 247, 0.25);
+        border-top-color: #a855f7;
         border-radius: 50%;
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
         animation: card-spin 0.8s linear infinite;
     }
 
@@ -772,7 +909,29 @@
             grid-template-columns: 1fr;
         }
 
-        .card-result {
+    .form-field label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-field label svg {
+        width: 12px !important;
+        height: 12px !important;
+        max-width: 12px !important;
+        max-height: 12px !important;
+        color: var(--violet);
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+        display: block;
+        text-align: right;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.25rem;
+    }
+
+    .card-result {
             min-height: 420px;
         }
     }
@@ -796,33 +955,22 @@
 @endsection
 @section('content')
 <main class="card-generator-page" style="margin-left:2%;margin-right:2%;">
-        <div class="generator-heading">
-            <div>
-                <p class="generator-kicker">INFEST · CARD GENERATOR</p>
-                <h1>Generador de cartas</h1>
-                <p class="generator-description">
-                    Completa los datos y descubre la carta que has creado.
-                </p>
-            </div>
-        </div>
-
         <div class="generator-grid">
 
             {{-- IZQUIERDA: FORMULARIO --}}
             <section class="generator-panel">
                 <div class="panel-heading">
                     <div>
-                        <span class="panel-kicker">CONFIGURACIÓN</span>
+                        <span class="panel-kicker"><i data-lucide="settings"></i> CONFIGURACIÓN</span>
                         <h2>Datos de la carta</h2>
                     </div>
-                    <button type="button" class="generate-button">
-                        Obtener carta
-                    </button>
                 </div>
 
                 <form id="card-form">
                     <div class="form-field">
-                        <label for="card-name">Nombre de la carta</label>
+                        <label for="card-name">
+                            <i data-lucide="tag"></i> Nombre de la carta
+                        </label>
                         <input
                             type="text"
                             id="card-name"
@@ -832,18 +980,23 @@
                     </div>
 
                     <div class="form-field">
-                        <label for="card-description">Descripción</label>
+                        <label for="card-description">
+                            <i data-lucide="align-left"></i> Descripción
+                        </label>
                         <textarea
                             id="card-description"
                             rows="4"
                             placeholder="Describe tu carta..."
                             maxlength="120"
                         >Una criatura ancestral que domina la energía de las estrellas. Su presencia altera el equilibrio del universo.</textarea>
+                        <small id="description-counter" class="description-counter">0 / 120</small>
                     </div>
 
                     <div class="form-row">
                         <div class="form-field">
-                            <label for="card-category">Categoría</label>
+                            <label for="card-category">
+                                <i data-lucide="layers"></i> Categoría
+                            </label>
                             <select id="card-category">
                                 <option value="magic">Magia</option>
                                 <option value="fire">Fuego</option>
@@ -854,7 +1007,9 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="card-level">Nivel</label>
+                            <label for="card-level">
+                                <i data-lucide="zap"></i> Nivel
+                            </label>
                             <input
                                 type="number"
                                 id="card-level"
@@ -867,31 +1022,36 @@
                     </div>
 
                     <div class="form-field">
-                        <label for="card-image">Imagen de la carta</label>
+                        <label for="card-image">
+                            <i data-lucide="image"></i> Imagen de la carta
+                        </label>
                         <input type="file" id="card-image" accept="image/*">
-                        <small>Selecciona una imagen para tu carta.</small>
                     </div>
 
-                    <fieldset class="image-adjustments" id="image-adjustments" disabled>
-                        <legend>Ajustes de imagen</legend>
-                        <div class="image-adjustment-grid">
-                            <label for="image-zoom">
-                                Zoom <output id="image-zoom-value">100%</output>
-                                <input type="range" id="image-zoom" min="100" max="300" value="100" step="1">
-                            </label>
-                            <label for="image-horizontal">
-                                Horizontal
-                                <input type="range" id="image-horizontal" min="-100" max="100" value="0" step="1">
-                            </label>
-                            <label for="image-vertical">
-                                Vertical
-                                <input type="range" id="image-vertical" min="-100" max="100" value="0" step="1">
-                            </label>
-                        </div>
-                        <button type="button" class="reset-image-button" id="reset-image">
-                            Restablecer imagen
-                        </button>
-                    </fieldset>
+                <div class="generate-actions">
+                    <button type="button" class="generate-button generate-button--primary">
+                        <span class="generate-tag">★ Recomendado</span>
+                        <span class="generate-button__main">
+                            <i data-lucide="sparkles"></i>
+                            Obtener carta
+                        </span>
+                        <small>Genera una carta<br>con los datos ingresados</small>
+                    </button>
+                    <button type="button" class="generate-button generate-button--ai">
+                        <span class="generate-button__main">
+                            <i data-lucide="bot"></i>
+                            Generar con IA
+                        </span>
+                        <small>Crea contenido dinámico<br>con inteligencia artificial</small>
+                    </button>
+                    <button type="button" class="generate-button generate-button--api">
+                        <span class="generate-button__main">
+                            <i data-lucide="globe"></i>
+                            Obtener desde API
+                        </span>
+                        <small>Obtén información desde<br>una fuente externa</small>
+                    </button>
+                </div>
                 </form>
             </section>
 
@@ -899,7 +1059,7 @@
             <section class="result-panel">
                 <div class="panel-heading">
                     <div>
-                        <span class="panel-kicker">RESULTADO</span>
+                        <span class="panel-kicker"><i data-lucide="bar-chart-3"></i> RESULTADO</span>
                         <h2>Tu carta obtenida</h2>
                     </div>
                     <div class="result-actions">
@@ -924,8 +1084,9 @@
                 </div>
 
                 <div class="card-result">
-                    <div class="generated-card">
-                        <div class="generated-card-header">
+                    <div class="card-3d-stage">
+                        <div class="generated-card card-3d">
+                            <div class="generated-card-header">
                             <h3 id="preview-name">Dragón Astral</h3>
                             <span id="preview-category">MAGIA</span>
                         </div>
@@ -936,9 +1097,6 @@
                                 src="{{ asset('images/cards/dragon-astral.webp') }}"
                                 alt="Imagen de la carta"
                             >
-                            <div id="card-loading" class="card-loading" style="display:none;">
-                                <div class="card-loading-spinner"></div>
-                            </div>
                         </div>
 
                         <div class="generated-card-description">
@@ -968,11 +1126,34 @@
 
         </div>
     </main>
+
+    <x-card-reveal />
+
+    <div id="card-loading" class="card-loading" style="display:none;">
+        <div class="card-loading-spinner"></div>
+    </div>
 @endsection
 @push('scripts')
+    @vite(['resources/js/cards/index.js'])
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) window.lucide.createIcons({ icons: window.lucide.icons });
+
+    // Forzar tamaño de iconos en labels (Lucide setea 24x24 por defecto).
+    document.querySelectorAll('.form-field label svg, .panel-kicker svg').forEach((svg) => {
+        svg.setAttribute('width', '12');
+        svg.setAttribute('height', '12');
+        svg.style.width = '12px';
+        svg.style.height = '12px';
+    });
+
+    const grid = document.querySelector('.generator-grid');
+    if (grid) {
+        const top = grid.getBoundingClientRect().top + window.scrollY - 20;
+        window.scrollTo({ top, behavior: 'smooth' });
+    }
+
     const form = document.getElementById('card-form');
     const generateButton = document.querySelector('.generate-button');
     const cardImageBaseUrl = @js(asset('images/cards'));
@@ -1274,6 +1455,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     }
 
+    // Lanza la animación de revelación (overlay visual, no bloqueante).
+    function playCardReveal() {
+        if (!window.InfestCardReveal) return;
+        const source = document.querySelector('.generated-card');
+        window.InfestCardReveal.play({ card: { ...currentCard }, source });
+    }
+
     function getRandomIndex() {
         let index;
 
@@ -1303,6 +1491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyImageAdjustment() {
+        if (!elements.imageZoom) return;
         const zoom = Number(elements.imageZoom.value);
         const horizontal = Number(elements.imageHorizontal.value);
         const vertical = Number(elements.imageVertical.value);
@@ -1313,6 +1502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetImageAdjustment() {
+        if (!elements.imageZoom) return;
         elements.imageZoom.value = '100';
         elements.imageHorizontal.value = '0';
         elements.imageVertical.value = '0';
@@ -1449,6 +1639,11 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.previewName.textContent = elements.name.value || 'Carta sin nombre';
         elements.previewDescription.textContent = elements.description.value || 'Sin descripción disponible.';
 
+        const descriptionCounter = document.getElementById('description-counter');
+        if (descriptionCounter) {
+            descriptionCounter.textContent = `${(elements.description.value || '').length} / 120`;
+        }
+
         elements.previewLevel.textContent = Array.from(
             { length: Math.min(50, Math.max(1, Number(elements.level.value) || 1)) },
             () => '●'
@@ -1467,6 +1662,22 @@ document.addEventListener('DOMContentLoaded', () => {
             level: Math.min(50, Math.max(1, Number(elements.level.value) || 1))
         };
         dispatchCardReady();
+    }
+    async function translateToSpanish(text, maxLength = 500) {
+        const source = String(text ?? '').trim();
+        if (!source) return text;
+
+        const query = source.length > maxLength ? source.slice(0, maxLength) : source;
+
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=en|es`
+            );
+            const data = await response.json();
+            return data?.responseData?.translatedText || text;
+        } catch {
+            return text;
+        }
     }
     async function getRandomPokemon() {
         // Pokédex nacional: primera generación hasta la novena
@@ -1495,12 +1706,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Traducir al español si viene en inglés
         if (descriptionEntry?.language.name === 'en') {
-            const response = await fetch(
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(description)}&langpair=en|es`
-            );
-
-            const data = await response.json();
-            description = data.responseData.translatedText;
+            description = await translateToSpanish(description);
         }
         // Calcular rareza
         let level;
@@ -1526,7 +1732,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return {
             id: pokemon.id,
             name: pokemon.name,
-            description: descriptionEntry?.flavor_text
+            description: String(description)
                 .replace(/[\n\f]/g, ' ') || 'Sin descripción disponible.',
             category: pokemon.types[0].type.name,
             level,
@@ -1536,7 +1742,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     async function getRandomStarWars() {
         try {
-            const response = await fetch('https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=100');
+            // Reintento por si el servicio (Render free) está despertando (503).
+            let response;
+            for (let attempt = 0; attempt < 3; attempt += 1) {
+                response = await fetch('https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=100');
+                if (response.ok) break;
+                if (attempt < 2) await new Promise(r => setTimeout(r, 1500));
+            }
             if (!response.ok) throw new Error('No se pudo obtener personajes de Star Wars');
             const data = await response.json();
             const characters = data.data;
@@ -1548,21 +1760,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let description = char.description || `Personaje de Star Wars ${char.name}`;
 
-            const descriptionForTranslation = description.length > 500
-                ? description.slice(0, 500)
-                : description;
-
-            try {
-                const trResponse = await fetch(
-                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
-                );
-                const trData = await trResponse.json();
-                if (trData.responseData?.translatedText) {
-                    description = trData.responseData.translatedText;
-                }
-            } catch {
-                // mantener descripción original si falla la traducción
-            }
+            description = await translateToSpanish(description);
 
             if (description.length > 105) {
                 description = description.slice(0, 105).trimEnd() + '...';
@@ -1647,21 +1845,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let description = mob.description || `Mob de Minecraft ${mob.name}`;
 
-            try {
-                const descriptionForTranslation = description.length > 500
-                    ? description.slice(0, 500)
-                    : description;
-
-                const trResponse = await fetch(
-                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(descriptionForTranslation)}&langpair=en|es`
-                );
-                const trData = await trResponse.json();
-                if (trData.responseData?.translatedText) {
-                    description = trData.responseData.translatedText;
-                }
-            } catch {
-                // mantener descripción original si falla la traducción
-            }
+            description = await translateToSpanish(description);
 
             if (description.length > 105) {
                 description = description.slice(0, 105).trimEnd() + '...';
@@ -1718,6 +1902,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const isStarWars = normalizedName === 'starwars';
         const isDragonBall = normalizedName === 'dragonball';
         const isMinecraft = normalizedName === 'minecraft';
+
+        if ((isPokemon && !apiStatus.pokemon) || (isStarWars && !apiStatus.starwars)
+            || (isDragonBall && !apiStatus.dragonball) || (isMinecraft && !apiStatus.minecraft)) {
+            window.Swal?.fire({
+                toast: true, position: 'top-end', icon: 'error',
+                title: 'API con problemas',
+                text: 'Esta API está con problemas, vuelve a intentarlo más tarde.',
+                showConfirmButton: false, timer: 4000, background: '#18181b', color: '#f4f4f5'
+            });
+            return;
+        }
+
         elements.cardLoading.style.display = 'flex';
         try {
             let card;
@@ -1768,11 +1964,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(cardBlobUrl);
                 }
                 cardBlobUrl = URL.createObjectURL(card.image);
-                setCardImage(cardBlobUrl, () => {
+                await setCardImage(cardBlobUrl, () => {
                     elements.cardLoading.style.display = 'none';
                 });
             } else {
-                setCardImage(
+                await setCardImage(
                     usesExternalApi ? card.image : `${cardImageBaseUrl}/${encodeURIComponent(card.image)}`,
                     () => {
                         elements.cardLoading.style.display = 'none';
@@ -1842,7 +2038,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
                             : `#0052`;
 
-            elements.imageAdjustments.disabled = true;
+            if (elements.imageAdjustments) elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
             elements.previewImage.classList.toggle(
                 'is-api-image',
@@ -1858,7 +2054,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 notifyAchievement('minecraft_collected');
             }
             resetImageAdjustment();
-            updatePreview();
+    // Efecto 3D interactivo en «Tu carta obtenida».
+    function tryAttachTilt() {
+        const card3d = document.querySelector('.generated-card.card-3d');
+        if (card3d && window.InfestCardTilt) {
+            window.InfestCardTilt.attach(card3d);
+        } else {
+            setTimeout(tryAttachTilt, 50);
+        }
+    }
+    tryAttachTilt();
+
+    updatePreview();
+            playCardReveal();
 
         } catch (error) {
             console.error(error);
@@ -1870,10 +2078,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.description.addEventListener('input', updatePreview);
     elements.category.addEventListener('change', updatePreview);
     elements.level.addEventListener('input', updatePreview);
-    elements.imageZoom.addEventListener('input', applyImageAdjustment);
-    elements.imageHorizontal.addEventListener('input', applyImageAdjustment);
-    elements.imageVertical.addEventListener('input', applyImageAdjustment);
-    elements.resetImage.addEventListener('click', resetImageAdjustment);
+    if (elements.imageZoom) elements.imageZoom.addEventListener('input', applyImageAdjustment);
+    if (elements.imageHorizontal) elements.imageHorizontal.addEventListener('input', applyImageAdjustment);
+    if (elements.imageVertical) elements.imageVertical.addEventListener('input', applyImageAdjustment);
+    if (elements.resetImage) elements.resetImage.addEventListener('click', resetImageAdjustment);
 
     // Permitir seleccionar una imagen local.
     elements.image.addEventListener('change', () => {
@@ -1898,7 +2106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         uploadedImageUrl = URL.createObjectURL(file);
         elements.previewImage.src = uploadedImageUrl;
-        elements.imageAdjustments.disabled = false;
+        if (elements.imageAdjustments) elements.imageAdjustments.disabled = false;
         elements.previewImage.classList.add('is-adjustable');
         elements.previewImage.classList.remove('is-api-image');
         resetImageAdjustment();
@@ -1962,10 +2170,117 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.previewImage.addEventListener('pointerup', finishImageDrag);
     elements.previewImage.addEventListener('pointercancel', finishImageDrag);
 
+    // Botón IA aún no funcional (placeholder).
+    document.querySelectorAll('.generate-button--ai').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (window.Swal) {
+                window.Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Próximamente',
+                    text: 'Esta función aún no está disponible.',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    background: '#18181b',
+                    color: '#f4f4f5'
+                });
+            } else {
+                alert('Esta función aún no está disponible.');
+            }
+        });
+    });
+
+    let lastApiSelection = [];
+
+    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true };
+    const apiCheckEndpoints = {
+        pokemon: 'https://pokeapi.co/api/v2/pokemon/1',
+        starwars: 'https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=1',
+        dragonball: 'https://dragonball-api.com/api/characters?limit=1',
+        minecraft: 'https://api.mc-craft.com/mobs/en',
+    };
+
+    async function checkApis() {
+        await Promise.all(Object.entries(apiCheckEndpoints).map(async ([key, url]) => {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 8000);
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timer);
+                apiStatus[key] = res.ok;
+            } catch {
+                apiStatus[key] = false;
+            }
+        }));
+    }
+    checkApis();
+
+    // Botón "Obtener desde API": modal para elegir APIs y traer una imagen.
+    document.querySelectorAll('.generate-button--api').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const apiOptions = [
+                { value: 'pokemon', label: 'Pokémon', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3" fill="#ef4444"/></svg>' },
+                { value: 'starwars', label: 'Star Wars', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 2l2.4 7.4H22l-5.8 4.2 2.2 7.4L12 16.8 5.6 21l2.2-7.4L2 9.4h7.6z"/></svg>' },
+                { value: 'dragonball', label: 'Dragon Ball', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f97316" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="1" fill="#f97316"/><circle cx="9" cy="13" r="1" fill="#f97316"/><circle cx="15" cy="13" r="1" fill="#f97316"/><circle cx="12" cy="15" r="1" fill="#f97316"/></svg>' },
+                { value: 'minecraft', label: 'Minecraft', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v10M3 7l9 5 9-5"/></svg>' },
+            ];
+
+            const result = await window.Swal.fire({
+                title: 'Selecciona APIs',
+                html: `<style>
+                    .api-card{position:relative;display:flex;align-items:center;gap:.5rem;padding:.6rem .7rem;border:1px solid #393440;border-radius:10px;cursor:pointer;background:#211d27;transition:border-color .15s,background .15s}
+                    .api-card:hover{border-color:#6c28d9}
+                    .api-card:has(input:checked){border-color:#a855f7;background:#2a1f45;box-shadow:0 0 12px rgba(168,85,247,.4)}
+                    .api-card input{position:absolute;opacity:0;pointer-events:none}
+                    .api-card .api-checkmark{margin-left:auto;font-size:.9rem;color:#a855f7;opacity:0}
+                    .api-card:has(input:checked) .api-checkmark{opacity:1}
+                </style>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;text-align:left">${apiOptions
+                    .map(o => {
+                        const down = apiStatus[o.value] === false;
+                        return `<label class="api-card${down ? ' api-card--down' : ''}" ${down ? 'style="opacity:.5;cursor:not-allowed"' : ''}>${o.icon}<input type="checkbox" class="api-check" value="${o.value}" ${down ? 'disabled' : ''} ${lastApiSelection.includes(o.value) && !down ? 'checked' : ''}> <span style="font-size:.9rem">${o.label}${down ? ' <small style="color:#ef4444">(no disponible)</small>' : ''}</span><span class="api-checkmark">✓</span></label>`;
+                    }).join('')}</div>`,
+                confirmButtonText: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Obtener',
+                cancelButtonText: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path d="M18 6L6 18M6 6l12 12"/></svg> Cancelar',
+                showCancelButton: true,
+                background: '#18181b',
+                color: '#f4f4f5',
+                preConfirm: () => {
+                    const checked = [...document.querySelectorAll('.api-check:checked')].map(c => c.value);
+                    if (!checked.length) {
+                        window.Swal.showValidationMessage('Selecciona al menos una API');
+                        return false;
+                    }
+                    return checked;
+                },
+            });
+
+            if (!result.isConfirmed || !result.value) return;
+
+            lastApiSelection = result.value;
+            const type = lastApiSelection[Math.floor(Math.random() * lastApiSelection.length)];
+
+            elements.name.value = type;
+            updatePreview();
+            generateButton.click();
+        });
+    });
+
     // Evitar el envío y la recarga del formulario.
     form.addEventListener('submit', event => {
         event.preventDefault();
     });
+
+    function tryAttachTilt() {
+        const card3d = document.querySelector('.generated-card.card-3d');
+        if (card3d && window.InfestCardTilt) {
+            window.InfestCardTilt.attach(card3d);
+        } else {
+            setTimeout(tryAttachTilt, 50);
+        }
+    }
+    tryAttachTilt();
 
     updatePreview();
 });

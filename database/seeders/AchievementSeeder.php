@@ -164,6 +164,17 @@ class AchievementSeeder extends Seeder
                 'requirement_value' => 1,
                 'sort_order' => 14,
             ],
+            [
+                'code' => 'starwars_collected',
+                'name' => 'Caballero Jedi',
+                'description' => 'Conseguiste una carta de Star Wars. Que la Fuerza te acompañe.',
+                'icon' => 'swords',
+                'category' => 'cards',
+                'xp_reward' => 150,
+                'requirement_type' => 'starwars_collected',
+                'requirement_value' => 1,
+                'sort_order' => 15,
+            ],
         ];
         
 

@@ -3,6 +3,9 @@ import { createIcons, icons } from 'lucide';
 
 createIcons({ icons });
 
+// Exponer globalmente para re-renderizar iconos en vistas dinámicas.
+window.lucide = { createIcons, icons };
+
 // QRCode
 import QRCode from 'qrcode';
 
