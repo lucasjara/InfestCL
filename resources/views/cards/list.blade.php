@@ -839,16 +839,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(23, 18, 31, 0.6);
-        z-index: 50;
+        background: #000;
+        z-index: 9997;
     }
 
     .card-loading-spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #fff;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(168, 85, 247, 0.25);
+        border-top-color: #a855f7;
         border-radius: 50%;
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
         animation: card-spin 0.8s linear infinite;
     }
 
@@ -1096,9 +1097,6 @@
                                 src="{{ asset('images/cards/dragon-astral.webp') }}"
                                 alt="Imagen de la carta"
                             >
-                            <div id="card-loading" class="card-loading" style="display:none;">
-                                <div class="card-loading-spinner"></div>
-                            </div>
                         </div>
 
                         <div class="generated-card-description">
@@ -1130,6 +1128,10 @@
     </main>
 
     <x-card-reveal />
+
+    <div id="card-loading" class="card-loading" style="display:none;">
+        <div class="card-loading-spinner"></div>
+    </div>
 @endsection
 @push('scripts')
     @vite(['resources/js/cards/index.js'])
@@ -1740,7 +1742,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     async function getRandomStarWars() {
         try {
-            const response = await fetch('https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=100');
+            // Reintento por si el servicio (Render free) está despertando (503).
+            let response;
+            for (let attempt = 0; attempt < 3; attempt += 1) {
+                response = await fetch('https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=100');
+                if (response.ok) break;
+                if (attempt < 2) await new Promise(r => setTimeout(r, 1500));
+            }
             if (!response.ok) throw new Error('No se pudo obtener personajes de Star Wars');
             const data = await response.json();
             const characters = data.data;
@@ -1894,6 +1902,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const isStarWars = normalizedName === 'starwars';
         const isDragonBall = normalizedName === 'dragonball';
         const isMinecraft = normalizedName === 'minecraft';
+
+        if ((isPokemon && !apiStatus.pokemon) || (isStarWars && !apiStatus.starwars)
+            || (isDragonBall && !apiStatus.dragonball) || (isMinecraft && !apiStatus.minecraft)) {
+            window.Swal?.fire({
+                toast: true, position: 'top-end', icon: 'error',
+                title: 'API con problemas',
+                text: 'Esta API está con problemas, vuelve a intentarlo más tarde.',
+                showConfirmButton: false, timer: 4000, background: '#18181b', color: '#f4f4f5'
+            });
+            return;
+        }
+
         elements.cardLoading.style.display = 'flex';
         try {
             let card;
@@ -2150,8 +2170,8 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.previewImage.addEventListener('pointerup', finishImageDrag);
     elements.previewImage.addEventListener('pointercancel', finishImageDrag);
 
-    // Botones aún no funcionales (placeholders).
-    document.querySelectorAll('.generate-button--ai, .generate-button--api').forEach((button) => {
+    // Botón IA aún no funcional (placeholder).
+    document.querySelectorAll('.generate-button--ai').forEach((button) => {
         button.addEventListener('click', () => {
             if (window.Swal) {
                 window.Swal.fire({
@@ -2168,6 +2188,82 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 alert('Esta función aún no está disponible.');
             }
+        });
+    });
+
+    let lastApiSelection = [];
+
+    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true };
+    const apiCheckEndpoints = {
+        pokemon: 'https://pokeapi.co/api/v2/pokemon/1',
+        starwars: 'https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=1',
+        dragonball: 'https://dragonball-api.com/api/characters?limit=1',
+        minecraft: 'https://api.mc-craft.com/mobs/en',
+    };
+
+    async function checkApis() {
+        await Promise.all(Object.entries(apiCheckEndpoints).map(async ([key, url]) => {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 8000);
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timer);
+                apiStatus[key] = res.ok;
+            } catch {
+                apiStatus[key] = false;
+            }
+        }));
+    }
+    checkApis();
+
+    // Botón "Obtener desde API": modal para elegir APIs y traer una imagen.
+    document.querySelectorAll('.generate-button--api').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const apiOptions = [
+                { value: 'pokemon', label: 'Pokémon', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3" fill="#ef4444"/></svg>' },
+                { value: 'starwars', label: 'Star Wars', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 2l2.4 7.4H22l-5.8 4.2 2.2 7.4L12 16.8 5.6 21l2.2-7.4L2 9.4h7.6z"/></svg>' },
+                { value: 'dragonball', label: 'Dragon Ball', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f97316" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="1" fill="#f97316"/><circle cx="9" cy="13" r="1" fill="#f97316"/><circle cx="15" cy="13" r="1" fill="#f97316"/><circle cx="12" cy="15" r="1" fill="#f97316"/></svg>' },
+                { value: 'minecraft', label: 'Minecraft', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v10M3 7l9 5 9-5"/></svg>' },
+            ];
+
+            const result = await window.Swal.fire({
+                title: 'Selecciona APIs',
+                html: `<style>
+                    .api-card{position:relative;display:flex;align-items:center;gap:.5rem;padding:.6rem .7rem;border:1px solid #393440;border-radius:10px;cursor:pointer;background:#211d27;transition:border-color .15s,background .15s}
+                    .api-card:hover{border-color:#6c28d9}
+                    .api-card:has(input:checked){border-color:#a855f7;background:#2a1f45;box-shadow:0 0 12px rgba(168,85,247,.4)}
+                    .api-card input{position:absolute;opacity:0;pointer-events:none}
+                    .api-card .api-checkmark{margin-left:auto;font-size:.9rem;color:#a855f7;opacity:0}
+                    .api-card:has(input:checked) .api-checkmark{opacity:1}
+                </style>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;text-align:left">${apiOptions
+                    .map(o => {
+                        const down = apiStatus[o.value] === false;
+                        return `<label class="api-card${down ? ' api-card--down' : ''}" ${down ? 'style="opacity:.5;cursor:not-allowed"' : ''}>${o.icon}<input type="checkbox" class="api-check" value="${o.value}" ${down ? 'disabled' : ''} ${lastApiSelection.includes(o.value) && !down ? 'checked' : ''}> <span style="font-size:.9rem">${o.label}${down ? ' <small style="color:#ef4444">(no disponible)</small>' : ''}</span><span class="api-checkmark">✓</span></label>`;
+                    }).join('')}</div>`,
+                confirmButtonText: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Obtener',
+                cancelButtonText: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path d="M18 6L6 18M6 6l12 12"/></svg> Cancelar',
+                showCancelButton: true,
+                background: '#18181b',
+                color: '#f4f4f5',
+                preConfirm: () => {
+                    const checked = [...document.querySelectorAll('.api-check:checked')].map(c => c.value);
+                    if (!checked.length) {
+                        window.Swal.showValidationMessage('Selecciona al menos una API');
+                        return false;
+                    }
+                    return checked;
+                },
+            });
+
+            if (!result.isConfirmed || !result.value) return;
+
+            lastApiSelection = result.value;
+            const type = lastApiSelection[Math.floor(Math.random() * lastApiSelection.length)];
+
+            elements.name.value = type;
+            updatePreview();
+            generateButton.click();
         });
     });
 
