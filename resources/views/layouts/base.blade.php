@@ -1,31 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="@yield('meta_description', 'INFEST Chile')">
-        <meta name="theme-color" content="#f5f2ed">
+        <meta name="theme-color" content="#15121a">
         <link rel="icon" type="image/png" href="{{ asset('images/welcome/Infest_Logo_completo.png') }}">
 
         <title>@yield('title', 'INFEST Chile')</title>
         @vite(['resources/js/app.js'])
-        <script>
-            (() => {
-                let theme;
-
-                try {
-                    theme = localStorage.getItem('infest-theme');
-                } catch (error) {
-                    console.error('No fue posible leer la preferencia de tema.', error);
-                }
-
-                if (theme !== 'light' && theme !== 'dark') {
-                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                }
-
-                document.documentElement.dataset.theme = theme;
-            })();
-        </script>
 
         <style>
             :root {
@@ -169,9 +152,17 @@
             }
 
             .main-nav a:not(.nav-cta) {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
                 font-size: .84rem;
                 font-weight: 650;
                 text-decoration: none;
+            }
+
+            .main-nav a svg {
+                width: 16px;
+                height: 16px;
             }
 
             .main-nav a[aria-current="page"] {
@@ -307,15 +298,6 @@
                         
                     @endif
 
-                    <button class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
-                        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                        </svg>
-                    </button>
                 </nav>
             </div>
         </header>
@@ -332,30 +314,6 @@
         </footer>
 
         <script>
-            const themeToggle = document.querySelector('.theme-toggle');
-            const themeColor = document.querySelector('meta[name="theme-color"]');
-
-            function applyTheme(theme) {
-                document.documentElement.dataset.theme = theme;
-                themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
-                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro');
-                themeColor.content = theme === 'dark' ? '#15121a' : '#f5f2ed';
-            }
-
-            applyTheme(document.documentElement.dataset.theme);
-
-            themeToggle.addEventListener('click', () => {
-                const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-
-                applyTheme(theme);
-
-                try {
-                    localStorage.setItem('infest-theme', theme);
-                } catch (error) {
-                    console.error('No fue posible guardar la preferencia de tema.', error);
-                }
-            });
-            
             async function notifyAchievement(event) {
                 try {
                     const response = await fetch('/achievements/events', {

@@ -6,7 +6,14 @@
 
 @section('navigation')
     <x-experience-navigation />
-    <a href="{{ route('album.index') }}">Colecciones</a>
+    <a href="{{ route('album.index') }}">
+        <i data-lucide="layers"></i>
+        Colecciones
+    </a>
+    <a href="{{ route('cards.list') }}" aria-current="page">
+        <i data-lucide="sparkles"></i>
+        Generador
+    </a>
 @endsection
 
 @section('styles')
@@ -406,7 +413,7 @@
     }
     
     .card-generator-page {
-        padding-block: clamp(1.5rem, 5vw, 3rem);
+        padding-block: clamp(0.5rem, 5vw, 1rem);
     }
 
     .generator-heading {
@@ -616,10 +623,49 @@
         width: auto;
         min-height: 42px;
         padding-inline: 1.25rem;
+        padding-block: 0.6rem;
         white-space: nowrap;
+        border-radius: 999px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        position: relative;
+        overflow: visible;
+    }
+
+    .generate-button__main {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .generate-button small {
+        font-size: 0.68rem;
+        font-weight: 400;
+        opacity: 0.85;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .generate-tag {
+        position: absolute;
+        top: -10px;
+        right: 12px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        background: #f472b6;
+        color: #fff;
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+
+    .generate-button svg {
+        width: 18px;
+        height: 18px;
     }
 
     .generate-button--primary {
@@ -646,7 +692,40 @@
     }
 
     @media (max-width: 600px) {
-        .generate-actions {
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .panel-kicker svg {
+        width: 0.7em;
+        height: 0.7em;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+    .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .panel-kicker i[data-lucide] {
+        width: 0.7em;
+        height: 0.7em;
+        flex-shrink: 0;
+    }
+
+    .description-counter {
+        display: block;
+        text-align: right;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.25rem;
+    }
+
+    .generate-actions {
             flex-direction: column;
             align-items: stretch;
         }
@@ -678,7 +757,11 @@
         padding: 1rem;
         border: 1px dashed var(--line);
         border-radius: 14px;
-        background: var(--paper);
+        background:
+            radial-gradient(circle at 50% 40%, rgba(124, 58, 237, 0.12), transparent 60%),
+            var(--paper);
+        position: relative;
+        overflow: hidden;
     }
 
     .generated-card {
@@ -825,7 +908,29 @@
             grid-template-columns: 1fr;
         }
 
-        .card-result {
+    .form-field label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-field label svg {
+        width: 12px !important;
+        height: 12px !important;
+        max-width: 12px !important;
+        max-height: 12px !important;
+        color: var(--violet);
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+        display: block;
+        text-align: right;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.25rem;
+    }
+
+    .card-result {
             min-height: 420px;
         }
     }
@@ -849,30 +954,22 @@
 @endsection
 @section('content')
 <main class="card-generator-page" style="margin-left:2%;margin-right:2%;">
-        <div class="generator-heading">
-            <div>
-                <p class="generator-kicker">INFEST · CARD GENERATOR</p>
-                <h1>Generador de cartas</h1>
-                <p class="generator-description">
-                    Completa los datos y descubre la carta que has creado.
-                </p>
-            </div>
-        </div>
-
         <div class="generator-grid">
 
             {{-- IZQUIERDA: FORMULARIO --}}
             <section class="generator-panel">
                 <div class="panel-heading">
                     <div>
-                        <span class="panel-kicker">CONFIGURACIÓN</span>
+                        <span class="panel-kicker"><i data-lucide="settings"></i> CONFIGURACIÓN</span>
                         <h2>Datos de la carta</h2>
                     </div>
                 </div>
 
                 <form id="card-form">
                     <div class="form-field">
-                        <label for="card-name">Nombre de la carta</label>
+                        <label for="card-name">
+                            <i data-lucide="tag"></i> Nombre de la carta
+                        </label>
                         <input
                             type="text"
                             id="card-name"
@@ -882,18 +979,23 @@
                     </div>
 
                     <div class="form-field">
-                        <label for="card-description">Descripción</label>
+                        <label for="card-description">
+                            <i data-lucide="align-left"></i> Descripción
+                        </label>
                         <textarea
                             id="card-description"
                             rows="4"
                             placeholder="Describe tu carta..."
                             maxlength="120"
                         >Una criatura ancestral que domina la energía de las estrellas. Su presencia altera el equilibrio del universo.</textarea>
+                        <small id="description-counter" class="description-counter">0 / 120</small>
                     </div>
 
                     <div class="form-row">
                         <div class="form-field">
-                            <label for="card-category">Categoría</label>
+                            <label for="card-category">
+                                <i data-lucide="layers"></i> Categoría
+                            </label>
                             <select id="card-category">
                                 <option value="magic">Magia</option>
                                 <option value="fire">Fuego</option>
@@ -904,7 +1006,9 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="card-level">Nivel</label>
+                            <label for="card-level">
+                                <i data-lucide="zap"></i> Nivel
+                            </label>
                             <input
                                 type="number"
                                 id="card-level"
@@ -917,22 +1021,34 @@
                     </div>
 
                     <div class="form-field">
-                        <label for="card-image">Imagen de la carta</label>
+                        <label for="card-image">
+                            <i data-lucide="image"></i> Imagen de la carta
+                        </label>
                         <input type="file" id="card-image" accept="image/*">
                     </div>
 
                 <div class="generate-actions">
                     <button type="button" class="generate-button generate-button--primary">
-                        <i data-lucide="sparkles"></i>
-                        Obtener carta
+                        <span class="generate-tag">★ Recomendado</span>
+                        <span class="generate-button__main">
+                            <i data-lucide="sparkles"></i>
+                            Obtener carta
+                        </span>
+                        <small>Genera una carta<br>con los datos ingresados</small>
                     </button>
                     <button type="button" class="generate-button generate-button--ai">
-                        <i data-lucide="bot"></i>
-                        Obtener con IA
+                        <span class="generate-button__main">
+                            <i data-lucide="bot"></i>
+                            Generar con IA
+                        </span>
+                        <small>Crea contenido dinámico<br>con inteligencia artificial</small>
                     </button>
                     <button type="button" class="generate-button generate-button--api">
-                        <i data-lucide="globe"></i>
-                        Obtener API
+                        <span class="generate-button__main">
+                            <i data-lucide="globe"></i>
+                            Obtener desde API
+                        </span>
+                        <small>Obtén información desde<br>una fuente externa</small>
                     </button>
                 </div>
                 </form>
@@ -942,7 +1058,7 @@
             <section class="result-panel">
                 <div class="panel-heading">
                     <div>
-                        <span class="panel-kicker">RESULTADO</span>
+                        <span class="panel-kicker"><i data-lucide="bar-chart-3"></i> RESULTADO</span>
                         <h2>Tu carta obtenida</h2>
                     </div>
                     <div class="result-actions">
@@ -1020,6 +1136,16 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) window.lucide.createIcons({ icons: window.lucide.icons });
+
+    // Forzar tamaño de iconos en labels (Lucide setea 24x24 por defecto).
+    document.querySelectorAll('.form-field label svg, .panel-kicker svg').forEach((svg) => {
+        svg.setAttribute('width', '12');
+        svg.setAttribute('height', '12');
+        svg.style.width = '12px';
+        svg.style.height = '12px';
+    });
+
     const grid = document.querySelector('.generator-grid');
     if (grid) {
         const top = grid.getBoundingClientRect().top + window.scrollY - 20;
@@ -1510,6 +1636,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         elements.previewName.textContent = elements.name.value || 'Carta sin nombre';
         elements.previewDescription.textContent = elements.description.value || 'Sin descripción disponible.';
+
+        const descriptionCounter = document.getElementById('description-counter');
+        if (descriptionCounter) {
+            descriptionCounter.textContent = `${(elements.description.value || '').length} / 120`;
+        }
 
         elements.previewLevel.textContent = Array.from(
             { length: Math.min(50, Math.max(1, Number(elements.level.value) || 1)) },
@@ -2018,6 +2149,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elements.previewImage.addEventListener('pointerup', finishImageDrag);
     elements.previewImage.addEventListener('pointercancel', finishImageDrag);
+
+    // Botones aún no funcionales (placeholders).
+    document.querySelectorAll('.generate-button--ai, .generate-button--api').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (window.Swal) {
+                window.Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Próximamente',
+                    text: 'Esta función aún no está disponible.',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    background: '#18181b',
+                    color: '#f4f4f5'
+                });
+            } else {
+                alert('Esta función aún no está disponible.');
+            }
+        });
+    });
 
     // Evitar el envío y la recarga del formulario.
     form.addEventListener('submit', event => {
