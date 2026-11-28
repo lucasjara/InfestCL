@@ -71,6 +71,10 @@ const categoryPresentation = {
     noble: { label: 'NOBLE', color: '#f59e0b' },
     soldier: { label: 'SOLDADO', color: '#64748b' },
     merchant: { label: 'MERCADER', color: '#22c55e' },
+    gryffindor: { label: 'GRYFFINDOR', color: '#ae0001' },
+    slytherin: { label: 'SLYTHERIN', color: '#2a623d' },
+    ravenclaw: { label: 'RAVENCLAW', color: '#222f5b' },
+    hufflepuff: { label: 'HUFFLEPUFF', color: '#ecb939' },
 };
 
 function getCategoryPresentation(card) {
@@ -395,7 +399,8 @@ export async function initializeCollectionList(container) {
                         || card.type === 'starwars'
                         || card.type === 'dragonball'
                         || card.type === 'minecraft'
-                        || card.type === 'witcher3';
+                        || card.type === 'witcher3'
+                        || card.type === 'harrypotter';
                     const isContainImage = usesExternalApi && !(card.image instanceof Blob);
                     image.classList.toggle('is-contain', isContainImage);
 
@@ -729,7 +734,8 @@ export async function initializeCollectionDetail(container, collectionId, active
                 || card.type === 'starwars'
                 || card.type === 'dragonball'
                 || card.type === 'minecraft'
-                || card.type === 'witcher3';
+                || card.type === 'witcher3'
+                || card.type === 'harrypotter';
             const isContainImage = usesExternalApi && !(card.image instanceof Blob);
             image.classList.toggle('is-contain', isContainImage);
 
@@ -824,6 +830,7 @@ const cardTypePresentation = {
     dragonball: 'Dragon Ball',
     minecraft: 'Minecraft',
     witcher3: 'The Witcher 3',
+    harrypotter: 'Harry Potter',
     personal: 'Personalizadas',
     default: 'Predeterminadas',
 };

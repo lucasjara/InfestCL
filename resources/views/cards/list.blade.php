@@ -1348,6 +1348,21 @@ document.addEventListener('DOMContentLoaded', () => {
         merchant: '#22c55e'
     };
 
+    const harrypotterCategories = {
+        gryffindor: { label: 'GRYFFINDOR', color: '#ae0001' },
+        slytherin: { label: 'SLYTHERIN', color: '#2a623d' },
+        ravenclaw: { label: 'RAVENCLAW', color: '#222f5b' },
+        hufflepuff: { label: 'HUFFLEPUFF', color: '#ecb939' },
+        other: { label: 'OTRO', color: '#94a3b8' }
+    };
+    const harrypotterCategoryColors = {
+        gryffindor: '#ae0001',
+        slytherin: '#2a623d',
+        ravenclaw: '#222f5b',
+        hufflepuff: '#ecb939',
+        other: '#94a3b8'
+    };
+
     const randomCards = [
         {
             id: 'default-dragon-astral',
@@ -1445,6 +1460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dragonball: false,
         minecraft: false,
         witcher3: false,
+        harrypotter: false,
         previewNumber: document.getElementById('preview-number'),
         cardLoading: document.getElementById('card-loading')
     };
@@ -1652,6 +1668,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category = {
                 label: witcher3Categories[categoryKey]?.label ?? categoryKey.toUpperCase(),
                 color: witcher3CategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
+        }
+        else if(elements.harrypotter === true){
+            const categoryKey = elements.category.value;
+            category = {
+                label: harrypotterCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
+                color: harrypotterCategoryColors[categoryKey] ?? '#8b5cf6'
             };
             elements.previewCategory.textContent = category.label;
         }
@@ -1956,6 +1980,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return fallback;
         }
     }
+    async function getRandomHarryPotter() {
+        try {
+            const response = await fetch('/harrypotter/random');
+            if (!response.ok) throw new Error('No se pudo obtener personaje de Harry Potter');
+            const character = await response.json();
+            if (!character || !character.name) throw new Error('Sin personajes disponibles');
+
+            const category = character.category || 'other';
+            let level = character.level;
+            if (level === null || level === undefined) {
+                level = Math.floor(Math.random() * 10) + 1;
+            }
+
+            let description = character.description || `Personaje de Harry Potter ${character.name}`;
+            if (description.length > 105) {
+                description = description.slice(0, 105).trimEnd() + '...';
+            }
+
+            let image = character.imageUrl || cardImageFallbackUrl;
+            try {
+                image = await normalizeCardImage(character.imageUrl, 512);
+            } catch {
+                // Mantener la URL original si falla la normalización.
+            }
+
+            return {
+                id: character.id,
+                externalId: character.externalId || character.id,
+                name: character.name,
+                description,
+                category,
+                level,
+                image
+            };
+        } catch {
+            const fallback = {
+                id: 'harrypotter-fallback',
+                name: 'Personaje Desconocido',
+                description: 'Un habitante del mundo mágico de Harry Potter.',
+                category: 'other',
+                level: 1,
+                image: cardImageFallbackUrl
+            };
+            return fallback;
+        }
+    }
     function setCategories(categories) {
         elements.category.innerHTML = Object.entries(categories)
             .map(([key, value]) => `
@@ -1973,10 +2043,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDragonBall = normalizedName === 'dragonball';
         const isMinecraft = normalizedName === 'minecraft';
         const isWitcher3 = normalizedName === 'witcher3';
+        const isHarryPotter = normalizedName === 'harrypotter';
 
         if ((isPokemon && !apiStatus.pokemon) || (isStarWars && !apiStatus.starwars)
             || (isDragonBall && !apiStatus.dragonball) || (isMinecraft && !apiStatus.minecraft)
-            || (isWitcher3 && !apiStatus.witcher3)) {
+            || (isWitcher3 && !apiStatus.witcher3) || (isHarryPotter && !apiStatus.harrypotter)) {
             window.Swal?.fire({
                 toast: true, position: 'top-end', icon: 'error',
                 title: 'API con problemas',
@@ -2024,6 +2095,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 categoryMap = witcher3Categories;
                 categoryColors = witcher3CategoryColors;
                 imageBase = null;
+            } else if (isHarryPotter) {
+                card = await getRandomHarryPotter();
+                type = 'harrypotter';
+                categoryMap = harrypotterCategories;
+                categoryColors = harrypotterCategoryColors;
+                imageBase = null;
             } else {
                 card = randomCards[getRandomIndex()];
                 type = 'default';
@@ -2032,7 +2109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 imageBase = cardImageBaseUrl;
             }
 
-            const usesExternalApi = isPokemon || isStarWars || isDragonBall || isMinecraft || isWitcher3;
+            const usesExternalApi = isPokemon || isStarWars || isDragonBall || isMinecraft || isWitcher3 || isHarryPotter;
 
             setCategories(categoryMap);
             elements.level.value = usesExternalApi ? card.level : Math.floor(Math.random() * 10) + 1;
@@ -2099,6 +2176,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: card.category,
                 level: card.level,
                 image: card.image
+            } : isHarryPotter ? {
+                id: card.id,
+                externalId: card.externalId || card.id,
+                type: 'harrypotter',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
             } : {
                 id: card.id,
                 type: 'default',
@@ -2113,6 +2199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.dragonball = isDragonBall;
             elements.minecraft = isMinecraft;
             elements.witcher3 = isWitcher3;
+            elements.harrypotter = isHarryPotter;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
@@ -2126,7 +2213,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
                             : isWitcher3
                                 ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
-                                : `#0052`;
+                                : isHarryPotter
+                                    ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
+                                    : `#0052`;
 
             if (elements.imageAdjustments) elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
@@ -2144,6 +2233,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 notifyAchievement('minecraft_collected');
             } else if (isWitcher3) {
                 notifyAchievement('witcher3_collected');
+            } else if (isHarryPotter) {
+                notifyAchievement('harrypotter_collected');
             }
             resetImageAdjustment();
     // Efecto 3D interactivo en «Tu carta obtenida».
@@ -2285,13 +2376,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let lastApiSelection = [];
 
-    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true, witcher3: true };
+    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true, witcher3: true, harrypotter: true };
     const apiCheckEndpoints = {
         pokemon: 'https://pokeapi.co/api/v2/pokemon/1',
         starwars: 'https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=1',
         dragonball: 'https://dragonball-api.com/api/characters?limit=1',
         minecraft: 'https://api.mc-craft.com/mobs/en',
         witcher3: '/witcher3/random',
+        harrypotter: '/harrypotter/random',
     };
 
     async function checkApis() {
@@ -2318,6 +2410,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { value: 'dragonball', label: 'Dragon Ball', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f97316" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="1" fill="#f97316"/><circle cx="9" cy="13" r="1" fill="#f97316"/><circle cx="15" cy="13" r="1" fill="#f97316"/><circle cx="12" cy="15" r="1" fill="#f97316"/></svg>' },
                 { value: 'minecraft', label: 'Minecraft', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v10M3 7l9 5 9-5"/></svg>' },
                 { value: 'witcher3', label: 'The Witcher 3', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#d4af37" stroke-width="2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>' },
+                { value: 'harrypotter', label: 'Harry Potter', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#a855f7" stroke-width="2"><path d="M2 12h5l2-7 4 14 2-7h7"/></svg>' },
             ];
 
             const result = await window.Swal.fire({

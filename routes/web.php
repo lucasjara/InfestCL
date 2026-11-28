@@ -31,6 +31,11 @@ Route::middleware('throttle:120,1')->group(function () {
         return response()->json($characters[array_rand($characters)]);
     })->name('witcher3.random');
 
+    Route::get('/harrypotter/random', function () {
+        $characters = require resource_path('data/harrypotter.php');
+        return response()->json($characters[array_rand($characters)]);
+    })->name('harrypotter.random');
+
     Route::view('/album', 'album.index')
         ->name('album.index');
 

@@ -35,19 +35,26 @@ async function refreshCollections(clearStatus = true, preferredId = null) {
             return;
         }
 
-        for (const collection of collections) {
-            select.add(new Option(collection.name, collection.id));
-        }
-
         const defaultCollection = collections.find(
             (collection) => collection.id === 'default',
         );
+        const orderedCollections = [
+            ...(defaultCollection ? [defaultCollection] : []),
+            ...collections
+                .filter((collection) => collection.id !== 'default')
+                .sort((a, b) => a.name.localeCompare(b.name, 'es')),
+        ];
+
+        for (const collection of orderedCollections) {
+            select.add(new Option(collection.name, collection.id));
+        }
+
         const preferredExists = preferredId && collections.some(
             (collection) => collection.id === preferredId,
         );
         select.value = preferredExists
             ? preferredId
-            : (defaultCollection?.id ?? collections[0].id);
+            : (defaultCollection?.id ?? orderedCollections[0].id);
         select.disabled = false;
         addButton.disabled = false;
         if (clearStatus) {
@@ -95,6 +102,8 @@ addButton?.addEventListener('click', async () => {
             notifyAchievement('minecraft_collected');
         }else if(card.type === 'witcher3'){
             notifyAchievement('witcher3_collected');
+        }else if(card.type === 'harrypotter'){
+            notifyAchievement('harrypotter_collected');
         }else if(card.type === 'personal'){
             notifyAchievement('custom_card_created');
         }

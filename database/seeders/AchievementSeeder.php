@@ -186,6 +186,17 @@ class AchievementSeeder extends Seeder
                 'requirement_value' => 1,
                 'sort_order' => 16,
             ],
+            [
+                'code' => 'harrypotter_collected',
+                'name' => 'Mag@ del Wizarding World',
+                'description' => 'Conseguiste una carta de Harry Potter. ¡Un nuevo hechizo en tu colección!',
+                'icon' => 'wand',
+                'category' => 'cards',
+                'xp_reward' => 150,
+                'requirement_type' => 'harrypotter_collected',
+                'requirement_value' => 1,
+                'sort_order' => 17,
+            ],
         ];
         
 
