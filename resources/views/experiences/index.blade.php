@@ -125,84 +125,56 @@
 
         <div class="experience-grid">
 
-            <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('tournaments.create') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_tournament.png') }}" alt="Torneo INFEST">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>Torneos</h2>
-                        <p>Crea torneos, configura participantes y administra el torneo.</p>
-                        <span class="experience-card-action">Crear torneo <span aria-hidden="true">→</span></span>
-                    </div>
-                </a>
-            </article>
+            <x-experience-card
+                title="Torneos"
+                description="Crea torneos, configura participantes y administra el torneo."
+                :image="asset('images/experiences/infest_tournament.png')"
+                alt="Torneo INFEST"
+                :href="route('tournaments.create')"
+                action="Crear torneo" />
 
-            <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('cards.list') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_creation_card.png') }}" alt="Creación de cartas INFEST">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>Generador</h2>
-                        <p>Diseña cartas personalizadas o descubre cartas aleatorias.</p>
-                        <span class="experience-card-action"><i data-lucide="sparkles"></i> Crear carta <span aria-hidden="true">→</span></span>
-                    </div>
-                </a>
-            </article>
+            <x-experience-card
+                title="Generador"
+                description="Diseña cartas personalizadas o descubre cartas aleatorias."
+                :image="asset('images/experiences/infest_creation_card.png')"
+                alt="Generador de cartas INFEST"
+                :href="route('cards.list')"
+                action="Crear carta"
+                icon="sparkles" />
 
-            <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('album.index') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_album.png') }}" alt="Album de cartas INFEST">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>Mi colección</h2>
-                        <p>Organiza tus cartas, crea colecciones y conserva tu álbum personalizado.</p>
-                        <span class="experience-card-action">Abrir colección <span aria-hidden="true">→</span></span>
-                    </div>
-                </a>
-            </article>
+            <x-experience-card
+                title="Mi colección"
+                description="Organiza tus cartas, crea colecciones y conserva tu álbum personalizado."
+                :image="asset('images/experiences/infest_album.png')"
+                alt="Álbum de cartas INFEST"
+                :href="route('album.index')"
+                action="Abrir colección" />
 
-            <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('roulette.index') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_roulette.png') }}" alt="INFEST Ultimate Challenge">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>Ultimate Challenge</h2>
-                        <p>Supera los cuatro desafíos, descubre la ruleta y desbloquea recompensas especiales.</p>
-                        <span class="experience-card-action">Iniciar desafío <span aria-hidden="true">→</span></span>
-                    </div>
-                </a>
-            </article>
-            <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('app.index') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_app.png') }}" alt="INFEST App">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>INFEST App Móvil</h2>
-                        <p>Descarga nuestra aplicación para poder guardar tus cartas y acceder a todas las funciones.</p>
-                        <span class="experience-card-action">Descargar app <span aria-hidden="true">→</span></span>
-                    </div>
-                </a>
-            </article>
-             <article class="experience-card">
-                <a class="experience-card-link" href="{{ route('achievements.index') }}">
-                    <div class="experience-card-image">
-                        <img src="{{ asset('images/experiences/infest_logros.png') }}" alt="INFEST Logros">
-                    </div>
-                    <div class="experience-card-content">
-                        <h2>INFEST Logros</h2>
-                        <p>Descubre tus logros desbloqueados dentro de INFEST.</p>
-                        <span class="experience-card-action">
-                            <i class="fas fa-lock" aria-hidden="true"></i>
-                            Requiere iniciar sesión <span aria-hidden="true">→</span>
-                        </span>
-                    </div>
-                </a>
-            </article>
+            <x-experience-card
+                title="Ultimate Challenge"
+                description="Supera los cuatro desafíos, descubre la ruleta y desbloquea recompensas especiales."
+                :image="asset('images/experiences/infest_roulette.png')"
+                alt="INFEST Ultimate Challenge"
+                :href="route('roulette.index')"
+                action="Iniciar desafío" />
+
+            <x-experience-card
+                title="INFEST App Móvil"
+                description="Descarga nuestra aplicación para poder guardar tus cartas y acceder a todas las funciones."
+                :image="asset('images/experiences/infest_app.png')"
+                alt="INFEST App"
+                :href="route('app.index')"
+                action="Descargar app" />
+
+            <x-experience-card
+                title="INFEST Logros"
+                description="Descubre tus logros desbloqueados dentro de INFEST."
+                :image="asset('images/experiences/infest_logros.png')"
+                alt="INFEST Logros"
+                :href="route('achievements.index')"
+                action="Ver logros"
+                :requires-auth="true" />
+
         </div>
     </div>
 @endsection
