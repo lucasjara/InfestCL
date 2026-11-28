@@ -6,8 +6,14 @@
 
 @section('navigation')
     <x-experience-navigation />
-    <a href="{{ route('album.index') }}">Colecciones</a>
-    <a href="{{ route('cards.list') }}">Crear Carta</a>
+    <a href="{{ route('album.index') }}">
+        <i data-lucide="layers"></i>
+        Colecciones
+    </a>
+    <a href="{{ route('cards.list') }}">
+        <i data-lucide="sparkles"></i>
+        Generador
+    </a>
 @endsection
 
 @section('styles')

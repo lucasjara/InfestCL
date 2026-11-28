@@ -5,7 +5,15 @@
 @section('meta_description', 'Explora las experiencias de colecciones, torneos y creación de cartas de INFEST Chile.')
 
 @section('navigation')
-    <x-experience-navigation />
+    <x-experience-navigation current="experiences" />
+    <a href="{{ route('album.index') }}">
+        <i data-lucide="layers"></i>
+        Colecciones
+    </a>
+    <a href="{{ route('cards.list') }}">
+        <i data-lucide="sparkles"></i>
+        Generador
+    </a>
 @endsection
 
 @section('styles')
@@ -144,9 +152,9 @@
                         <img src="{{ asset('images/experiences/infest_creation_card.png') }}" alt="Creación de cartas INFEST">
                     </div>
                     <div class="experience-card-content">
-                        <h2>Creación de cartas</h2>
+                        <h2>Generador</h2>
                         <p>Diseña cartas personalizadas o descubre cartas aleatorias.</p>
-                        <span class="experience-card-action">Crear carta <span aria-hidden="true">→</span></span>
+                        <span class="experience-card-action"><i data-lucide="sparkles"></i> Crear carta <span aria-hidden="true">→</span></span>
                     </div>
                 </a>
             </article>
