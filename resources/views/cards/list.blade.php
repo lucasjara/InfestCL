@@ -1325,6 +1325,29 @@ document.addEventListener('DOMContentLoaded', () => {
         boss: '#a855f7'
     };
 
+    const witcher3Categories = {
+        witcher: { label: 'BRUJO', color: '#eab308' },
+        main_character: { label: 'PRINCIPAL', color: '#a855f7' },
+        secondary_character: { label: 'SECUNDARIO', color: '#0ea5e9' },
+        sorceress: { label: 'HECHICERA', color: '#ec4899' },
+        monster: { label: 'MONSTRUO', color: '#ef4444' },
+        antagonist: { label: 'ANTAGONISTA', color: '#dc2626' },
+        noble: { label: 'NOBLE', color: '#f59e0b' },
+        soldier: { label: 'SOLDADO', color: '#64748b' },
+        merchant: { label: 'MERCADER', color: '#22c55e' }
+    };
+    const witcher3CategoryColors = {
+        witcher: '#eab308',
+        main_character: '#a855f7',
+        secondary_character: '#0ea5e9',
+        sorceress: '#ec4899',
+        monster: '#ef4444',
+        antagonist: '#dc2626',
+        noble: '#f59e0b',
+        soldier: '#64748b',
+        merchant: '#22c55e'
+    };
+
     const randomCards = [
         {
             id: 'default-dragon-astral',
@@ -1421,6 +1444,7 @@ document.addEventListener('DOMContentLoaded', () => {
         starwars: false,
         dragonball: false,
         minecraft: false,
+        witcher3: false,
         previewNumber: document.getElementById('preview-number'),
         cardLoading: document.getElementById('card-loading')
     };
@@ -1620,6 +1644,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category = {
                 label: minecraftCategories[categoryKey]?.label ?? categoryKey.toUpperCase(),
                 color: minecraftCategoryColors[categoryKey] ?? '#8b5cf6'
+            };
+            elements.previewCategory.textContent = category.label;
+        }
+        else if(elements.witcher3 === true){
+            const categoryKey = elements.category.value;
+            category = {
+                label: witcher3Categories[categoryKey]?.label ?? categoryKey.toUpperCase(),
+                color: witcher3CategoryColors[categoryKey] ?? '#8b5cf6'
             };
             elements.previewCategory.textContent = category.label;
         }
@@ -1878,6 +1910,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return fallback;
         }
     }
+    async function getRandomWitcher3() {
+        try {
+            const response = await fetch('/witcher3/random');
+            if (!response.ok) throw new Error('No se pudo obtener personaje de The Witcher 3');
+            const character = await response.json();
+            if (!character || !character.name) throw new Error('Sin personajes disponibles');
+
+            const category = character.category || 'secondary_character';
+            let level = character.level;
+            if (level === null || level === undefined) {
+                level = Math.floor(Math.random() * 10) + 1;
+            }
+
+            let description = character.description || `Personaje de The Witcher 3 ${character.name}`;
+            if (description.length > 105) {
+                description = description.slice(0, 105).trimEnd() + '...';
+            }
+
+            let image = character.imageUrl || cardImageFallbackUrl;
+            try {
+                image = await normalizeCardImage(character.imageUrl, 512);
+            } catch {
+                // Mantener la URL original si falla la normalización.
+            }
+
+            return {
+                id: character.id,
+                externalId: character.id,
+                name: character.name,
+                description,
+                category,
+                level,
+                image
+            };
+        } catch {
+            const fallback = {
+                id: 'witcher3-fallback',
+                name: 'Personaje Desconocido',
+                description: 'Un habitante del Continente en The Witcher 3.',
+                category: 'secondary_character',
+                level: 1,
+                image: cardImageFallbackUrl
+            };
+            return fallback;
+        }
+    }
     function setCategories(categories) {
         elements.category.innerHTML = Object.entries(categories)
             .map(([key, value]) => `
@@ -1894,9 +1972,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const isStarWars = normalizedName === 'starwars';
         const isDragonBall = normalizedName === 'dragonball';
         const isMinecraft = normalizedName === 'minecraft';
+        const isWitcher3 = normalizedName === 'witcher3';
 
         if ((isPokemon && !apiStatus.pokemon) || (isStarWars && !apiStatus.starwars)
-            || (isDragonBall && !apiStatus.dragonball) || (isMinecraft && !apiStatus.minecraft)) {
+            || (isDragonBall && !apiStatus.dragonball) || (isMinecraft && !apiStatus.minecraft)
+            || (isWitcher3 && !apiStatus.witcher3)) {
             window.Swal?.fire({
                 toast: true, position: 'top-end', icon: 'error',
                 title: 'API con problemas',
@@ -1938,6 +2018,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 categoryMap = minecraftCategories;
                 categoryColors = minecraftCategoryColors;
                 imageBase = null;
+            } else if (isWitcher3) {
+                card = await getRandomWitcher3();
+                type = 'witcher3';
+                categoryMap = witcher3Categories;
+                categoryColors = witcher3CategoryColors;
+                imageBase = null;
             } else {
                 card = randomCards[getRandomIndex()];
                 type = 'default';
@@ -1946,7 +2032,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 imageBase = cardImageBaseUrl;
             }
 
-            const usesExternalApi = isPokemon || isStarWars || isDragonBall || isMinecraft;
+            const usesExternalApi = isPokemon || isStarWars || isDragonBall || isMinecraft || isWitcher3;
 
             setCategories(categoryMap);
             elements.level.value = usesExternalApi ? card.level : Math.floor(Math.random() * 10) + 1;
@@ -2004,6 +2090,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: card.category,
                 level: card.level,
                 image: card.image
+            } : isWitcher3 ? {
+                id: card.id,
+                externalId: card.externalId || card.id,
+                type: 'witcher3',
+                name: card.name,
+                description: card.description,
+                category: card.category,
+                level: card.level,
+                image: card.image
             } : {
                 id: card.id,
                 type: 'default',
@@ -2017,6 +2112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.starwars = isStarWars;
             elements.dragonball = isDragonBall;
             elements.minecraft = isMinecraft;
+            elements.witcher3 = isWitcher3;
             elements.name.value = card.name;
             elements.description.value = card.description;
             elements.category.value = card.category;
@@ -2028,7 +2124,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         ? `#${getUniqueStarWarsNumber().toString().padStart(4, '0')}`
                         : isMinecraft
                             ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
-                            : `#0052`;
+                            : isWitcher3
+                                ? `#${String(Math.floor(Math.random() * 9000) + 1000)}`
+                                : `#0052`;
 
             if (elements.imageAdjustments) elements.imageAdjustments.disabled = true;
             elements.previewImage.classList.remove('is-adjustable');
@@ -2044,6 +2142,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 notifyAchievement('dragonball_collected');
             } else if (isMinecraft) {
                 notifyAchievement('minecraft_collected');
+            } else if (isWitcher3) {
+                notifyAchievement('witcher3_collected');
             }
             resetImageAdjustment();
     // Efecto 3D interactivo en «Tu carta obtenida».
@@ -2185,12 +2285,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let lastApiSelection = [];
 
-    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true };
+    const apiStatus = { pokemon: true, starwars: true, dragonball: true, minecraft: true, witcher3: true };
     const apiCheckEndpoints = {
         pokemon: 'https://pokeapi.co/api/v2/pokemon/1',
         starwars: 'https://starwars-databank-server.onrender.com/api/v1/characters?page=1&limit=1',
         dragonball: 'https://dragonball-api.com/api/characters?limit=1',
         minecraft: 'https://api.mc-craft.com/mobs/en',
+        witcher3: '/witcher3/random',
     };
 
     async function checkApis() {
@@ -2216,6 +2317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { value: 'starwars', label: 'Star Wars', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 2l2.4 7.4H22l-5.8 4.2 2.2 7.4L12 16.8 5.6 21l2.2-7.4L2 9.4h7.6z"/></svg>' },
                 { value: 'dragonball', label: 'Dragon Ball', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f97316" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="1" fill="#f97316"/><circle cx="9" cy="13" r="1" fill="#f97316"/><circle cx="15" cy="13" r="1" fill="#f97316"/><circle cx="12" cy="15" r="1" fill="#f97316"/></svg>' },
                 { value: 'minecraft', label: 'Minecraft', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 2v10M3 7l9 5 9-5"/></svg>' },
+                { value: 'witcher3', label: 'The Witcher 3', icon: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#d4af37" stroke-width="2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>' },
             ];
 
             const result = await window.Swal.fire({

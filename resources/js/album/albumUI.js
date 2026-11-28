@@ -62,6 +62,15 @@ const categoryPresentation = {
     neutral: { label: 'NEUTRAL', color: '#eab308' },
     hostile: { label: 'HOSTIL', color: '#ef4444' },
     boss: { label: 'JEFE', color: '#a855f7' },
+    witcher: { label: 'BRUJO', color: '#eab308' },
+    main_character: { label: 'PRINCIPAL', color: '#a855f7' },
+    secondary_character: { label: 'SECUNDARIO', color: '#0ea5e9' },
+    sorceress: { label: 'HECHICERA', color: '#ec4899' },
+    monster: { label: 'MONSTRUO', color: '#ef4444' },
+    antagonist: { label: 'ANTAGONISTA', color: '#dc2626' },
+    noble: { label: 'NOBLE', color: '#f59e0b' },
+    soldier: { label: 'SOLDADO', color: '#64748b' },
+    merchant: { label: 'MERCADER', color: '#22c55e' },
 };
 
 function getCategoryPresentation(card) {
@@ -385,7 +394,8 @@ export async function initializeCollectionList(container) {
                     const usesExternalApi = card.type === 'pokemon'
                         || card.type === 'starwars'
                         || card.type === 'dragonball'
-                        || card.type === 'minecraft';
+                        || card.type === 'minecraft'
+                        || card.type === 'witcher3';
                     const isContainImage = usesExternalApi && !(card.image instanceof Blob);
                     image.classList.toggle('is-contain', isContainImage);
 
@@ -718,7 +728,8 @@ export async function initializeCollectionDetail(container, collectionId, active
             const usesExternalApi = card.type === 'pokemon'
                 || card.type === 'starwars'
                 || card.type === 'dragonball'
-                || card.type === 'minecraft';
+                || card.type === 'minecraft'
+                || card.type === 'witcher3';
             const isContainImage = usesExternalApi && !(card.image instanceof Blob);
             image.classList.toggle('is-contain', isContainImage);
 
@@ -812,6 +823,7 @@ const cardTypePresentation = {
     starwars: 'Star Wars',
     dragonball: 'Dragon Ball',
     minecraft: 'Minecraft',
+    witcher3: 'The Witcher 3',
     personal: 'Personalizadas',
     default: 'Predeterminadas',
 };

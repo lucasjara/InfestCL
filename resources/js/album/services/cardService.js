@@ -17,7 +17,7 @@ export class CardService {
         }
 
         const type = String(data?.type ?? 'default');
-        const allowedTypes = ['default', 'pokemon', 'personal', 'starwars', 'dragonball', 'minecraft'];
+        const allowedTypes = ['default', 'pokemon', 'personal', 'starwars', 'dragonball', 'minecraft', 'witcher3'];
 
         if (!allowedTypes.includes(type)) {
             throw new Error('The card type is invalid.');
@@ -39,7 +39,7 @@ export class CardService {
 
         if (requiresUuid) {
             id = this.createUuid();
-        } else if (type === 'pokemon' || type === 'dragonball' || type === 'minecraft') {
+        } else if (type === 'pokemon' || type === 'dragonball' || type === 'minecraft' || type === 'witcher3') {
             id = String(data.id ?? (
                 data.externalId ? `${type}-${data.externalId}` : ''
             )).trim();
