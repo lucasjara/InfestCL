@@ -26,6 +26,11 @@ Route::middleware('throttle:120,1')->group(function () {
     Route::view('/cards/list', 'cards.list')
         ->name('cards.list');
 
+    Route::get('/witcher3/random', function () {
+        $characters = require resource_path('data/witcher3.php');
+        return response()->json($characters[array_rand($characters)]);
+    })->name('witcher3.random');
+
     Route::view('/album', 'album.index')
         ->name('album.index');
 

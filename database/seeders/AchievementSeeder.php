@@ -175,6 +175,17 @@ class AchievementSeeder extends Seeder
                 'requirement_value' => 1,
                 'sort_order' => 15,
             ],
+            [
+                'code' => 'witcher3_collected',
+                'name' => 'Lobo Blanco',
+                'description' => 'Conseguiste una carta de The Witcher 3. ¡Que la Suerte del Brujo te acompañe!',
+                'icon' => 'swords',
+                'category' => 'cards',
+                'xp_reward' => 150,
+                'requirement_type' => 'witcher3_collected',
+                'requirement_value' => 1,
+                'sort_order' => 16,
+            ],
         ];
         
 

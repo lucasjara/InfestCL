@@ -26,7 +26,7 @@ return [
         'description'=> 'Princesa de Cintra e hija adoptiva de Geralt, portadora de la Sangre Vieja y perseguida por la Cacería Salvaje.',
         'category'=> 'main_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/95/The_Witcher_Character_Introduction_Princess_Cirilla_Netflix/revision/latest?cb=20191209180306',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/1f/Tw3_ciri_by_ivances-d7v55z5.png/revision/latest?cb=20160527143845',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Cintra / Escuela del Lobo',
@@ -45,7 +45,7 @@ return [
         'description'=> 'Poderosa hechicera, verdadero amor de Geralt y madre adoptiva de Ciri, que asesora al emperador Emhyr en su búsqueda.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/2c/The_Witcher_Character_Introduction_Yennefer_of_Vengerberg_Netflix/revision/latest?cb=20191209180225',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/47/Tw3_journal_yennefer.png/revision/latest?cb=20160328143927',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Logia de Hechiceras',
@@ -62,7 +62,7 @@ return [
         'description'=> 'Talentosa hechicera temeria y gran amiga de Geralt, que lidera la evacuación clandestina de magos en Novigrado.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/20/Triss_Merigold.jpg/revision/latest?cb=20141117033541',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/27/Triss-TW3-new-render.png/revision/latest/scale-to-width-down/1000?cb=20160402173701',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Logia de Hechiceras',
@@ -79,7 +79,7 @@ return [
         'description'=> 'El brujo más anciano y experimentado de la Escuela del Lobo, mentor y figura paterna para Geralt, Eskel y Lambert.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/1d/Vesemir_s4.png/revision/latest?cb=20251031152541',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/92/Tw3_journal_vesemir.png/revision/latest?cb=20170315191944',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Lobo',
@@ -93,7 +93,7 @@ return [
         'description'=> 'Hábil y sensato brujo de la Escuela del Lobo y amigo de toda la vida de Geralt.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/34/Netflix_witcher_eskel_flashback.png/revision/latest?cb=20211219203438',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9b/Tw3_journal_eskel.png/revision/latest?cb=20160708060530',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Lobo',
@@ -107,7 +107,7 @@ return [
         'description'=> 'El brujo más joven, sarcástico y cínico de la Escuela del Lobo, compañero cercano de Geralt y Eskel.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/8d/Christian-contreras-lambert.jpg/revision/latest?cb=20170203233746',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/cd/Tw3_journal_lambert.png/revision/latest?cb=20160417204903',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Lobo',
@@ -121,7 +121,7 @@ return [
         'description'=> 'Renombrado bardo, poeta, cronista de las aventuras de Geralt y propietario del cabaret Camaleón en Novigrado.',
         'category'=> 'main_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/6d/Jaskier.jpg/revision/latest?cb=20071117215722',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a1/Dandelion-TW3_render.png/revision/latest/scale-to-width-down/1000?cb=20150216151806',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Academia de Oxenfurt',
@@ -139,7 +139,7 @@ return [
         'description'=> 'Leal veterano enano, íntimo amigo de Geralt y Jaskier, que ayuda a regentar el Romero y Tomillo en Novigrado.',
         'category'=> 'main_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/87/Zoltan_Chivay.jpg/revision/latest?cb=20081015023627',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9e/Tw3_journal_zoltan.png/revision/latest?cb=20170315175743',
         'attributes'=> [
         'race'=> 'enano',
         'affiliation'=> 'Mahakam',
@@ -153,7 +153,7 @@ return [
         'description'=> 'Sabio elfo Aen Elle que ayuda y entrena a Ciri para controlar los poderes de la Sangre Vieja protegiéndola de Eredin.',
         'category'=> 'main_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/98/The_Witcher_2_-_The_Isle_of_Avallach_%28Memory_2_5%29/revision/latest?cb=20130619011429',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/7/75/Tw3_journal_avallachunlocked.png/revision/latest?cb=20160507171053',
         'attributes'=> [
         'race'=> 'elfo',
         'affiliation'=> 'Aen Elle',
@@ -171,7 +171,7 @@ return [
         'description'=> 'Formidable brujo de la Escuela de la Víbora, antiguo matarreyes que puede convertirse en aliado en Kaer Morhen.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/de/Tw3_gwent_card_face_Letho_of_Gulet.png/revision/latest?cb=20160320210606',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/41/Tw2_full_Letho_1.png/revision/latest/scale-to-width-down/1000?cb=20110508115002',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela de la Víbora',
@@ -202,7 +202,7 @@ return [
         'description'=> 'Brujo de la Escuela del Gato hallado en Velen tras masacrar a los aldeanos de Honorton por un contrato impago.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/37/Gaetan.jpg/revision/latest?cb=20150808183723',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/37/Gaetan.jpg/revision/latest/scale-to-width-down/1000?cb=20150808183723',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Gato',
@@ -216,7 +216,7 @@ return [
         'description'=> 'Brujo de la Escuela del Gato torturado y mutado por el mago Ireneus var Steingard bajo la Isla del Templo.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/7/75/Mad_Kiyan_voice_line.mp3/revision/latest?cb=20220315020419',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/2e/Gwent_cardart_northern_kiyan.jpg/revision/latest?cb=20241215200344',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Gato',
@@ -230,7 +230,7 @@ return [
         'description'=> 'Difunto brujo de la Escuela de la Víbora acusado falsamente de secuestrar a un niño en Huerto Blanco.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/aa/Kolgrim.jpg/revision/latest?cb=20170421135227',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/4b/Gwent_cardart_nilfgaard_kolgrim.png/revision/latest?cb=20201210103013',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela de la Víbora',
@@ -244,7 +244,7 @@ return [
         'description'=> 'Brujo histórico de la Escuela del Oso cuyos diagramas de equipo se encuentran ocultos por Skellige.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/cd/Gerd_voice_line.mp3/revision/latest?cb=20220316025237',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a2/Gwent_cardart_skellige_gerd.png/revision/latest?cb=20201210103432',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Oso',
@@ -272,7 +272,7 @@ return [
         'description'=> 'Rey de la Cacería Salvaje y comandante de los Jinetes Rojos, que busca la Sangre Vieja de Ciri para salvar el mundo de los Aen Elle.',
         'category'=> 'antagonist',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/88/Eredin_Br%C3%A9acc_Glas_by_Yana_Komarkova.png/revision/latest?cb=20241227024439',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/49/Tw3_journal_eredin.png/revision/latest?cb=20160508060422',
         'attributes'=> [
         'race'=> 'elfo',
         'affiliation'=> 'Cacería Salvaje / Aen Elle',
@@ -290,7 +290,7 @@ return [
         'description'=> 'Despiadado e imponente general de la Cacería Salvaje, famoso por su fuerza bruta y su afición por los placeres mundanos.',
         'category'=> 'antagonist',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/ad/The_Witcher_3_Wild_Hunt-Imlerith.jpg/revision/latest?cb=20160623073225',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/83/Tw3_journal_imlerith.png/revision/latest?cb=20160623071318',
         'attributes'=> [
         'race'=> 'elfo',
         'affiliation'=> 'Cacería Salvaje / Aen Elle',
@@ -411,7 +411,7 @@ return [
         'description'=> 'Vampiro superior disfrazado de forense de Novigrado que orquesta los asesinatos en serie de Pecados Carnales.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/3a/Hubert_Rejk_voice_line.ogg/revision/latest?cb=20171223121751',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/8b/Tw3_journal_coroner.png/revision/latest?cb=20170315183728',
         'attributes'=> [
         'race'=> 'vampiro',
         'affiliation'=> 'Novigrado',
@@ -453,7 +453,7 @@ return [
         'description'=> 'Rectora de la academia mágica de Aretuza encarcelada por los Cazadores de Brujas en la prisión de Deireadh.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9d/Gwent_cardart_northern_margarita_laux-antille.jpeg/revision/latest?cb=20180615195638',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/97/Tw3_journal_margarita.png/revision/latest?cb=20160329074717',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Logia de Hechiceras',
@@ -467,7 +467,7 @@ return [
         'description'=> 'Hechicera nilfgaardiana y miembro de la Logia mantenida prisionera a bordo del buque insignia del emperador Emhyr.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/83/Tw3_gwent_card_face_Fringilla_Vigo.png/revision/latest?cb=20160416164700',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/4b/Tw3_journal_fringilla.png/revision/latest?cb=20150906184013',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Imperio Nilfgaardiano / Logia de Hechiceras',
@@ -509,7 +509,7 @@ return [
         'description'=> 'Druida jefe y hierofante del círculo druídico de Skellige y consejero de confianza del clan an Craite.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/f/f9/Tw3_gwent_card_face_Ermion.png/revision/latest?cb=20160624130624',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/63/Tw3_journal_mousesack.png/revision/latest?cb=20160905133812',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Druidas de Skellige',
@@ -526,7 +526,7 @@ return [
         'description'=> 'Cascarrabias maestro alquimista y druida que reside en Gedyneith, en Ard Skellig.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/d4/Gremist_voice_oline.ogg/revision/latest?cb=20170719201149',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/62/Tw3_Gremist.png/revision/latest?cb=20181211064520',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Druidas de Skellige',
@@ -568,7 +568,7 @@ return [
         'description'=> 'Talentosa oniromante residente en Novigrado que ayuda a Geralt a rastrear el paradero de Ciri mediante sueños.',
         'category'=> 'sorceress',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/82/Corinne_Tilly_-_The_Witcher_3_DEATH_MARCH%21_Part_36_-_Let%27s_Play_Hard/revision/latest?cb=20160314063407',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/1e/Tw3_journal_corinnetilly.png/revision/latest?cb=20170315183408',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Novigrado',
@@ -666,7 +666,7 @@ return [
         'description'=> 'Emperador de Nilfgaard y padre biológico de Ciri, que dirige la invasión del Norte y la búsqueda de su hija.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a5/Emhyr_var_emreis_by_vollhov.png/revision/latest?cb=20161221192633',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/86/The_Witcher_3_Wild_Hunt-Emhyr_var_Emreis.png/revision/latest/scale-to-width-down/1000?cb=20160809181812',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Imperio Nilfgaardiano',
@@ -684,7 +684,7 @@ return [
         'description'=> 'Rey de Redania, brillante estratega táctico consumido por la paranoia y el odio hacia los magos y los no humanos.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/81/Radovid_V_Netflix.jpg/revision/latest?cb=20230824225654',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b6/Gwent_Radovid_crop.png/revision/latest?cb=20191228181200',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Reino de Redania',
@@ -718,7 +718,7 @@ return [
         'description'=> 'Autoproclamado gobernante de Velen conocido como el Barón Sanguinario, que gobierna desde Percha del Cuervo.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/5/5b/Tw3_concept_art_Phillip.png/revision/latest?cb=20170608193414',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/20/Tw3_journal_baron.png/revision/latest?cb=20160702134425',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Velen',
@@ -735,7 +735,7 @@ return [
         'description'=> 'Esposa distanciada de Phillip Strenger que quedó atada al servicio de las Moires del Jorobado.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/96/Gwent_cardart_northern_anna_strenger.png/revision/latest?cb=20181022113509',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/3c/Tw3_journal_anna.png/revision/latest?cb=20160528113538',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Velen',
@@ -752,7 +752,7 @@ return [
         'description'=> 'Hija de Phillip y Anna Strenger que huyó de Percha del Cuervo para unirse a los Cazadores de Brujas en Oxenfurt.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/5/5f/Tamara_Strenger_voice_line.mp3/revision/latest?cb=20220321034755',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/35/Tw3_journal_tamara.png/revision/latest?cb=20170315182134',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Iglesia del Fuego Eterno',
@@ -884,7 +884,7 @@ return [
         'description'=> 'Anciano jarl del clan an Hindar que gobierna la isla de Hindarsfjall.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/4b/Donar_an_Hindar_voice_line.ogg/revision/latest?cb=20170719195657',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/7/7e/Tw3_journal_donar_an_hindar.png/revision/latest?cb=20170315184359',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Clan an Hindar',
@@ -954,7 +954,7 @@ return [
         'description'=> 'General al mando del Grupo de Ejércitos Centro de Nilfgaard y pretendiente aristocrático de Ciri.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a6/Morvran_Voorhis_Avatar_Gwent.png/revision/latest?cb=20181101132035',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/8c/Tw3_journal_morvran_voorhis.png/revision/latest?cb=20150912153049',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Imperio Nilfgaardiano',
@@ -1122,7 +1122,7 @@ return [
         'description'=> 'Comandante de las Fuerzas Especiales de Temeria que lidera una guerrilla de resistencia contra Nilfgaard.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/40/Vernon_Roche_voice_line.ogg/revision/latest?cb=20170718141304',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/c3/Tw2_full_Vernon.png/revision/latest/scale-to-width-down/1000?cb=20101016121203',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Franjas Azules de Temeria',
@@ -1136,7 +1136,7 @@ return [
         'description'=> 'Feroz guerrera temeria y segunda al mando de Vernon Roche en los Franjas Azules.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/ef/Ves_voice_line.ogg/revision/latest?cb=20170718141632',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/dd/Tw3_journal_ves.png/revision/latest?cb=20160706171628',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Franjas Azules de Temeria',
@@ -1212,7 +1212,7 @@ return [
         'description'=> 'Joven guerrero de Lofoten en Hindarsfjall que rescata a Ciri y sufre el exilio bajo el apodo de "Cobarde".',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b3/Skjall_voice_line.ogg/revision/latest?cb=20170719205123',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/f/f6/Tw3_journal_Skjall_alive.png/revision/latest?cb=20170304213558',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Clan an Hindar',
@@ -1361,7 +1361,7 @@ return [
         'description'=> 'Investigador de los Cazadores de Brujas que trabaja junto a Tamara Strenger en Velen.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/cb/Prima_Guide_Freya_Garden.png/revision/latest?cb=20160320134454',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/45/Tw3_journal_graden.png/revision/latest?cb=20170315185336',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Iglesia del Fuego Eterno',
@@ -1389,7 +1389,7 @@ return [
         'description'=> 'Bondadoso doppelgänger e íntimo amigo de Jaskier y Geralt que vive en Novigrado.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/f/f4/Dudu_voice_line.mp3/revision/latest?cb=20220313003337',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/f/f1/Tw3_journal_dudu.png/revision/latest?cb=20160515163738',
         'attributes'=> [
         'race'=> 'doppelgänger',
         'affiliation'=> 'Novigrado',
@@ -1406,7 +1406,7 @@ return [
         'description'=> 'Talentosa barda, dramaturga y pareja sentimental de Jaskier que actúa en el Martín Pescador.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/10/Priscilla_voice_line_.ogg/revision/latest?cb=20170718135511',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/e1/Tw3_journal_priscilla.png/revision/latest?cb=20160503060433',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Novigrado',
@@ -1451,28 +1451,11 @@ return [
         'description'=> 'Banquero enano que dirige el Banco Vivaldi en la Plaza del Jerarca de Novigrado.',
         'category'=> 'merchant',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/5/5c/Vimme_Vivaldi_the_Witcher_comic_book.jpg/revision/latest?cb=20250330203448',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/4a/Tw3_journal_vivaldi_new.png/revision/latest?cb=20160904130137',
         'attributes'=> [
         'race'=> 'enano',
         'affiliation'=> 'Novigrado',
         'content_pack'=> 'base_game'
-        ],
-    ],
-    [
-        'id'=> 'witcher3-hattori',
-        'type'=> 'witcher3',
-        'name'=> 'Hattori',
-        'description'=> 'Maestro armero elfo que regenta una tienda de empanadillas en Novigrado hasta que Geralt le ayuda a recuperar su forja.',
-        'category'=> 'merchant',
-        'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/0/02/%C3%89ibhear_Hattori_voice_line.mp3/revision/latest?cb=20220312230511',
-        'attributes'=> [
-        'race'=> 'elfo',
-        'affiliation'=> 'Novigrado',
-        'content_pack'=> 'base_game',
-        'aliases'=> [
-            'Éibhear Hattori'
-        ]
         ],
     ],
     [
@@ -1538,7 +1521,7 @@ return [
         'description'=> 'Herrero enano de Huerto Blanco cuya forja es incendiada por un pirómano.',
         'category'=> 'merchant',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/5/51/Willis_forge_Tw3.jpg/revision/latest?cb=20210728053840',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/d8/Tw3_willis.png/revision/latest?cb=20180216013821',
         'attributes'=> [
         'race'=> 'enano',
         'affiliation'=> 'Huerto Blanco',
@@ -1608,7 +1591,7 @@ return [
         'description'=> 'Renombrado cazarrecompensas de Skellige al que Geralt ayuda a rastrear a los hermanos Grossbart.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/26/Djenge_Frett_voice_line.ogg/revision/latest?cb=20170719195229',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/bb/Tw3_djenge_frett.png/revision/latest?cb=20181114070127',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Skellige',
@@ -1692,7 +1675,7 @@ return [
         'description'=> 'Patriótico trol de roca que custodia embarcaciones redanias cerca de Oxenfurt.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/cc/Trololo_voice_line.ogg/revision/latest?cb=20170718140817',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/60/Gwent_cardart_northern_trollololo.jpg/revision/latest?cb=20241205195055',
         'attributes'=> [
         'race'=> 'trol',
         'affiliation'=> 'Reino de Redania',
@@ -1720,7 +1703,7 @@ return [
         'description'=> 'Uno de los tres troles de roca encontrados por Geralt y Lambert cerca de Kaer Morhen.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/10/Priscilla_voice_line_.ogg/revision/latest?cb=20170718135511',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/d2/Tw3_rogg_and_shoes.jpg/revision/latest/scale-to-width-down/1000?cb=20160406070358',
         'attributes'=> [
         'race'=> 'trol',
         'affiliation'=> 'Kaer Morhen',
@@ -1790,7 +1773,7 @@ return [
         'description'=> 'Capitán pirata maldito transformado en un voraz hombre lobo atrapado en el Jardín de Freya.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/63/Morkvarg_voice_line.ogg/revision/latest?cb=20170719204309',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/c4/Tw3_Morkvarg_infobox.png/revision/latest?cb=20160409100352',
         'attributes'=> [
         'race'=> 'maldito',
         'affiliation'=> 'Skellige',
@@ -1832,7 +1815,7 @@ return [
         'description'=> 'Pescador campesino de Oreton que amaba a Anabelle y busca levantar la maldición de la Isla de Fyke.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/7/70/Stephen_Graham.jpg/revision/latest?cb=20160719001026',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/62/Tw3_journal_graham.png/revision/latest?cb=20160610153352',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Velen',
@@ -1863,7 +1846,7 @@ return [
         'description'=> 'Espíritu ancestral atrapado bajo un roble gigante cerca de Sotovalle.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/be/Legends_of_The_Witcher_What_is_The_Whispering_Hillock%3F/revision/latest?cb=20180920044844',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/41/Tw3_the_whispering_hillock.jpg/revision/latest/scale-to-width-down/1000?cb=20170912161011',
         'attributes'=> [
         'race'=> 'relicto',
         'affiliation'=> 'Velen',
@@ -1894,7 +1877,7 @@ return [
         'description'=> 'Propietaria del burdel Passiflora en Novigrado.',
         'category'=> 'merchant',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/65/Gwent_cardart_syndicate_madam_marquise_serenity.png/revision/latest?cb=20230915182708',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/af/Tw3_serenity.png/revision/latest?cb=20181006161500',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Novigrado',
@@ -2023,7 +2006,7 @@ return [
         'description'=> 'Residente de Novigrado que echa de casa a su pareja infiel.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/e5/Netflix_Vespula.jpg/revision/latest?cb=20230826001024',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/1c/Tw3_Vespula.png/revision/latest?cb=20180130011730',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Novigrado',
@@ -2115,20 +2098,6 @@ return [
         ],
     ],
     [
-        'id'=> 'witcher3-ivo',
-        'type'=> 'witcher3',
-        'name'=> 'Ivo',
-        'description'=> 'Enano encontrado en la Isla de las Brumas que cae al vacío desde un acantilado.',
-        'category'=> 'secondary_character',
-        'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/83/Ivo_of_Belhaven_voice_line.mp3/revision/latest?cb=20220312233545',
-        'attributes'=> [
-        'race'=> 'enano',
-        'affiliation'=> 'Isla de las Brumas',
-        'content_pack'=> 'base_game'
-        ],
-    ],
-    [
         'id'=> 'witcher3-ferko',
         'type'=> 'witcher3',
         'name'=> 'Ferko',
@@ -2163,7 +2132,7 @@ return [
         'description'=> 'Brujo de la Escuela del Lobo cuyas notas se encuentran en Kaer Morhen.',
         'category'=> 'witcher',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/10/Berengar_voice_line.mp3/revision/latest?cb=20220321041407',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/2e/Gwent_cardart_neutral_Berengar.jpg/revision/latest?cb=20220304032034',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Escuela del Lobo',
@@ -2278,7 +2247,7 @@ return [
         'description'=> 'Poderosa sirena que aterroriza las aguas y acantilados cercanos a Spikeroog.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b5/The_Witcher_3_Melusine_the_Siren_%28Hard_Mode%29/revision/latest?cb=20150602005058',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/35/Tw3_journal_melusine.png/revision/latest?cb=20160415134816',
         'attributes'=> [
         'race'=> 'híbrido',
         'affiliation'=> 'Skellige',
@@ -2334,7 +2303,7 @@ return [
         'description'=> 'Enorme aracna que acecha en los bosques de Velen.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/44/The_Witcher_3_Harrisi_the_Arachnas_Boss_Fight_%28Hard_Mode%29/revision/latest?cb=20150602005313',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/c5/Tw3_journal_harrisi.png/revision/latest?cb=20160430071621',
         'attributes'=> [
         'race'=> 'insectoide',
         'affiliation'=> 'Velen',
@@ -2511,7 +2480,7 @@ return [
         'description'=> 'Anciano de la aldea de Fayrlund que defiende los rituales tradicionales para apaciguar al Espíritu del Bosque.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/12/Harald_Houndsnout_voice_line.mp3/revision/latest?cb=20220316025832',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9e/Tw3_journal_harald.png/revision/latest?cb=20151024181800',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Skellige',
@@ -2567,7 +2536,7 @@ return [
         'description'=> 'Espectro parásito que se alimenta de la culpa de Udalryk an Brokvar en Spikeroog.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/82/Hym%27s_shadow.png/revision/latest?cb=20170629145620',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/ab/Tw3_journal_hym.png/revision/latest?cb=20160512191140',
         'attributes'=> [
         'race'=> 'espectro',
         'affiliation'=> 'Skellige',
@@ -2609,7 +2578,7 @@ return [
         'description'=> 'Renombrado escaldo de Skellige perteneciente al clan an Craite.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/d5/Draig_Bon-Dhu_voice_line.ogg/revision/latest?cb=20170719200644',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/68/Tw3_Draig_Bon-Dhu_cameo.jpg/revision/latest?cb=20160821121954',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Clan an Craite',
@@ -2707,7 +2676,7 @@ return [
         'description'=> 'Uno de los tres hermanos Grossbart perseguidos por Djenge Frett en Skellige.',
         'category'=> 'antagonist',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/7/71/Tw3_Willis%2C_Napp_and_Black_Ones.jpg/revision/latest?cb=20160405100055',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/10/Tw3_napp.png/revision/latest?cb=20180216012602',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Skellige',
@@ -2935,7 +2904,7 @@ return [
         'description'=> 'Dedicada médica de campaña redania, graduada en Oxenfurt y vieja amiga y antigua amante de Geralt.',
         'category'=> 'main_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/ed/Shani_voice_line.ogg/revision/latest?cb=20170718140252',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/c1/HoS_shani_cutout.png/revision/latest?cb=20180802225948',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Academia de Oxenfurt / Ejército Redanio',
@@ -2949,7 +2918,7 @@ return [
         'description'=> 'Carismático y pícaro hermano fallecido de Olgierd cuyo fantasma posee brevemente a Geralt para asistir a una boda.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/dd/Vlodimir_von_Everec_voice_line.mp3/revision/latest?cb=20220321035353',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/8b/HoS_vlodimir_model.png/revision/latest?cb=20160517184144',
         'attributes'=> [
         'race'=> 'espectro',
         'affiliation'=> 'Familia Von Everec',
@@ -2963,7 +2932,7 @@ return [
         'description'=> 'Hermano menor distanciado de Horst Borsodi que planea un atraco contra la Casa de Subastas Borsodi.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/13/Ewald_Borsodi_voice_line.mp3/revision/latest?cb=20220316021352',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b0/Tw3_journal_Ewald.png/revision/latest?cb=20151103193111',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Oxenfurt',
@@ -3047,7 +3016,7 @@ return [
         'description'=> 'Entidad sin rostro armada con una pala invocada por Olgierd desde más allá del velo para cuidar la hacienda von Everec.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/c/c1/Who_is_The_Caretaker%3F_The_Witcher_lore_-_Witcher_3_Theories/revision/latest?cb=20190124151440',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/38/Tw3_journal_caretaker.png/revision/latest?cb=20160329093938',
         'attributes'=> [
         'race'=> 'relicto',
         'affiliation'=> 'Hacienda Von Everec',
@@ -3061,7 +3030,7 @@ return [
         'description'=> 'Familiares demoníacos vinculados a la hacienda von Everec para vigilar a Iris von Everec.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a7/The_World_of_The_Witcher_book_Brazil.jpeg/revision/latest?cb=20161225110407',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/66/Tw3_journal_black_cat_and_dog.png/revision/latest?cb=20160605174019',
         'attributes'=> [
         'race'=> 'relicto',
         'affiliation'=> 'Hacienda Von Everec',
@@ -3358,7 +3327,7 @@ return [
         'description'=> 'Espectro que emerge de los cuadros en el interior de la mansión von Everec.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/5/50/Okladka_El_ultimo_deseo.jpg/revision/latest?cb=20080105154805',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/26/Tw3_journal_wraith_from_the_painting.png/revision/latest?cb=20160329100447',
         'attributes'=> [
         'race'=> 'espectro',
         'affiliation'=> 'Hacienda Von Everec',
@@ -3372,7 +3341,7 @@ return [
         'description'=> 'Duquesa de Toussaint, prima del emperador Emhyr y gobernante del ducado de cuento de hadas.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/64/Anna_Henrietta_voice_line.ogg/revision/latest?cb=20171123073355',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/2/2d/Tw3_journal_henrietta.png/revision/latest?cb=20160601212052',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Ducado de Toussaint',
@@ -3441,21 +3410,7 @@ return [
         'description'=> 'Acaudalada noble de Toussaint, mecenas de las artes y de un orfanato, que en secreto es una vampira superior.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b5/Orianna_voice_line.mp3/revision/latest?cb=20220312235807',
-        'attributes'=> [
-        'race'=> 'vampiro',
-        'affiliation'=> 'Toussaint',
-        'content_pack'=> 'blood_and_wine'
-        ],
-    ],
-    [
-        'id'=> 'witcher3-the-unseen-elder',
-        'type'=> 'witcher3',
-        'name'=> 'El Anciano Oculto',
-        'description'=> 'Anciano e inmensamente poderoso vampiro superior que custodia la puerta entre mundos bajo Toussaint.',
-        'category'=> 'monster',
-        'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a1/Forefather%27s_Eve_-_The_Witcher_3_DEATH_MARCH%21_Part_22_-_Let%27s_Play_Hard/revision/latest?cb=20160301181721',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9b/Tw3_journal_oriana.png/revision/latest?cb=20160626084838',
         'attributes'=> [
         'race'=> 'vampiro',
         'affiliation'=> 'Toussaint',
@@ -3469,7 +3424,7 @@ return [
         'description'=> 'Capitán de la Guardia Ducal de Toussaint ferozmente leal a la duquesa Anna Henrietta.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/32/Damien_de_la_Tour_voice_line.mp3/revision/latest?cb=20220310152009',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/1/10/Tw3_journal_damien.png/revision/latest?cb=20160601212700',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Guardia Ducal de Toussaint',
@@ -3525,7 +3480,7 @@ return [
         'description'=> 'Dama de compañía de la duquesa Anna Henrietta aquejada de una maldición que la transforma gradualmente en oropéndola.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/3/3f/Vivienne_de_Tabris_voice_line.mp3/revision/latest?cb=20220312225336',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/4/45/Tw3_journal_vivienne.png/revision/latest?cb=20160603205558',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Ducado de Toussaint',
@@ -3556,7 +3511,7 @@ return [
         'description'=> 'Noble maldecida por Gaunter O"Dimm convirtiéndola en tumularia moteada antes de ser curada por Geralt.',
         'category'=> 'monster',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/d/d7/Gwent_cardart_neutral_marlene_de_trastamara.png/revision/latest?cb=20200630150404',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a2/Tw3_La_Cage_Marlene.png/revision/latest/scale-to-width-down/1000?cb=20160630190747',
         'attributes'=> [
         'race'=> 'maldito',
         'affiliation'=> 'Toussaint',
@@ -3676,20 +3631,6 @@ return [
         ],
     ],
     [
-        'id'=> 'witcher3-ramon-du-lac',
-        'type'=> 'witcher3',
-        'name'=> 'Ramon du Lac',
-        'description'=> 'Segunda víctima de la Bestia de Beauclair, un caballero de Toussaint ahogado en un río.',
-        'category'=> 'soldier',
-        'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/e6/Ramon_Tyrconnel_voice_line.mp3/revision/latest?cb=20220311152939',
-        'attributes'=> [
-        'race'=> 'humano',
-        'affiliation'=> 'Caballeros Andantes de Toussaint',
-        'content_pack'=> 'blood_and_wine'
-        ],
-    ],
-    [
         'id'=> 'witcher3-gregoire-de-gorgon',
         'type'=> 'witcher3',
         'name'=> 'Gregoire de Gorgon',
@@ -3710,7 +3651,7 @@ return [
         'description'=> 'Príncipe de Rivia e hijo de la reina Meve que compite en el torneo de Toussaint.',
         'category'=> 'noble',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/ef/Ans%C3%A9is_voicde_line.ogg/revision/latest?cb=20180710144411',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/9d/BaW_anseis.png/revision/latest?cb=20180714183622',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Rivia',
@@ -4161,7 +4102,7 @@ return [
         'description'=> 'Sumiller de Toussaint que contrata a Geralt para investigar una bodega encantada.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/9/94/Vran.png/revision/latest?cb=20241228145117',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/af/BaW_durand_de_savarin.png/revision/latest/scale-to-width-down/536?cb=20180605205459',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Toussaint',
@@ -4175,7 +4116,7 @@ return [
         'description'=> 'Caballero andante que contrata a Geralt para dar muerte a un grottore en Toussaint.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/bd/Bapteme_du_Feu.jpg/revision/latest?cb=20170303184643',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/b/b5/Tw3_Francois.png/revision/latest?cb=20160708101154',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Caballeros Andantes de Toussaint',
@@ -4245,7 +4186,7 @@ return [
         'description'=> 'Caballero que compite en el torneo de Toussaint.',
         'category'=> 'soldier',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/8/81/Donimir_of_Troy_voice_line.mp3/revision/latest?cb=20220312230347',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/e/e3/BaW_donimir.png/revision/latest?cb=20180714185550',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Toussaint',
@@ -4287,7 +4228,7 @@ return [
         'description'=> 'Heraldo y anunciador en el recinto del torneo de Toussaint.',
         'category'=> 'secondary_character',
         'level'=> null,
-        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/6/65/Netflix_s3_e2_The_Redanians.png/revision/latest?cb=20241013055140',
+        'imageUrl'=> 'https://static.wikia.nocookie.net/witcher/images/a/a7/Tw3_Art_Curator.png/revision/latest?cb=20160625182257',
         'attributes'=> [
         'race'=> 'humano',
         'affiliation'=> 'Toussaint',
