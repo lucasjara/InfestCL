@@ -18,7 +18,7 @@ function setStatus(message, isError = false) {
     status.style.color = isError ? 'var(--contrast-bg)' : 'var(--muted)';
 }
 
-async function refreshCollections(clearStatus = true) {
+async function refreshCollections(clearStatus = true, preferredId = null) {
     if (!select || !addButton) {
         return;
     }
@@ -42,7 +42,12 @@ async function refreshCollections(clearStatus = true) {
         const defaultCollection = collections.find(
             (collection) => collection.id === 'default',
         );
-        select.value = defaultCollection?.id ?? collections[0].id;
+        const preferredExists = preferredId && collections.some(
+            (collection) => collection.id === preferredId,
+        );
+        select.value = preferredExists
+            ? preferredId
+            : (defaultCollection?.id ?? collections[0].id);
         select.disabled = false;
         addButton.disabled = false;
         if (clearStatus) {
@@ -108,7 +113,8 @@ addButton?.addEventListener('click', async () => {
         console.error(error);
         setStatus(error.message, true);
     } finally {
-        await refreshCollections(false);
+        const previousSelection = select?.value;
+        await refreshCollections(false, previousSelection);
     }
 });
 
