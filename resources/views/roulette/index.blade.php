@@ -5,7 +5,7 @@
 @section('meta_description', 'Supera cuatro desafíos en INFEST Ultimate Challenge.')
 
 @section('navigation')
-    <x-experience-navigation current="roulette" />
+    <x-experience-navigation />
 @endsection
 
 @section('styles')

@@ -6,14 +6,6 @@
 
 @section('navigation')
     <x-experience-navigation current="experiences" />
-    <a href="{{ route('album.index') }}">
-        <i data-lucide="layers"></i>
-        Colecciones
-    </a>
-    <a href="{{ route('cards.list') }}">
-        <i data-lucide="sparkles"></i>
-        Generador
-    </a>
 @endsection
 
 @section('styles')

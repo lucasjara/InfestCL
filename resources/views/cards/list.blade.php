@@ -5,15 +5,7 @@
 @section('meta_description', 'Visualización de la carta random.')
 
 @section('navigation')
-    <x-experience-navigation />
-    <a href="{{ route('album.index') }}">
-        <i data-lucide="layers"></i>
-        Colecciones
-    </a>
-    <a href="{{ route('cards.list') }}" aria-current="page">
-        <i data-lucide="sparkles"></i>
-        Generador
-    </a>
+    <x-main-navigation current="cards" />
 @endsection
 
 @section('styles')

@@ -5,15 +5,7 @@
 @section('meta_description', 'Detalle de una colección de cartas INFEST.')
 
 @section('navigation')
-    <x-experience-navigation />
-    <a href="{{ route('album.index') }}">
-        <i data-lucide="layers"></i>
-        Colecciones
-    </a>
-    <a href="{{ route('cards.list') }}">
-        <i data-lucide="sparkles"></i>
-        Generador
-    </a>
+    <x-main-navigation current="album" />
 @endsection
 
 @section('styles')

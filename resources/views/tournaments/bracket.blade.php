@@ -6,7 +6,6 @@
 
 @section('navigation')
     <x-experience-navigation />
-    <a href="{{ route('tournaments.create') }}">Nuevo torneo</a>
 @endsection
 
 @section('styles')
